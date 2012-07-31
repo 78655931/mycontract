@@ -1,0 +1,109 @@
+<include file="Public:header"/>
+<body scroll="no">
+	<div id="layout">
+		<div id="header">
+			<div class="headerNav">
+				<a class="logo" href="__APP__">Logo</a>
+				<ul class="nav">
+					<li ><span>你好，</span><font color="red">{$Think.session.loginUserName}</font></li><li><a href="__APP__/Public/logout/">退出</a></li>
+				</ul>
+				
+			</div>
+		<!--div id="navMenu">
+				<ul>
+					<li class="selected"><a href="sidebar_1.html"><span>资讯管理</span></a></li>
+					<li><a href="sidebar_2.html"><span>订单管理</span></a></li>
+					<li><a href="sidebar_1.html"><span>产品管理</span></a></li>
+					<li><a href="sidebar_2.html"><span>会员管理</span></a></li>
+					<li><a href="sidebar_1.html"><span>服务管理</span></a></li>
+					<li><a href="sidebar_2.html"><span>系统设置</span></a></li>
+				</ul>
+			</div-->
+		</div>
+		
+		<div id="leftside">
+			<div id="sidebar_s">
+				<div class="collapse">
+					<div class="toggleCollapse"><div></div></div>
+				</div>
+			</div>
+			
+			<div id="sidebar" >
+				<include file="Public:menu" />
+			</div>
+		</div>
+
+		<div id="container">
+
+			<div id="navTab" class="tabsPage">
+				<div class="tabsPageHeader">
+					<div class="tabsPageHeaderContent"><!-- 显示左右控制时添加 class="tabsPageHeaderMargin" -->
+						<ul class="navTab-tab">
+							<li tabid="main" class="main"><a href="javascript:void(0)"><span><span class="home_icon">我的主页</span></span></a></li>
+						</ul>
+					</div>
+					<div class="tabsLeft">left</div><!-- 禁用只需要添加一个样式 class="tabsLeft tabsLeftDisabled" -->
+					<div class="tabsRight">right</div><!-- 禁用只需要添加一个样式 class="tabsRight tabsRightDisabled" -->
+					<div class="tabsMore">more</div>
+				</div>
+				<ul class="tabsMoreList">
+					<li><a href="javascript:void(0)">我的主页</a></li>
+				</ul>
+				<div class="navTab-panel tabsPageContent">
+					<div>
+<table layoutH="150" class="table" width="1100">
+	<thead>
+		<tr>
+			<th width="12%">预订单编号</th>
+			<th width="6%">客户姓名</th>
+			<th width="12%">身份证号</th>
+			<th width="8%">客户电话</th>
+			<th width="10%">取车时间</th>
+			<th width="10%">还车时间</th>
+			<th width="25%">车型</th>
+			<th width="5%">状态</th>
+			<th width="8%"></th>
+		</tr>
+	</thead>
+
+	<tbody>
+		<volist id="vo" name="lists">
+		<tr >
+			<td >{$vo['confirmation']}</td>
+			<td >{$vo['real_name']}</td>
+			<td >{$vo['identity_code']}</td>
+			<td >{$vo['home_phone']}</td>
+			<td >{$vo['pickup_date']}</td>
+			<td >{$vo['return_date']}</td>
+			<td >{$vo['CAR_MODEL_NAME']}</td>
+			{$vo['status']|convert_stat}
+
+			<td > <ul class="toolBar"><li><a width="15%" href="__APP__/Reservation/edit/id/{$vo['reservation_id']}/confirmation/{$vo['confirmation']}/navTabId/__MODULE__" target="dialog" max="true" maxable="false" minable="false" resizable="false"  rel="reser2" fresh="true"><span>预订单生成合同</span></a></li></ul>
+
+			</td>
+		</tr>
+		</volist>
+
+		</tbody>
+</table>
+								
+
+<div class="panelBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	
+
+
+</body>
+</html>

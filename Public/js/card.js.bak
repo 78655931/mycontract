@@ -1,0 +1,18 @@
+var str;
+str = SynCardOcx1.FindReader();
+if (str > 0)
+{
+	if(str>1000)
+	{
+		alert(123);
+	}
+	else
+	{
+		alert( "读卡器连接在COM ");
+	}
+}
+else
+{
+	alert("没有找到读卡器");
+}
+

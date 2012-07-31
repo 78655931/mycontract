@@ -1,0 +1,78 @@
+<include file="Public:pagerForm" />
+<div class="pageContent">
+
+<include file="Public:_form"/>
+<table layoutH="100%" class="table" width="1100">
+	<thead>
+		<tr>
+			<th width="12%">预订单编号</th>
+			<th width="6%">客户姓名</th>
+			<th width="12%">身份证号</th>
+			<th width="8%">客户电话</th>
+			<th width="10%">取车时间</th>
+			<th width="10%">还车时间</th>
+			<th width="25%">车型</th>
+			<th width="5%">状态</th>
+			<th width="8%"></th>
+		</tr>
+	</thead>
+
+	<tbody>
+		<volist id="vo" name="lists">
+		<tr >
+			<td >{$vo['confirmation']}</td>
+			<td >{$vo['real_name']}</td>
+			<td >{$vo['identity_code']}</td>
+			<td >{$vo['home_phone']}</td>
+			<td >{$vo['pickup_date']}</td>
+			<td >{$vo['return_date']}</td>
+			<td >{$vo['CAR_MODEL_NAME']}</td>
+			{$vo['status']|convert_stat}
+			<td > <ul class="toolBar"><li><a width="15%" href="__URL__/edit/id/{$vo['reservation_id']}/confirmation/{$vo['confirmation']}/navTabId/__MODULE__" target="dialog" max="true" maxable="false" minable="false" resizable="false"  rel="reser2" fresh="true"><span>预订单生成合同</span></a></li></ul>
+
+			</td>
+		</tr>
+		</volist>
+
+		</tbody>
+</table>
+
+</div>
+
+<div class="panelBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+
+<!--table layoutH="100%" class="table">
+	<thead>
+		<tr>
+			<th width="200">预订单编号</th>
+			<th width="100">客户姓名</th>
+			<th width="150">客户电话</th>
+			<th width="150">上车时间</th>
+			<th width="200">车型</th>
+			<th width="100">出租类型</th>
+			<th width="50">状态</th>
+			<th width="150"></th>
+		</tr>
+	</thead>
+
+	<tbody>
+		<volist id="vo" name="list">
+		<tr>
+		<td>{$vo.reservationID}</td>	
+		<td>{$vo.reservationBy}</td>	
+		<td>{$vo.phonenumber}</td>	
+		<td>{$vo.upTime}</td>	
+		<td>{$vo.driverCarType}</td>	
+		<td>{$vo.driveType}</td>	
+		<td>{$vo.status}</td>	
+		<td><if condition="$vo['status'] eq 'contract'" ><a href="__URL__/gotoPrint/id/{$vo['reservationID']}" target="blank">打印合同</a>&nbsp;&nbsp;<a href="__URL__/djshow/id/{$vo['id']}" target="dialog" width="1200" height="600">查看合同</a><else/><a href="__URL__/djedit/id/{$vo['id']}" target="navTab">建立合同</a></if></td>	
+		</tr>
+		</volist>	
+		</tbody>
+</table-->
+

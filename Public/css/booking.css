@@ -1,0 +1,38 @@
+/**
+ * Booking 页面样式
+ */
+.mar10 { margin-bottom: 10px; }
+.mod { border-bottom: 1px solid #DADADA; padding: 0 10px 10px 10px; }
+.mod h4 { margin-bottom: 5px; }
+.mod-content { margin: 0 30px;  }
+.mod-content label { margin-right: 30px; }
+.pad5  { padding: 5px; }
+
+.order-info { list-style: none; margin: 0; padding: 0; }
+.order-info dt { float: left; width: 8%; list-style: none; margin: 0; padding: 2px 0; font-weight: normal; }
+.order-info dd { float: left; width: 17%; list-style: none; margin: 0; padding: 2px 0; }
+
+/* 费用列表 */
+.costs-mod li { float: left; width: 100%; padding: 2px 0; }    
+.costs-mod .cost:hover { background: #eee; }
+.costs-mod .item { width: 80%; float: left; }
+.costs-mod .price { width: 20%; float: right; text-align: right; }
+.costs-mod .total-price { border-top: 1px solid #B7B7B7; font-weight: bold; }
+.cost-highlight { background:   #66ccff; }
+.ry-highlight { background: #D8E4FD; }
+.rules-mod { border-bottom: none; }
+.form-actions { text-align: center; margin: 0 0 0 0; }
+.radio.inline, .checkbox.inline {
+    display: inline-block;
+    margin-bottom: 0;
+    padding-top: 5px;
+    vertical-align: middle;
+    width: 98px;
+}
+.radio.inline + .radio.inline, .checkbox.inline + .checkbox.inline {
+    margin-left: 0;
+}
+form {
+  margin: 0 0 0 0;
+}
+.alert { margin: 5px 0; }

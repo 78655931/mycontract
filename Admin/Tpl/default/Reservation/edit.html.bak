@@ -1,0 +1,512 @@
+<script type="text/javascript" src="__PUBLIC__/js/booking.js"></script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/js/card.js"></script>
+
+<script type="text/javascript" charset="utf-8">
+	//alert(CALC_DISCOUNT_URL+"?"+carTypeCode+"&"+carModelCode+"&"+pickupLocationCode+"&"+pickupDate+"&"+returnDate+"&"+uniDiscId);
+	CALC_DISCOUNT_URL = 'http://172.16.100.47:8099/crsCarRental/rcaculateDiscount';
+	var rate_code = '{$vo.RATE_CODE}';
+	var carTypeCode = '{$vo.CAR_TYPE_CODE}';
+	var carModelCode= '{$vo.CAR_MODEL_CODE}';
+	var pickupLocationCode = '{$vo.PICKUP_LOCATION_CODE}';
+	var pickupDate = '{$vo.PICKUP_DATE|substr=0,16}';
+	pickupDate =pickupDate.replaceAll("-","");
+	pickupDate = pickupDate.replace(" ","");
+	pickupDate = pickupDate.replace(":","");
+	
+	var returnDate = '{$vo.RETURN_DATE|substr=0,16}';
+	//alert(pickDate);
+	returnDate = returnDate.replaceAll("-","");
+	returnDate = returnDate.replace(" ","");
+	returnDate = returnDate.replace(":","");
+
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	//$.ajaxSettings.global=false;
+	$(document).ready(function() {
+		//alert(pickupDate);
+			
+	var str;
+		str = SynCardOcx1.FindReader();
+
+		if(str>0){
+
+		SynCardOcx1.SetSexType (1);
+		SynCardOcx1.SetNationType(2);
+	}
+		var dates = $( "#from, #to" ).datetimepicker({
+			defaultdate: "+1w",
+			timeFormat: 'hh:mm',
+			showmonthafteryear: true,
+			numberofmonths: 2,  
+			mindate: 0 ,
+			dateFormat:'yy-mm-dd',
+			closetext:'关闭',
+			duration: 'fast',
+			showanim:'fadein',
+			showon:'button', 
+			buttontext:'选择日期',
+			showbuttonpanel: false,
+			stepHour: 2,//设置步长
+			stepMinute: 10,
+			stepSecond: 10,
+			hourGrid: 4,
+			minuteGrid: 10,
+
+			onSelect: function( selectedDate ) {
+
+				var option = this.id == "from" ? "minDate" : "maxDate",
+				instance = $( this ).data( "datepicker" ),
+				date = $.datepicker.parseDate(
+					instance.settings.dateFormat ||
+					$.datepicker._defaults.dateFormat,
+				selectedDate, instance.settings );
+				//dates.not( this ).datetimepicker( "option", option, date );
+
+				var begintime = $("#from").val();
+				var endtime = $("#to").val();
+
+				//计算时间 差 
+				if(begintime != "" && endtime != ""){
+					var   bt   =   new Date(Date.parse(begintime.replace(/-/g,   "/")));   
+
+					var   et   =   new  Date(Date.parse(endtime.replace(/-/g,   "/"))); 
+
+					var days = et.getTime() - bt.getTime(); 
+					var day =Math.round(days/(3600*24*1000)) ;
+					$("#delta-t").text(day);
+					$("#delta-o").text(day);
+					$("#delta-i").html('<input type="hidden" name="BASE_RATE_QTY" value="'+day+'"/>');
+				}
+
+			}
+		});
+
+
+		var options = {
+			beforeSubmit : showRequest, // pre-submit callback
+			success : showResponse // post-submit callback
+		};
+		$('#myform').submit(function() {
+			// 提交表单
+			//alert("aaa");
+			$(this).ajaxSubmit(options);
+			// 为了防止普通浏览器进行表单提交和产生页面导航（防止页面刷新？）返回false
+			return false;
+		});
+
+		function showRequest(formData, jqForm, options) {
+
+			//INSERT INTO `agreement_option` (`CONFIRMATION`,`OPTION_ID`,`OPTION_NAME`,`OPTION_TYPE`,`RATE`,`PER_UNIT`,`QTY`,`AMT`,`SEQUENCE`,`MANDATORY`) VALUES ('MENGEN-610101-01-201206111118022','6','送车上门服务','O','10','D',null,null,'6','N')
+			var queryString = $.param(formData);
+
+			//alert(queryString);
+			//alert('About to submit: \n\n' + queryString);
+			return true;
+		}
+		// post-submit callback
+		function showResponse(responseText, statusText, xhr, $form) {
+			if (responseText == 1) {
+				$('#crtagreement').show();
+				//$('#subbtn').attr('disabled', true);
+				$('#subbtn').hide();
+			} else {
+				alert(responseText);
+			}
+
+		}
+
+	});
+
+	function ReadCard_onclick()
+	{
+		var nRet;
+		SynCardOcx1.SetReadType(0);
+		nRet = SynCardOcx1.ReadCardMsg();
+		//alert(nRet);
+		var REAL_NAME = $("#REAL_NAME").val();
+		var IDENTITY_CODE = $("#IDENTITY_CODE").val();
+		if(nRet==0)
+		{	
+			$("#sex").val(SynCardOcx1.Sex);
+			document.all['address'].value = SynCardOcx1.Address;
+			document.all['age'].value = SynCardOcx1.Born;
+			//$("input[name=IDENTITY_CODE]").val(SynCardOcx1.CardNo);
+
+			if(SynCardOcx1.NameA != REAL_NAME)
+			{
+				alert("姓名信息不符");
+			}
+			if(SynCardOcx1.CardNo!=IDENTITY_CODE)
+			{
+				alert("身份证号码不符");
+			}
+			/*if(SynCardOcx1.CardNo!=IDENTITY_CODE)
+			{
+				alert(123);
+				}
+
+				*/
+		}
+	} 
+</script>
+<style>
+	.list tr {
+		margin-bottom: 10px;
+	}
+
+	.label-left{
+		float: left;
+		width:70px;
+	}
+
+	.label-right{
+		float: left;
+		width:100px;
+	}
+
+	.cost
+	{
+		margin-bottom: 8px;location_code
+	}
+</style>
+
+<div class="pageContent" style="height:600px;overflow:auto">
+	<input type="button" onclick="ReadCard_onclick();" value="读取身份证信息" />
+
+
+
+	<table width="98%" class="list">
+		<thead>
+			<tr>
+				<th width="80">预定人名称</th>
+				<th width="200">取车时间</th>
+				<th width="200">还车时间</th>
+				<th width="200">预定车型</th>
+				<th width="100">均价</th>
+				<th width="100">租期类型</th>
+				<th width="100">超天价格</th>
+				<th width="100">超小时价格</th>
+				<th width="100">超公里价格</th>
+				<th width="100">费用总计</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>{$vo.REAL_NAME}</td>
+				<td>{$vo.PICKUP_DATE|substr=0,16}</td>
+				<td>{$vo.RETURN_DATE|substr=0,16}</td>
+				<td >{$vo.CAR_MODEL_NAME}</td>
+				<td >{$average}</td>
+				<td>自驾</td>
+				<td>{$vo.XDAY}</td>
+				<td>{$vo.XHOUR}</td>
+				<td></td>
+				<td id="TOTAL_PRICE1">{$vo.TOTAL_PRICE}</td>
+			</tr>
+		</tbody>
+	</table>
+	<table style="float:left;width:18%">
+		<tr>
+			<td >
+				<object classid='clsid:4B3CB088-9A00-4D24-87AA-F65C58531039' id='SynCardOcx1' codeBase='SynCardOcx.CAB#version=1,0,0,1' style='width:100px;height:150px' ></object>
+
+			</td>
+		</tr>
+	</table>
+	<form id="myform" action="__URL__/createagreement" method="post">
+		<input type="hidden" name="REAL_NAME" value="{$vo.REAL_NAME}" />
+		<input type="hidden" name="CAR_MODEL_NAME" value="{$vo.CAR_MODEL_NAME}"/>
+		<input type="hidden" name="XDAY" value="{$vo.XDAY}"/>
+		<input type="hidden" name="XHOUR" value="{$vo.XHOUR}" />
+		<input type="hidden" name="TOTAL_PRICE" value="{$vo.TOTAL_PRICE}"/>
+		<input type="hidden" name="confirmation" value="{$confirmation}"/>
+		<input type="hidden" name="location_code" value="{$location_code}"/>
+		<input type="hidden" name="AVERAGE" value="{$average}"/>
+		<input type="hidden" name="BRAND_CODE" value="{$vo.BRAND_CODE}"/>
+		<input type="hidden" name="COMPANY_CODE" value="{$vo.COMPANY_CODE}"/>
+		<input type="hidden" name="PICKUP_CITY_CODE" value="{$vo.PICKUP_CITY_CODE}"/>
+		<input type="hidden" name="PICKUP_DISTRICT_CODE" value="{$vo.PICKUP_DISTRICT_CODE}"/>
+		<input type="hidden" name="PICKUP_LOCATION_CODE" value="{$vo.PICKUP_LOCATION_CODE}"/>
+		<input type="hidden" name="RETURN_CITY_CODE" value="{$vo.RETURN_CITY_CODE}"/>
+		<input type="hidden" name="RETURN_DISTRICT_CODE" value="{$vo.RETURN_DISTRICT_CODE}"/>
+		<input type="hidden" name="RETURN_LOCATION_CODE" value="{$vo.RETURN_LOCATION_CODE}"/>
+
+		<input type="hidden" name="SOURCE_CODE" value="{$vo.SOURCE_CODE}"/>
+		<input type="hidden" name="VENDOR_CODE" value="{$vo.VENDOR_CODE}"/>
+		<input type="hidden" name="VENDOR_PASS" value="{$vo.VENDOR_CODE|getObjInfo='vendor','vendorCode','VENDOR_PASSWORD'}"/>
+		<table class="list" width="80%" style="margin-top:10px;height:233px">
+			<tr>
+				<td colspan="2" style="text-align:center">会员信息</td>
+			</tr>
+			<tr>
+				<td  style="width: 400px;">
+					<label class="label-left">会员类型:</label>
+					<input type="text" name="MEMBER_TYPE_NAME" readonly value="{$vo.MEMBER_TYPE_ID|getMemberName}"/></td>
+				<td>
+					<label class="label-right">租车人手机:</label>
+					<input type="text" name="work_phone" value="{$vo.WORK_PHONE}"/>
+				</td>
+			</tr>	
+			<tr>
+				<td  style="width: 400px;">
+					<label class="label-left">姓名:</label>
+					<input type="text"  readonly id="REAL_NAME" name="REAL_NAME" value="{$vo.REAL_NAME}"/>	</td>
+				<td>
+					<label class="label-right">紧急联系人:</label><input type="text" name="contactperson" value=""/>
+					电话:<input type="text" name="contactphone" value=""/>
+				</td>
+			</tr>	
+			<tr>
+				<td  style="width: 400px;">
+					<label class="label-left">性别:</label>
+					<input type="text" readonly name="sex" id="sex" value=""/>
+					出生日期:<input type="text" readonly name="age" readonly value=""/>
+				</td>
+				<td>
+					<label class="label-right">驾驶证号码:</label>
+					<input type="text" name="IDENTITY_CODE" value="{$vo.IDENTITY_CODE}"/>
+					<input type="hidden" name="DRIVER_CODE" value="{$vo.IDENTITY_CODE}"/>
+				</td>
+			</tr>	
+			<tr>
+				<td  style="width: 400px;">
+					<label class="label-left">电子邮件:</label>
+					<input type="text" name="email" value="{$vo.EMAIL}" />
+				</td>
+				<td>
+					<label class="label-right">驾驶证准驾车型:</label>
+					<select name="vehicletype" >
+						<option value="C1">C1</option>
+						<option value="C2">C2</option>
+					</select>
+				</td>
+			</tr>	
+			<tr>
+				<td  style="width: 400px;">
+					<label class="label-left">身份证号码:</label>
+					<input type="text" readonly id="IDENTITY_CODE" name="IDENTITY_CODE" value="{$vo.IDENTITY_CODE}"/>
+
+				</td>
+				<td>
+					<label class="label-right">驾驶证发布城市:</label>
+					<input type="text" name="driverofcity" value=""/>
+
+				</td>
+			</tr>	
+			<tr>
+				<td  style="width: 400px;">
+					<label class="label-left">身份证地址:</label>
+					<input type="text" readonly name="address" size="50"  value=""/>
+
+				</td>
+				<td>
+					<label class="label-right">驾驶证取证时间:</label>
+					<input type="text"  name="taketime" value="" />
+
+				</td>
+			</tr>	
+			<tr>
+				<td  colspan="2" style="width: 400px;">
+					<label class="label-left">现住址:</label>
+					<input type="text" size="50" name="consummeraddr" value="{$vo.CONSUMMER_ADDR}" />
+
+				</td>
+			</tr>	
+		</table>	
+		<table class="list" width="98%" style="margin-top:10px">
+			<tbody>
+				<tr>
+					<td style="width: 270px;text-align:center">
+						<ul>
+							<li style="font-weight: bold">
+							租期:<span>共</span><span id="delta-t" style="color: #fd6c02;">{$vo.BASE_RATE_QTY}</span>天
+							</li>
+						</ul>
+						<input type="hidden" name="BASE_RATE_QTY" value="{$vo.BASE_RATE_QTY}"/>
+						<br />
+						<div style="display:block;margin-bottom:10px">
+							<label style="width:15px">实际取车时间:</label>	
+							<input type="text"  name="PICKUP_DATE"     value="{$vo.PICKUP_DATE|substr=0,16}" id="from"/>	
+						</div>
+						<div style="display:block;margin-bottom:10px">
+							<label style="width:15px">实际还车时间:</label>
+							<input type="text" id="to" name="RETURN_DATE"  value="{$vo.RETURN_DATE|substr=0,16}" />
+
+						</div>
+					</td>
+					<td>
+
+						<table class="list" width="100%" style="height:80px">
+							<thead>
+								<tr>
+									<th width="60">车牌号</th>
+									<th width="80">车辆类型</th>
+									<th width="200">车辆型号</th>
+									<th width="100">当前里程</th>
+									<th width="100">当前油量</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td><input class="readonly" name="master.dwz_devLookup.CAR_TAG" value="" readonly="readonly" type="text"/></td>
+									<td>
+										<input class="readonly" name="master.dwz_devLookup.CAR_MODEL" value=""  readonly="readonly" type="text"/>
+									</td>
+									<td>
+										<input class="readonly" name="master.dwz_devLookup.CAR_MODEL_NAME" value="" size="40" readonly="readonly" type="text" />
+										<input type="hidden" name="master.dwz_devLookup.CAR_MODEL_CODE" value=""  />
+										<input type="hidden" name="master.dwz_devLookup.CAR_TYPE_CODE" value=""  />
+									</td>
+									<td>
+										<input class="text" name="master.dwz_devLookup.CURRENT_KM" value="" readonly="readonly" type="text" />
+									</td>
+									<td>
+										<input class="text" name="master.dwz_devLookup.CURRENT_OIL" value="" readonly="readonly" type="text" />
+									</td>
+								</tr>
+								<tr>
+									<td colspan="5" style="padding-left: 300px;">
+										<a class="btnLook" target="dialog" href="__APP__/Reservation/selectCar/modelcode/{$vo['CAR_MODEL_CODE']}/cartypecode/{$vo['CAR_TYPE_CODE']}" lookupGroup="master" lookupName="devLookup" width="840" height="380">选 车</a>	
+										<span class="info">选 车</span>
+
+									</td>
+								</tr>	
+							</tbody>
+						</table>
+
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<table class="list" width="98%" style="margin-top:10px">
+			<tbody>
+				<tr>
+					<td style="width:270px;">
+
+						<input type="hidden" name="RATE_AMT" value="{$vo.BASE_RATE_AMT}"/>
+						<input type="hidden" name="CURRENT_KM" value="{$vo.CURRENT_KM}"/>
+						<input type="hidden" name="MANDATORY_CHARGES" value="{$vo.MANDATORY_CHARGES}"/>
+						<div id="delta-i"></div>
+
+						<h1 style="margin-bottom:20px">价格计算(租期<span id="delta-o" style="color: #fd6c02;">{$vo.BASE_RATE_QTY}</span>天)</h1>
+						<ul>
+							<li align="right" class="cost">
+							<label class="label-right">基本租金: </label><span class="option-amt">{$vo.BASE_RATE_AMT}</span></li>
+							<li align="right" class="cost"><label class="label-right">必须费用: </label><span class="option-amt">{$vo.MANDATORY_CHARGES}</span></li>
+							<li align="right" class="cost"><label class="label-right">增值服务费用: </label><span class="option-amt">{$vo.OPTIONS_CHARGES}</span></li>
+							<li> {$location_code|optionPrice=$confirmation,$vo['BASE_RATE_QTY']} </li>
+							<li id="tpl-cost-discount"></li>
+							<li align="right" id="cost-total"><label class="label-right">租金总价: </label><span id="total-amt">{$vo['BASE_RATE_AMT']+$vo['MANDATORY_CHARGES']+$vo['OPTIONS_CHARGES']}</span> 元</li>
+							<li>车辆预售权:{$location_code|getDeposit=$vo['CAR_MODEL_CODE']}</li>
+						</ul>
+					</td>
+					<td>	
+						<h1>增值服务</h1>
+						<div style="width:220px">
+							{$location_code|getlocationopt=$confirmation}
+						</div>
+
+					</td>
+					<td>
+						<h1>折扣信息</h1>
+						<div  style="width: 484px;">
+							<volist name="discount" id="vs">
+							<if condition="$vs['discountStackable'] eq 'N'">
+							<label class="radio">
+								<input type="radio" <if condition="$vs.discountId eq $vo['discountck']">checked</if> class="discount discount-unstackable"  id="discount-{$vs.discountId}" name="discount" value="{$vs.discountId}" onclick="selectDiscount('{$vs['discountName']}','{$vs['discountId']}','unstackable',this);" />
+								{$vs.discountName}
+							</label>
+							<else/>
+							<label class="checkbox">
+								<input type="checkbox" class="discount discount-stackable" id="discount-{$vs.discountId}" name="discount" value="{$vs.discountId}" onclick="selectDiscount('{$vs['discountName']}','{$vs['discountId']}','stackable',this);" />
+								{$vs.discountName}
+							</label>
+							</if>
+							<input type="hidden" name="discountname" value="{$vs.discountName}"/>
+							</volist>
+						</div>	
+					</td>	
+				</tr>
+				<tr>
+					<td colspan="2">
+						{$vo['status']}
+						<if condition="$vo['status'] eq 'CONTRACT'">
+						<span id="crtagreement" style="display:block">
+							<else/>
+							<input  type="submit" id="subbtn" value="生成合同" />
+							<span id="crtagreement" style="display:none">
+								</if><a href="__APP__/agreement/showcontract/id/{$vo.agreementid}" target="dialog" width="1200" height="750">打印合同</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="__APP__/agreement/showcontract/id/{$vo.agreementid}" target="dialog"  width="1024" height="900" >查看合同列表</a>
+							</td>
+						</tr>	
+					</tbody>
+				</table>
+			</form>
+		</div>
+
+
+<script>
+	/**
+	 * 选择优惠活动
+	 */
+	function selectDiscount(uniDiscName, uniDiscId, stackable,chk) {
+		
+		if(chk.checked){
+		$.post("__URL__/ajax_curl",{'uniDiscId': uniDiscId,'rateCode':rate_code,'carTypeCode':carTypeCode,'carModelCode':carModelCode,'pickupLocationCode':pickupLocationCode,'pickupDate':pickupDate,'returnDate':returnDate}, function(data){
+				
+				// 排他折扣和非排他折扣不能同时使用
+			//alert(data.discMessage.message);
+				if (stackable == 'unstackable') {
+					// 清空选择的非排他折扣
+					//alert("aaa");
+					$('input.discount-stackable').attr('checked', false);
+					$('.cost-discount-stackable').remove();
+					$('.cost-discount-unstackable').remove();
+				} else {
+					// 多个非排他折扣可以共存，选择非排他折扣时，需要清除选择的排他折扣
+					$('input.discount-unstackable').attr('checked', false);
+					$('.cost-discount-unstackable').remove();
+				}
+				
+				
+				$('#tpl-cost-discount').html('<li class="cost cost-discount cost-discount-'+stackable+'  cost-discount-'+uniDiscId+'  hide" ><div class="item">'+uniDiscName+'  <span class="gray">'+ data.discMessage.message+'  </span></div><div class="price"><span class="option-amt red">-'+data.discMessage.count.toFixed(0)+' </span> 元</div></li>').insertBefore("#cost-total");
+				calcTotalAmount();
+				
+		},"json");
+		}else{
+		
+		$('.cost-discount-' + $(this).val()).hide();
+			calcTotalAmount();
+		}
+		
+	}
+	// 绑定排他折扣单选按钮的点击事件
+	$('body').delegate('input.discount-unstackable', 'change', function() {
+		selectDiscount($.trim($(this).parent().text()), $(this).val(), 'unstackable');
+	});
+	
+	// 绑定非排他折扣复选按钮的点击事件
+	$('body').delegate('input.discount-stackable', 'change', function() {
+		if ($(this).is(':checked')) {
+			selectDiscount($.trim($(this).parent().text()), $(this).val(), 'stackable');
+		} else {
+			// 当取消选择非排他折扣时，清除其价格信息
+			//alert($(this).val());
+			$('.cost-discount-' + $(this).val()).hide();
+			calcTotalAmount();
+		}
+	});
+	/**
+	 * 重新计算订单总价
+	 */
+    function calcTotalAmount() {
+    	var totalAmt = 0;
+        $('.cost .option-amt:visible').each(function() {
+        	var optionAmt = parseFloat($(this).html());
+			
+        	totalAmt += optionAmt;
+        });
+        $('#total-amt').html(totalAmt.toFixed(2));
+    }
+</script>

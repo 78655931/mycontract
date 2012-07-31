@@ -1,0 +1,53 @@
+
+<script language="JavaScript">
+<!--
+function checkName(){
+	ThinkAjax.send('__URL__/checkAccount/','ajax=1&account='+$F('account'));
+}
+//-->
+</script>
+
+
+<div class="pageContent">
+	
+	<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<div class="pageFormContent" layoutH="58">
+
+			<div class="unit">
+				<label>司机名称：</label>
+				<input type="text"  name="drivername" value="{$vo.drivername}" />
+			</div>
+			<div class="unit">
+				<label>身份证号：</label>
+				<input type="text" name="identitycode" size="30" maxlength="20" class="required alphanumeric"/>
+			</div>
+			<div class="unit">
+				<label>联系手机：</label>
+				<input type="text" name="driverphone" size="30" maxlength="100" />
+			</div>
+			<div class="unit">
+				<label>状态：</label>
+				<select name="status">
+					<option value="1">已出车</option>
+					<option value="0">未出车</option>
+				</select>
+			</div>
+			
+			<div class="unit">
+				<label>备注：</label>
+				<textarea name="remark" rows="3" cols="57"></textarea>
+			</div>
+			
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">Submit</button></div></div></li>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">Cancel</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+	
+</div>
+
+
+

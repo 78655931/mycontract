@@ -1,0 +1,175 @@
+<html>
+<style>
+/* Core Code */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td { padding:0; margin:0; font-size:18px; line-height:100%;}
+body { width:100%; height:100%; text-align:center; color:black; }
+
+
+/* Tables still need 'cellspacing="0"' in the markup. */
+table { border-collapse:separate; border-spacing:0;}
+caption, th, td { text-align:left; font-weight:normal;}
+
+/* CSS Table */
+#s ul li{
+list-style-type:none;
+}
+ul{
+list-style-type:none;
+}
+table.list {border-collapse:collapse; border:solid 1px #ededed;}
+table.list thead tr {background:url("../default/images/grid/tableth.png") repeat-x scroll 0 0 #F0EFF0;}
+table.list th {padding:1px 2px; line-height:21px; border-right: solid 1px #D0D0D0; border-bottom:solid 1px #D0D0D0; font-weight:bolder; }
+table.list td {padding:1px 2px; line-height:21px; border-right:solid 1px #ededed;}
+table.list th.asc, .grid .gridHeader th.asc{background-position: 100% 0; background:url(../default/images/order_up.gif) no-repeat right; cursor:pointer;}
+table.list th.desc, .grid .gridHeader th.desc{background-position: 100% 0; background:url(../default/images/order_down.gif) no-repeat right; cursor:pointer;}
+table.list tbody {background-color:#fff;}
+table.list .right {text-align:right;}
+table.list .trbg {background-color:#F8F8F8;}
+table.list .hot {background-color:#fff5c0;}
+table.list .hover {background-color:#e4f5ff;}
+table.list .selected {background-color:#7cc5e5;border-color:#b8d0d6; }
+table.list a {color:#3C7FB1; font-size:11px; line-height:20px;}
+table.list a:hover {text-decoration:underline; line-height:20px;}
+table.list td span.error {z-index:-1}
+table.nowrap tbody tr {border-bottom:solid 1px #ededed;}
+hr{FILTER: progid:DXImageTransform.Microsoft.Glow(color=#987cb9,strength=10)}
+</style>
+	
+	
+	<table class="list" width="98%">
+		
+		<tbody>
+			<tr>
+				<td><div id="s"><ul style="list-style-type:none;"><li><img src="__PUBLIC__/Images/cpn.png"></li><li>地址:{$vo.consummeraddr}</li><li>电话:{$vo.work_phone}</li><li>网址:</li></ul></div></td>
+				<td>
+
+					<ul style="list-style-type:none;">
+						<li>
+	
+						</li>	
+						<li>合同编号：8888
+						</li>
+						<li>取车时间：2012年4月18日 08:00
+						</li><li>还车时间：2012年4月20日 08:00
+						</li><li>取车方式：门店取车
+						</li><li>还车方式：门店还车
+						</li><li>业务受理人：王旭忠
+						</li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<ul style="list-style-type:none;">
+						<li>取车人：</li><li>会员类型：</li><li>证件号码：</li><li>驾照号码：</li><li>现住址：</li><li>联系手机：</li><li>紧急电话：</li>
+					</ul>
+				</td>
+				<td>
+					
+					<ul style="list-style-type:none;">
+						<li>
+							所租车辆
+						</li>
+						<li>
+							车辆类型：中型车
+						</li>
+						<li>
+							车辆型号：马自达6
+						</li>
+						<li>
+							车牌号码：陕A88888
+						</li>
+						<li>
+							车辆颜色：红色
+						</li>
+						<li>
+							车辆里程：5577
+						</li>
+						<li>
+							车辆油量：满箱
+						</li>
+						<li>
+							公里限制：600/次
+						</li>	
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<td><ul style="list-style-type:none;"><li>担保人：荣益测试</li>
+<li>证件号码：612110198008080888</li>
+
+<li>证件地址：西安市高新区软件园西岳阁405</li></ul></td>
+				<td><ul style="list-style-type:none;"><li></li>
+<li>证件号码：612110198008080888</li>
+
+<li>证件地址：西安市高新区软件园西岳阁405</li></ul></td>
+			</tr>
+			<tr>
+				<td><span><ul style="list-style-type:none;"><li>保险
+1、基本保险
+</li></ul></span></td>
+<td>
+
+</td>
+			</tr>
+			<tr>
+				<td><ul><li>免责说明
+1.	人身意外保险
+您为购买人身意外保险，不能获取意外出现后的<br>
+￥50000元的额外意外保险金额
+</li></ul></td>
+<td>
+
+	<ul>
+		<li >基本租金:{$vo.RATE_AMT} </li>
+		<li >必须费用:{$vo.MANDATORY_CHARGES}</li>
+		<li >增值服务费用:{$rate}</li>
+<li> {$location_code|optionPrice=$confirmation,$vo['BASE_RATE_QTY']} </li>
+		<li >租金总价: {$vo['RATE_AMT']+$vo['MANDATORY_CHARGES']+$rate}</li>
+		
+		<li>条款
+1.	租车人所租马自达6牌照为陕A88888仅在陕西省范围内使用，如果超出使用范围，需要支付异地车辆使用费￥3元/公里
+</li>
+		
+		<li>
+备注
+1.	非经荣易信息科技有限公司书面授权，本车不得续租，超期部分按正常租金的300%支付违约金，且荣易信息科技有限公司有权收回车辆
+		</li>
+	</ul>
+	
+	
+</td>
+			</tr>
+			<tr>
+				<td><ul><li>出租方：_______________</li><li>门店/服务代表签章：_______________</li></ul>
+
+</td>
+<td>
+		<ul>
+			<li>
+承租方签字：_____________________________
+				
+</li>
+			<li>
+				
+担保方签字：_____________________________
+			</li>
+		</ul>
+</td>
+			</tr>
+			<tr>
+				<td><input type="button" onclick="windows:print()" value="打印"/></td>
+				<td>
+				
+				</td>
+			</tr>
+			</tbody>
+	</table>
+</html>

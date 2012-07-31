@@ -1,0 +1,46 @@
+<form action="ajaxDone.html?navTabId=masterList&callbackType=closeCurrent" method="post" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+<div class="pageContent">
+	<div class="pageFormContent" layoutH="97">
+		
+		<dl class="nowrap">
+			<dt>部门名称A：</dt>
+			<dd>
+				<input name="master.devLookup.id" value="1" type="hidden"/>
+				<input class="required" name="master.dwz_devLookup.orgName" value="技术部" type="text" suggestFields="orgNum,orgName" suggestUrl="db_lookupSuggest.html" lookupGroup="master" lookupName="devLookup"/>
+				<a class="btnLook" href="Index/dwzOrgLookup" lookupGroup="master" lookupName="devLookup">查找带回</a>		
+				<span class="info">(suggest+lookup)</span>
+			</dd>
+		</dl>
+		<dl class="nowrap">
+			<dt>部门编号A：</dt>
+			<dd>
+				<input class="readonly" name="master.dwz_devLookup.orgNum" value="1001" readonly="readonly" type="text"/>
+			</dd>
+		</dl>
+		
+		<div class="divider"></div>
+		
+		<dl class="nowrap">
+			<dt>部门名称B：</dt>
+			<dd>
+				<input name="master.devLooup2.id" value="" type="hidden">
+				<input class="required" name="master.dwz_devLookup2.orgName" type="text" suggestFields="orgName" suggestUrl="db_lookupSuggest.html" lookupGroup="master" lookupName="devLookup2"/>
+				<span class="info">(suggest)</span>
+			</dd>
+		</dl>
+		
+		<div class="divider"></div>
+		
+		<dl class="nowrap">
+			<dt>部门名称C：</dt>
+			<dd>
+				<input name="master.devLooup3.id" value="" type="hidden">
+				<input name="master.dwz_devLooup3.orgName" type="text"/>
+				<a class="btnLook" href="dwzOrgLookup.html" lookupGroup="master" lookupName="devLooup3">查找带回</a>
+				<span class="info">(lookup)</span>
+			</dd>
+		</dl>
+
+		</div>
+</form>
+

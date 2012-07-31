@@ -1,0 +1,205 @@
+<script type="text/javascript" charset="utf-8">
+function print(){
+	window.open("__URL__/gotoPrint/id/{$vo['reservationID']}");
+}
+</script>
+	<div class="pageContent" style="height:900px;overflow:auto">
+<div class="panel" defH="800">
+	<div  style="height: 90px;">
+		<span align="center"><h1 style=" padding-left: 550px;">预定单信息</h1></span>
+		<table width="98%" class="list">
+			<thead>
+				<tr>
+					<th width="100">预定人名称</th>
+					<th width="200">上车时间</th>
+					<th width="200">下车地点</th>
+					<th width="200">代驾车型</th>
+					<th width="100">代驾类型</th>
+					<th width="100">司机类型</th>
+					<th width="100">代驾时间</th>
+					<th width="100">超小时</th>
+					<th width="100">公里数</th>
+					<th width="100">超公里</th>
+					<th width="100">预定价格</th>
+					<th width="100">支付状态</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>{$vo.reservationBy}</td>
+					<td>{$vo.upTime}</td>
+					<td>{$vo.addrTo}</td>
+					<td >{$vo.driverCarType}</td>
+					<td >{$vo.driveType}</td>
+					<td>{$vo.driverType}</td>
+					<td>{$vo.driverTime}</td>
+					<td>{$vo.overH}</td>
+					<td>{$vo.overKM}</td>
+					<td id="TOTAL_PRICE1">{$vo.bookingPrice}</td>
+					<td>{$vo.payStatus}</td>
+				</tr>
+			</tbody>
+		</table>
+<h1 style=" padding-left: 550px;">行程安排</h1>	
+	<table width="98%" class="list">
+			<thead>
+				<tr>
+					<th width="100">天数</th>
+					<th width="200">上车时间</th>
+					<th width="200">上车地点</th>
+					<th width="200">下车地点</th>
+					<th width="200">预计里程</th>
+					<th width="100">预计时间</th>
+					<th width="100">包含费用</th>
+					<th width="100">价格</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>{$vo.days}</td>
+					<td>{$vo.upTime}</td>
+					<td>{$vo.addrFrom}</td>
+					<td >{$vo.addrTo}</td>
+					<td >{$vo.bookingKM}</td>
+					<td>{$vo.bookingTime}</td>
+					<td>{$vo.includeCost}</td>
+					<td>{$vo.price}</td>
+				</tr>
+			</tbody>
+		</table>
+		<table class="list" width="98%" >
+			<tbody>
+				<tr>
+					<td>
+						<table class="list" width="98%">
+							<h1>订车人信息</h1>
+								<tbody>
+									<tr>
+										<td>会员类型:<input type="text" disabled name="memberType" value="{$vo.memberType}"/></td>
+										<td>联系手机:<input type="text" disabled name="phonenumber" value="{$vo.phonenumber}"/></td>
+									</tr>
+									<tr>
+										<td>姓名:<input type="text" disabled name="reservationBy" value="{$vo.reservationBy}"/></td>
+										<td>电子邮件:<input type="text" disabled name="email" value="{$vo.email}"/></td>
+									</tr>
+									<tr>
+										<td>优惠码:<input type="text" disabled name="discount" value="{$vo.discount}"/></td>
+										<td>发票台头:<input type="text" disabled name="invoice" value="{$vo.invoice}"/></td>
+									</tr>
+								</tbody>
+						</table>	
+					</td>
+					<td>
+						<table class="list" width="98%">
+							<h1>用车人信息</h1>
+								<tbody>
+									<tr>
+										<td>姓名:<input type="text" disabled name="user" value="{$vo.user}"/></td>
+										<td>电话:<input type="text" disabled name="userPhone" value="{$vo.userPhone}"/></td>
+									</tr>
+									<tr>
+										<td>邮件:<input type="text" disabled name="userEmail" value="{$vo.userEmail}"/></td>
+										<td>举牌:<input type="text" disabled name="muller" value="{$vo.muller}"/></td>
+									</tr>
+									<tr>
+										<td>航班:<input type="text" disabled name="flight" value="{$vo.flight}"/></td>
+										<td><a href="#">点击查看租车要求附件内容</a></td>
+									</tr>
+								</tbody>
+						</table>
+					</td>
+				</tr>	
+				<tr>
+					<td>
+						<table class="list" width="98%">
+							<tbody>
+								<tr>
+									<th>车牌号</th>
+									<th>车辆类型</th>
+									<th>车辆型号</th>
+									<th>当前里程</th>
+									<th>当前油量</th>
+								</tr>
+
+<tr>
+	<td><input class="readonly" name="master.dwz_devLookup.CAR_TAG" value="{$vo.carTag}" readonly="readonly" type="text" disabled/></td>
+										<td>
+											<input class="readonly" name="master.dwz_devLookup.CAR_MODEL" value="{$vo.carModel}"  readonly="readonly" type="text" disabled/>
+										</td>
+										<td>
+											<input class="readonly" name="master.dwz_devLookup.CAR_MODEL_NAME" value="{$vo.carModelName}" readonly="readonly" type="text" disabled />
+										</td>
+										<td>
+											<input class="text" name="master.dwz_devLookup.CURRENT_KM" value="{$vo.currentkm}"  type="text" disabled />
+										</td>
+										<td>
+											<input class="text" name="master.dwz_devLookup.CURRENT_OIL" value="{$vo.currentoil}"  type="text" disabled />
+										</td>
+									</tr>
+								
+							<tbody>	
+						</table>	
+					</td>
+					<td>
+					<table class="list" width="98%">
+							<tbody>
+								<tr>
+									<th>司机姓名</th>
+									<th>司机电话</th>
+									<th>司机类型</th>
+								</tr>	
+								<tr>
+									<td><input class="readonly" name="master.dwz_devLookup.drivername" value="{$vo.drivername}"  type="text" disabled/></td>
+									<td><input class="readonly" name="master.dwz_devLookup.phonenumber" value="{$vo.driverphone}"  type="text" disabled/></td>
+									<td><input class="readonly" name="master.dwz_devLookup.status" value=""  type="text" disabled/></td>
+								</tr>
+									
+							<tbody>	
+						</table>
+					</td>
+				</tr>	
+			</tbody>
+		</table>
+		<table class="list" width="98%">
+			<tbody>
+				<tr>
+					<td rowspan="2">
+						<span><h1>费用预计(接机代驾)</h1></span>
+						<ul>
+							<input type="hidden" name="id" value="{$vo.id}"/>
+							<input type="hidden" name="carRent" value="{$vo.carRent}"/>
+							<input type="hidden" name="driverRent" value="{$vo.driverRent}"/>
+							<input type="hidden" name="oilCharge" value="{$vo.oilCharge}"/>
+							<input type="hidden" name="tollCost" value="{$vo.tollCost}"/>
+							<input type="hidden" name="memberDiscount" value="{$vo.memberDiscount}"/>
+							<input type="hidden" name="Total" value="{$vo.Total}"/>
+							<input type="hidden" name="clearingWay" value="{$vo.clearingWay}"/>
+							<input type="hidden" name="additional" value="{$vo.additional}"/>
+							<li>车辆租金:{$vo.carRent}</li>
+							<li>司机租金:{$vo.driverRent}</li>
+							<li>油费:{$vo.oilCharge}</li>
+							<li>收费站费用:{$vo.tollCost}</li>
+							<li>会员折扣:{$vo.memberDiscount}</li>
+							<HR>
+							<li>总计:{$vo.Total}</li>
+							<li>结算方式:{$vo.clearingWay}</li>
+							<li>附加费结算:{$vo.additional}</li>
+					   	</ul> 
+					</td>
+							<td>
+								<span><h1>增值服务</h1></span>
+							</td>
+
+				</tr>
+				<tr>
+					<td style="width: 800px;">
+						<span><h1>备注</h1></span>
+						<textarea  rows="5" cols="125" name="remark" disabled >{$vo.remark}</textarea>	
+					</td>
+				</tr>
+			</tbody>	
+		</table>	
+		
+		<span id="printbtn"><if condition="$vo.status eq 'contract'"><input onclick="print()"   type="button" value="打印合同"/><input type="button" value="取消"/> <input type="radio" name="messageto" value="订车人"/>订车人<input type="radio" value="用车人" name="messageto"/>用车人<input type="button" value="短信回复"/><input type="button" value="电话回复"/><input type="button" value="邮件回复"/><input type="button" value="传真回复"/><else/></span>
+<input type="submit" id="subbtn" value="创建合同"/></if>	</div>
+		</div>
