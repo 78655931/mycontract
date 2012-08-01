@@ -585,7 +585,8 @@ class ReservationAction extends CommonAction {
         Debug::mark('start');
 		// code...
 		$Model = M ( "Location","AdvModel" );
-		$Model->addConnect ( C ( "DB_CRS" ), 1 );
+        $Model->addConnect ( C ( "DB_CRS" ), 1 );
+        //if($_GET[''])
 		$reservationid = $_SESSION['location_code'].'-'.$_GET['reservationid'];
 		$map ['CONFIRMATION'] = $reservationid;
 		$Model->switchConnect ( 1, "reservation_option" );
@@ -610,8 +611,8 @@ class ReservationAction extends CommonAction {
 		$Model->switchConnect ( 1, "options" );
 		$options = $Model->getField('option_id,option_name');
 		$Model->switchConnect ( 1, "reservation_option" );
-		$reservation_options = $Model->where('CONFIRMATION="'.$reservationid.'"')->getField('option_id,qty');
-		$reservation_amt = $Model->where('CONFIRMATION="'.$reservationid.'"')->getField('option_id,amt');
+		$reservation_options = $Model->where('CONFIRMATION="'.$reservationid.'"')->getField('CONFIRMATION,qty');
+		$reservation_amt = $Model->where('CONFIRMATION="'.$reservationid.'"')->getField('CONFIRMATION,amt');
 		foreach($listOpt as $k=>$v){
 				if (in_array($v['OPTION_ID'],$optionID)) {
 					// code...

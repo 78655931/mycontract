@@ -688,6 +688,7 @@ function getCartype($car_type_code, $condition = '') {
  * 增值服务2012-06-08
  */
 function getlocationopt($localcode, $confirmation='') {
+    //Date:20120801 16:16
 	//echo "flowin";
 	$Model = M ( "Location","AdvModel" );
 	$Model->addConnect ( C ( "DB_CRS" ), 1 );
@@ -701,7 +702,7 @@ function getlocationopt($localcode, $confirmation='') {
 	$map ['location_code'] = $localcode;
 	//$map ['confirmation'] = $localcode . '-' . $confirmation;
 	// echo $localcode;
-	//echo $Model->getLastSql();
+    //echo $Model->getLastSql();
 	$Model->switchConnect ( 1, "reservation_option" );
 	$reserOpt = $Model->where ( $map2 )->select ();
 	$html = "";
@@ -715,19 +716,22 @@ function getlocationopt($localcode, $confirmation='') {
 
 			}
 			$html .= '<label class="checkbox inline">
-				<input type="checkbox" name="option[]" '.$disabled.' class="checkbox-option" checked="true"  value="' . $v ['OPTION_ID'] . '" />
+				<input type="checkbox" name="option_r[]" '.$disabled.' class="checkbox-option" checked="true"  value="' . $v ['OPTION_ID'] . '" />
 				' . $v ['OPTION_NAME'] . '
 				</label> ';
 			$optionID[] = $v['OPTION_ID'];
 		}
 	}
 
-	$Model->switchConnect ( 1, "location_option" );
+    $Model->switchConnect ( 1, "uni_option" );
+    $wh ='';
 	if(!empty($reserOpt)){
-		$map['OPTION_ID'] = array('not in',$optionID);
+        $wh.=" and option_id not in (".implode(',',$optionID).")";
 	}
 		//$map['RATE_CODE'] =array(array('eq',''),array('eq','LOC'));
-		$listOpt = $Model->where ( $map )->group ( 'option_id' )->order('MANDATORY="Y" desc')->select ();
+    $listOpt = $Model->where ( "location_code='".$localcode."' and (rate_code='LOC' or rate_code is NULL) AND LEFT(NOW(),10)=START_DATE ".$wh )->select ();
+
+        Log::write('增值服务SQL：'.$Model->getLastSql(), Log::SQL);
 	//dump($optionID);exit;
 	//echo $Model->getLastSql();
 	$Model->switchConnect ( 1, "options" );
@@ -748,7 +752,7 @@ function getlocationopt($localcode, $confirmation='') {
 			}
 			$optionid = $val['OPTION_ID'];
 			$html .= '<label class="checkbox inline">
-				<input type="checkbox" name="option[]" '.$o.' class="checkbox-option" value="' . $val ['OPTION_ID'] . '" />
+				<input type="checkbox" name="option_u[]" '.$o.' class="checkbox-option" value="' . $val ['UNI_OPTION_ID'] . '" />
 				' . $options[$optionid] . '
 				</label> ';
 		}

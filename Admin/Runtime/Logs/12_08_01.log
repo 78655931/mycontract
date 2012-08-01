@@ -1,170 +1,102 @@
-[ 2012-08-01T13:23:00+08:00 ] SQL: SHOW COLUMNS FROM `location` [ RunTime:0.024438s ]
-[ 2012-08-01T13:23:00+08:00 ] SQL: SHOW COLUMNS FROM `reservation` [ RunTime:0.037144s ]
-[ 2012-08-01T13:23:00+08:00 ] NOTIC: [8] Undefined variable: asc IndexAction.class.php 第 62 行.
-[ 2012-08-01T13:23:00+08:00 ] SQL: SHOW COLUMNS FROM `index` [ RunTime:0.024658s ]
-[ 2012-08-01T13:23:00+08:00 ] NOTIC: [8] Array to string conversion Db.class.php 第 507 行.
-[ 2012-08-01T13:23:00+08:00 ] SQL: SELECT COUNT(RESERVATION_ID) AS tp_count FROM `reservation` WHERE ( `CONFIRMATION` LIKE '%GONGSI-440304-1%' ) AND ( (`STATUS` != 'CONTRACT') AND (`STATUS` != 'CANCEL')  ) LIMIT 1  [ RunTime:0.022314s ]
-[ 2012-08-01T13:23:00+08:00 ] NOTIC: [8] Array to string conversion Db.class.php 第 507 行.
-[ 2012-08-01T13:23:00+08:00 ] SQL: SELECT reservation_id,right(CONFIRMATION,15) as confirmation,real_name,identity_code,work_phone,left(pickup_date,16) as pickup_date,left(return_date,16) as return_date,car_type_name,CAR_MODEL_NAME,status FROM `reservation` WHERE ( `CONFIRMATION` LIKE '%GONGSI-440304-1%' ) AND ( (`STATUS` != 'CONTRACT') AND (`STATUS` != 'CANCEL')  ) ORDER BY `RESERVATION_ID` desc LIMIT 0,30  [ RunTime:0.025960s ]
-[ 2012-08-01T13:23:00+08:00 ] NOTIC: [2] urlencode() expects parameter 1 to be string, array given IndexAction.class.php 第 91 行.
-[ 2012-08-01T13:23:00+08:00 ] NOTIC: [8] Undefined index:  real_name IndexAction.class.php 第 101 行.
-[ 2012-08-01T13:23:00+08:00 ] NOTIC: [8] Undefined index:  pickup_date IndexAction.class.php 第 103 行.
-[ 2012-08-01T13:23:00+08:00 ] NOTIC: [8] Undefined index:  identity_code IndexAction.class.php 第 104 行.
-[ 2012-08-01T13:23:00+08:00 ] NOTIC: [8] Undefined variable: menu IndexAction.class.php 第 120 行.
-[ 2012-08-01T13:23:00+08:00 ] SQL: SHOW COLUMNS FROM `reservationby` [ RunTime:0.023721s ]
-[ 2012-08-01T13:23:00+08:00 ] SQL: SELECT * FROM `reservationby` [ RunTime:0.023592s ]
-[ 2012-08-01T13:23:00+08:00 ] NOTIC: [8] Undefined index:  home_phone 0573c70d8602d961e53f714ea77bd87c.php 第 173 行.
-[ 2012-08-01T13:23:00+08:00 ] NOTIC: [8] Undefined index:  home_phone 0573c70d8602d961e53f714ea77bd87c.php 第 173 行.
-[ 2012-08-01T13:23:00+08:00 ] NOTIC: [8] Undefined index:  home_phone 0573c70d8602d961e53f714ea77bd87c.php 第 173 行.
-[ 2012-08-01T13:23:14+08:00 ] DEBUG: Edit运行时间：0.516156
-[ 2012-08-01T13:23:14+08:00 ] SQL: SHOW COLUMNS FROM `location` [ RunTime:0.027460s ]
-[ 2012-08-01T13:23:14+08:00 ] SQL: SHOW COLUMNS FROM `reservation` [ RunTime:0.037151s ]
-[ 2012-08-01T13:23:14+08:00 ] SQL: SELECT * FROM `reservation` WHERE reservation_id=8 LIMIT 1  [ RunTime:0.030756s ]
-[ 2012-08-01T13:23:14+08:00 ] SQL: SHOW COLUMNS FROM `agreement` [ RunTime:0.030951s ]
-[ 2012-08-01T13:23:14+08:00 ] SQL: SELECT * FROM `agreement` WHERE ( `agreement_id` = 'HT201208011057015' ) LIMIT 1  [ RunTime:0.027537s ]
-[ 2012-08-01T13:23:14+08:00 ] SQL: SHOW COLUMNS FROM `uni_rate` [ RunTime:0.030622s ]
-[ 2012-08-01T13:23:14+08:00 ] SQL: SELECT * FROM `uni_rate` WHERE ( `location_code` = 'GONGSI-440304-1' ) LIMIT 1  [ RunTime:0.032074s ]
-[ 2012-08-01T13:23:14+08:00 ] SQL: SHOW COLUMNS FROM `vendor` [ RunTime:0.028267s ]
-[ 2012-08-01T13:23:14+08:00 ] SQL: SELECT * FROM `vendor` WHERE ( `vendor_code` = 'W-GONGSI' ) LIMIT 1  [ RunTime:0.028009s ]
-[ 2012-08-01T13:23:14+08:00 ] SQL: SHOW COLUMNS FROM `member_type` [ RunTime:0.026468s ]
-[ 2012-08-01T13:23:14+08:00 ] SQL: SELECT * FROM `member_type` WHERE ( `member_type_id` = '11' ) LIMIT 1  [ RunTime:0.023568s ]
-[ 2012-08-01T13:23:14+08:00 ] SQL: SHOW COLUMNS FROM `location_cartype_model` [ RunTime:0.027795s ]
-[ 2012-08-01T13:23:14+08:00 ] SQL: SELECT * FROM `location_cartype_model` WHERE ( `CAR_MODEL_CODE` = 'BENCHIAMG-BENCHISJIAMG-3-6.0-AMT' ) AND ( `LOCATION_CODE` = 'GONGSI-440304-1' ) LIMIT 1  [ RunTime:0.027558s ]
-[ 2012-08-01T13:23:14+08:00 ] SQL: SHOW COLUMNS FROM `reservation_option` [ RunTime:0.023714s ]
-[ 2012-08-01T13:23:14+08:00 ] SQL: SELECT * FROM `reservation_option` WHERE ( `confirmation` = 'GONGSI-440304-1-201208011057015' ) [ RunTime:0.027311s ]
-[ 2012-08-01T13:23:14+08:00 ] SQL: SHOW COLUMNS FROM `location_option` [ RunTime:0.027944s ]
-[ 2012-08-01T13:23:14+08:00 ] SQL: SELECT * FROM `location_option` WHERE ( `location_code` = 'GONGSI-440304-1' ) AND ( `OPTION_ID` NOT IN ('1') ) GROUP BY option_id ORDER BY MANDATORY="Y" desc [ RunTime:0.028228s ]
-[ 2012-08-01T13:23:14+08:00 ] SQL: SHOW COLUMNS FROM `options` [ RunTime:0.026537s ]
-[ 2012-08-01T13:23:14+08:00 ] SQL: SELECT option_id,option_name FROM `options` [ RunTime:0.023522s ]
-[ 2012-08-01T13:23:16+08:00 ] DEBUG: optionPrice运行时间：0.742315
-[ 2012-08-01T13:23:51+08:00 ] SQL: SHOW COLUMNS FROM `location` [ RunTime:0.024101s ]
-[ 2012-08-01T13:23:51+08:00 ] SQL: SHOW COLUMNS FROM `reservation` [ RunTime:0.041108s ]
-[ 2012-08-01T13:23:51+08:00 ] NOTIC: [8] Undefined variable: asc IndexAction.class.php 第 62 行.
-[ 2012-08-01T13:23:51+08:00 ] SQL: SHOW COLUMNS FROM `index` [ RunTime:0.023405s ]
-[ 2012-08-01T13:23:51+08:00 ] NOTIC: [8] Array to string conversion Db.class.php 第 507 行.
-[ 2012-08-01T13:23:51+08:00 ] SQL: SELECT COUNT(RESERVATION_ID) AS tp_count FROM `reservation` WHERE ( `CONFIRMATION` LIKE '%GONGSI-440304-1%' ) AND ( (`STATUS` != 'CONTRACT') AND (`STATUS` != 'CANCEL')  ) LIMIT 1  [ RunTime:0.023527s ]
-[ 2012-08-01T13:23:51+08:00 ] NOTIC: [8] Array to string conversion Db.class.php 第 507 行.
-[ 2012-08-01T13:23:51+08:00 ] SQL: SELECT reservation_id,right(CONFIRMATION,15) as confirmation,real_name,identity_code,work_phone,left(pickup_date,16) as pickup_date,left(return_date,16) as return_date,car_type_name,CAR_MODEL_NAME,status FROM `reservation` WHERE ( `CONFIRMATION` LIKE '%GONGSI-440304-1%' ) AND ( (`STATUS` != 'CONTRACT') AND (`STATUS` != 'CANCEL')  ) ORDER BY `RESERVATION_ID` desc LIMIT 0,30  [ RunTime:0.025931s ]
-[ 2012-08-01T13:23:51+08:00 ] NOTIC: [2] urlencode() expects parameter 1 to be string, array given IndexAction.class.php 第 91 行.
-[ 2012-08-01T13:23:51+08:00 ] NOTIC: [8] Undefined index:  real_name IndexAction.class.php 第 101 行.
-[ 2012-08-01T13:23:51+08:00 ] NOTIC: [8] Undefined index:  pickup_date IndexAction.class.php 第 103 行.
-[ 2012-08-01T13:23:51+08:00 ] NOTIC: [8] Undefined index:  identity_code IndexAction.class.php 第 104 行.
-[ 2012-08-01T13:23:51+08:00 ] NOTIC: [8] Undefined variable: menu IndexAction.class.php 第 120 行.
-[ 2012-08-01T13:23:51+08:00 ] SQL: SHOW COLUMNS FROM `reservationby` [ RunTime:0.023873s ]
-[ 2012-08-01T13:23:51+08:00 ] SQL: SELECT * FROM `reservationby` [ RunTime:0.023524s ]
-[ 2012-08-01T13:23:51+08:00 ] NOTIC: [8] Undefined index:  home_phone 0573c70d8602d961e53f714ea77bd87c.php 第 173 行.
-[ 2012-08-01T13:23:51+08:00 ] NOTIC: [8] Undefined index:  home_phone 0573c70d8602d961e53f714ea77bd87c.php 第 173 行.
-[ 2012-08-01T13:23:51+08:00 ] NOTIC: [8] Undefined index:  home_phone 0573c70d8602d961e53f714ea77bd87c.php 第 173 行.
-[ 2012-08-01T13:23:59+08:00 ] DEBUG: Edit运行时间：0.568598
-[ 2012-08-01T13:23:58+08:00 ] SQL: SHOW COLUMNS FROM `location` [ RunTime:0.052016s ]
-[ 2012-08-01T13:23:59+08:00 ] SQL: SHOW COLUMNS FROM `reservation` [ RunTime:0.036009s ]
-[ 2012-08-01T13:23:59+08:00 ] SQL: SELECT * FROM `reservation` WHERE reservation_id=8 LIMIT 1  [ RunTime:0.031773s ]
-[ 2012-08-01T13:23:59+08:00 ] SQL: SHOW COLUMNS FROM `agreement` [ RunTime:0.035358s ]
-[ 2012-08-01T13:23:59+08:00 ] SQL: SELECT * FROM `agreement` WHERE ( `agreement_id` = 'HT201208011057015' ) LIMIT 1  [ RunTime:0.027292s ]
-[ 2012-08-01T13:23:59+08:00 ] SQL: SHOW COLUMNS FROM `uni_rate` [ RunTime:0.030785s ]
-[ 2012-08-01T13:23:59+08:00 ] SQL: SELECT * FROM `uni_rate` WHERE ( `location_code` = 'GONGSI-440304-1' ) LIMIT 1  [ RunTime:0.032638s ]
-[ 2012-08-01T13:23:59+08:00 ] SQL: SHOW COLUMNS FROM `vendor` [ RunTime:0.030755s ]
-[ 2012-08-01T13:23:59+08:00 ] SQL: SELECT * FROM `vendor` WHERE ( `vendor_code` = 'W-GONGSI' ) LIMIT 1  [ RunTime:0.028130s ]
-[ 2012-08-01T13:23:59+08:00 ] SQL: SHOW COLUMNS FROM `member_type` [ RunTime:0.026811s ]
-[ 2012-08-01T13:23:59+08:00 ] SQL: SELECT * FROM `member_type` WHERE ( `member_type_id` = '11' ) LIMIT 1  [ RunTime:0.027314s ]
-[ 2012-08-01T13:23:59+08:00 ] SQL: SHOW COLUMNS FROM `location_cartype_model` [ RunTime:0.027776s ]
-[ 2012-08-01T13:23:59+08:00 ] SQL: SELECT * FROM `location_cartype_model` WHERE ( `CAR_MODEL_CODE` = 'BENCHIAMG-BENCHISJIAMG-3-6.0-AMT' ) AND ( `LOCATION_CODE` = 'GONGSI-440304-1' ) LIMIT 1  [ RunTime:0.027499s ]
-[ 2012-08-01T13:23:59+08:00 ] SQL: SHOW COLUMNS FROM `reservation_option` [ RunTime:0.027578s ]
-[ 2012-08-01T13:23:59+08:00 ] SQL: SELECT * FROM `reservation_option` WHERE ( `confirmation` = 'GONGSI-440304-1-201208011057015' ) [ RunTime:0.023512s ]
-[ 2012-08-01T13:23:59+08:00 ] SQL: SHOW COLUMNS FROM `location_option` [ RunTime:0.027953s ]
-[ 2012-08-01T13:23:59+08:00 ] SQL: SELECT * FROM `location_option` WHERE ( `location_code` = 'GONGSI-440304-1' ) AND ( `OPTION_ID` NOT IN ('1') ) GROUP BY option_id ORDER BY MANDATORY="Y" desc [ RunTime:0.048044s ]
-[ 2012-08-01T13:23:59+08:00 ] SQL: SHOW COLUMNS FROM `options` [ RunTime:0.026875s ]
-[ 2012-08-01T13:23:59+08:00 ] SQL: SELECT option_id,option_name FROM `options` [ RunTime:0.023500s ]
-[ 2012-08-01T13:24:00+08:00 ] DEBUG: optionPrice运行时间：0.570527
-[ 2012-08-01T13:24:08+08:00 ] SQL: SHOW COLUMNS FROM `car` [ RunTime:0.023991s ]
-[ 2012-08-01T13:24:08+08:00 ] SQL: SHOW COLUMNS FROM `car` [ RunTime:0.028201s ]
-[ 2012-08-01T13:24:08+08:00 ] NOTIC: [4096] Object of class AdvModel could not be converted to string ReservationAction.class.php 第 502 行.
-[ 2012-08-01T13:24:08+08:00 ] SQL: SELECT COUNT(CAR_ID) AS tp_count FROM `car` WHERE ( `CAR_MODEL_CODE` = 'BENCHIAMG-BENCHISJIAMG-3-6.0-AMT' ) AND ( `status` = 2 ) LIMIT 1  [ RunTime:0.023459s ]
-[ 2012-08-01T13:24:08+08:00 ] NOTIC: [8] Undefined variable: voList ReservationAction.class.php 第 570 行.
-[ 2012-08-01T13:24:08+08:00 ] SQL: SHOW COLUMNS FROM `car_type` [ RunTime:0.026556s ]
-[ 2012-08-01T13:24:08+08:00 ] SQL: SELECT * FROM `car_type` WHERE ( `car_type_code` = 'L' ) LIMIT 1  [ RunTime:0.023643s ]
-[ 2012-08-01T13:24:08+08:00 ] SQL: SELECT `CAR_TYPE_CODE` FROM `car_type` WHERE SEQUENCE>8 [ RunTime:0.023609s ]
-[ 2012-08-01T13:24:08+08:00 ] SQL: SHOW COLUMNS FROM `car` [ RunTime:0.028127s ]
-[ 2012-08-01T13:24:08+08:00 ] NOTIC: [4096] Object of class AdvModel could not be converted to string ReservationAction.class.php 第 502 行.
-[ 2012-08-01T13:24:08+08:00 ] SQL: SELECT COUNT(CAR_ID) AS tp_count FROM `car` WHERE ( `status` = 2 ) AND ( `CAR_TYPE_CODE` IN ('V','X') ) LIMIT 1  [ RunTime:0.023151s ]
-[ 2012-08-01T13:24:09+08:00 ] SQL: SELECT * FROM `car` WHERE ( `status` = 2 ) AND ( `CAR_TYPE_CODE` IN ('V','X') ) ORDER BY `CAR_ID` desc LIMIT 0,20  [ RunTime:0.026855s ]
-[ 2012-08-01T13:24:09+08:00 ] SQL: SHOW COLUMNS FROM `location` [ RunTime:0.023506s ]
-[ 2012-08-01T13:24:09+08:00 ] SQL: SHOW COLUMNS FROM `car_model` [ RunTime:0.027810s ]
-[ 2012-08-01T13:24:09+08:00 ] SQL: SELECT * FROM `car_model` WHERE ( `car_model_code` = 'AODI(JINKOU)-AODITTS-4-2.0-AT' ) LIMIT 1  [ RunTime:0.023423s ]
-[ 2012-08-01T13:24:09+08:00 ] SQL: SHOW COLUMNS FROM `car_model` [ RunTime:0.027840s ]
-[ 2012-08-01T13:24:09+08:00 ] SQL: SELECT * FROM `car_model` WHERE ( `car_model_code` = 'AODI(JINKOU)-AODITTS-4-2.0-AT' ) LIMIT 1  [ RunTime:0.023340s ]
-[ 2012-08-01T13:24:09+08:00 ] SQL: SHOW COLUMNS FROM `car_type` [ RunTime:0.023742s ]
-[ 2012-08-01T13:24:09+08:00 ] SQL: SELECT * FROM `car_type` WHERE ( `car_type_code` = 'X' ) LIMIT 1  [ RunTime:0.023123s ]
-[ 2012-08-01T13:24:09+08:00 ] SQL: SHOW COLUMNS FROM `car_model` [ RunTime:0.023658s ]
-[ 2012-08-01T13:24:09+08:00 ] SQL: SELECT * FROM `car_model` WHERE ( `car_model_code` = 'X' ) LIMIT 1  [ RunTime:0.023558s ]
-[ 2012-08-01T13:24:09+08:00 ] NOTIC: [8] Undefined index:  _order 4fe15861f18eae4e7274fcabeed6407a.php 第 3 行.
-[ 2012-08-01T13:24:09+08:00 ] NOTIC: [8] Undefined index:  _sort 4fe15861f18eae4e7274fcabeed6407a.php 第 4 行.
-[ 2012-08-01T13:24:09+08:00 ] SQL: SHOW COLUMNS FROM `car_model` [ RunTime:0.022489s ]
-[ 2012-08-01T13:24:09+08:00 ] SQL: SELECT * FROM `car_model` WHERE ( `car_model_code` = 'AODI(JINKOU)-AODITTS-4-2.0-AT' ) LIMIT 1  [ RunTime:0.023506s ]
-[ 2012-08-01T13:24:09+08:00 ] SQL: SHOW COLUMNS FROM `car` [ RunTime:0.023883s ]
-[ 2012-08-01T13:24:09+08:00 ] SQL: SHOW COLUMNS FROM `car` [ RunTime:0.028253s ]
-[ 2012-08-01T13:24:09+08:00 ] NOTIC: [4096] Object of class AdvModel could not be converted to string ReservationAction.class.php 第 502 行.
-[ 2012-08-01T13:24:09+08:00 ] SQL: SELECT COUNT(CAR_ID) AS tp_count FROM `car` WHERE ( `CAR_MODEL_CODE` = 'BENCHIAMG-BENCHISJIAMG-3-6.0-AMT' ) AND ( `status` = 2 ) LIMIT 1  [ RunTime:0.022994s ]
-[ 2012-08-01T13:24:09+08:00 ] NOTIC: [8] Undefined variable: voList ReservationAction.class.php 第 570 行.
-[ 2012-08-01T13:24:09+08:00 ] SQL: SHOW COLUMNS FROM `car_type` [ RunTime:0.027154s ]
-[ 2012-08-01T13:24:09+08:00 ] SQL: SELECT * FROM `car_type` WHERE ( `car_type_code` = 'L' ) LIMIT 1  [ RunTime:0.027312s ]
-[ 2012-08-01T13:24:09+08:00 ] SQL: SELECT `CAR_TYPE_CODE` FROM `car_type` WHERE SEQUENCE>8 [ RunTime:0.023413s ]
-[ 2012-08-01T13:24:09+08:00 ] SQL: SHOW COLUMNS FROM `car` [ RunTime:0.027991s ]
-[ 2012-08-01T13:24:09+08:00 ] NOTIC: [4096] Object of class AdvModel could not be converted to string ReservationAction.class.php 第 502 行.
-[ 2012-08-01T13:24:09+08:00 ] SQL: SELECT COUNT(CAR_ID) AS tp_count FROM `car` WHERE ( `status` = 2 ) AND ( `CAR_TYPE_CODE` IN ('V','X') ) LIMIT 1  [ RunTime:0.027155s ]
-[ 2012-08-01T13:24:09+08:00 ] SQL: SELECT * FROM `car` WHERE ( `status` = 2 ) AND ( `CAR_TYPE_CODE` IN ('V','X') ) ORDER BY `CAR_ID` desc LIMIT 0,20  [ RunTime:0.026106s ]
-[ 2012-08-01T13:24:09+08:00 ] SQL: SHOW COLUMNS FROM `location` [ RunTime:0.027286s ]
-[ 2012-08-01T13:24:09+08:00 ] SQL: SHOW COLUMNS FROM `car_model` [ RunTime:0.027935s ]
-[ 2012-08-01T13:24:09+08:00 ] SQL: SELECT * FROM `car_model` WHERE ( `car_model_code` = 'AODI(JINKOU)-AODITTS-4-2.0-AT' ) LIMIT 1  [ RunTime:0.023519s ]
-[ 2012-08-01T13:24:09+08:00 ] SQL: SHOW COLUMNS FROM `car_model` [ RunTime:0.023584s ]
-[ 2012-08-01T13:24:09+08:00 ] SQL: SELECT * FROM `car_model` WHERE ( `car_model_code` = 'AODI(JINKOU)-AODITTS-4-2.0-AT' ) LIMIT 1  [ RunTime:0.023507s ]
-[ 2012-08-01T13:24:10+08:00 ] SQL: SHOW COLUMNS FROM `car_type` [ RunTime:0.027566s ]
-[ 2012-08-01T13:24:10+08:00 ] SQL: SELECT * FROM `car_type` WHERE ( `car_type_code` = 'X' ) LIMIT 1  [ RunTime:0.023438s ]
-[ 2012-08-01T13:24:10+08:00 ] SQL: SHOW COLUMNS FROM `car_model` [ RunTime:0.027764s ]
-[ 2012-08-01T13:24:10+08:00 ] SQL: SELECT * FROM `car_model` WHERE ( `car_model_code` = 'X' ) LIMIT 1  [ RunTime:0.023368s ]
-[ 2012-08-01T13:24:10+08:00 ] NOTIC: [8] Undefined index:  _order 4fe15861f18eae4e7274fcabeed6407a.php 第 3 行.
-[ 2012-08-01T13:24:10+08:00 ] NOTIC: [8] Undefined index:  _sort 4fe15861f18eae4e7274fcabeed6407a.php 第 4 行.
-[ 2012-08-01T13:24:10+08:00 ] SQL: SHOW COLUMNS FROM `car_model` [ RunTime:0.025309s ]
-[ 2012-08-01T13:24:10+08:00 ] SQL: SELECT * FROM `car_model` WHERE ( `car_model_code` = 'AODI(JINKOU)-AODITTS-4-2.0-AT' ) LIMIT 1  [ RunTime:0.023111s ]
-[ 2012-08-01T13:25:23+08:00 ] DEBUG: Edit运行时间：0.510480
-[ 2012-08-01T13:25:22+08:00 ] SQL: SHOW COLUMNS FROM `location` [ RunTime:0.024142s ]
-[ 2012-08-01T13:25:23+08:00 ] SQL: SHOW COLUMNS FROM `reservation` [ RunTime:0.040199s ]
-[ 2012-08-01T13:25:23+08:00 ] SQL: SELECT * FROM `reservation` WHERE reservation_id=8 LIMIT 1  [ RunTime:0.031600s ]
-[ 2012-08-01T13:25:23+08:00 ] SQL: SHOW COLUMNS FROM `agreement` [ RunTime:0.031475s ]
-[ 2012-08-01T13:25:23+08:00 ] SQL: SELECT * FROM `agreement` WHERE ( `agreement_id` = 'HT201208011057015' ) LIMIT 1  [ RunTime:0.027123s ]
-[ 2012-08-01T13:25:23+08:00 ] SQL: SHOW COLUMNS FROM `uni_rate` [ RunTime:0.026841s ]
-[ 2012-08-01T13:25:23+08:00 ] SQL: SELECT * FROM `uni_rate` WHERE ( `location_code` = 'GONGSI-440304-1' ) LIMIT 1  [ RunTime:0.028028s ]
-[ 2012-08-01T13:25:23+08:00 ] SQL: SHOW COLUMNS FROM `vendor` [ RunTime:0.026750s ]
-[ 2012-08-01T13:25:23+08:00 ] SQL: SELECT * FROM `vendor` WHERE ( `vendor_code` = 'W-GONGSI' ) LIMIT 1  [ RunTime:0.024331s ]
-[ 2012-08-01T13:25:23+08:00 ] SQL: SHOW COLUMNS FROM `member_type` [ RunTime:0.027797s ]
-[ 2012-08-01T13:25:23+08:00 ] SQL: SELECT * FROM `member_type` WHERE ( `member_type_id` = '11' ) LIMIT 1  [ RunTime:0.026427s ]
-[ 2012-08-01T13:25:23+08:00 ] SQL: SHOW COLUMNS FROM `location_cartype_model` [ RunTime:0.023767s ]
-[ 2012-08-01T13:25:23+08:00 ] SQL: SELECT * FROM `location_cartype_model` WHERE ( `CAR_MODEL_CODE` = 'BENCHIAMG-BENCHISJIAMG-3-6.0-AMT' ) AND ( `LOCATION_CODE` = 'GONGSI-440304-1' ) LIMIT 1  [ RunTime:0.027359s ]
-[ 2012-08-01T13:25:23+08:00 ] SQL: SHOW COLUMNS FROM `reservation_option` [ RunTime:0.028021s ]
-[ 2012-08-01T13:25:23+08:00 ] SQL: SELECT * FROM `reservation_option` WHERE ( `confirmation` = 'GONGSI-440304-1-201208011057015' ) [ RunTime:0.023064s ]
-[ 2012-08-01T13:25:23+08:00 ] SQL: SHOW COLUMNS FROM `location_option` [ RunTime:0.028007s ]
-[ 2012-08-01T13:25:23+08:00 ] SQL: SELECT * FROM `location_option` WHERE ( `location_code` = 'GONGSI-440304-1' ) AND ( `OPTION_ID` NOT IN ('1') ) GROUP BY option_id ORDER BY MANDATORY="Y" desc [ RunTime:0.028105s ]
-[ 2012-08-01T13:25:23+08:00 ] SQL: SHOW COLUMNS FROM `options` [ RunTime:0.026799s ]
-[ 2012-08-01T13:25:23+08:00 ] SQL: SELECT option_id,option_name FROM `options` [ RunTime:0.023493s ]
-[ 2012-08-01T13:25:24+08:00 ] DEBUG: optionPrice运行时间：0.556126
-[ 2012-08-01T13:26:31+08:00 ] DEBUG: Edit运行时间：0.500723
-[ 2012-08-01T13:26:31+08:00 ] SQL: SHOW COLUMNS FROM `location` [ RunTime:0.023730s ]
-[ 2012-08-01T13:26:31+08:00 ] SQL: SHOW COLUMNS FROM `reservation` [ RunTime:0.036043s ]
-[ 2012-08-01T13:26:31+08:00 ] SQL: SELECT * FROM `reservation` WHERE reservation_id=7 LIMIT 1  [ RunTime:0.031864s ]
-[ 2012-08-01T13:26:31+08:00 ] SQL: SHOW COLUMNS FROM `agreement` [ RunTime:0.030632s ]
-[ 2012-08-01T13:26:31+08:00 ] SQL: SELECT * FROM `agreement` WHERE ( `agreement_id` = 'HT201208011039011' ) LIMIT 1  [ RunTime:0.027652s ]
-[ 2012-08-01T13:26:31+08:00 ] SQL: SHOW COLUMNS FROM `uni_rate` [ RunTime:0.030810s ]
-[ 2012-08-01T13:26:31+08:00 ] SQL: SELECT * FROM `uni_rate` WHERE ( `location_code` = 'GONGSI-440304-1' ) LIMIT 1  [ RunTime:0.028071s ]
-[ 2012-08-01T13:26:31+08:00 ] SQL: SHOW COLUMNS FROM `vendor` [ RunTime:0.029835s ]
-[ 2012-08-01T13:26:31+08:00 ] SQL: SELECT * FROM `vendor` WHERE ( `vendor_code` = 'W-GONGSI' ) LIMIT 1  [ RunTime:0.024213s ]
-[ 2012-08-01T13:26:31+08:00 ] SQL: SHOW COLUMNS FROM `member_type` [ RunTime:0.026441s ]
-[ 2012-08-01T13:26:32+08:00 ] SQL: SELECT * FROM `member_type` WHERE ( `member_type_id` = '11' ) LIMIT 1  [ RunTime:0.023409s ]
-[ 2012-08-01T13:26:32+08:00 ] SQL: SHOW COLUMNS FROM `location_cartype_model` [ RunTime:0.024530s ]
-[ 2012-08-01T13:26:32+08:00 ] SQL: SELECT * FROM `location_cartype_model` WHERE ( `CAR_MODEL_CODE` = 'BENCHIAMG-BENCHISJIAMG-3-6.0-AMT' ) AND ( `LOCATION_CODE` = 'GONGSI-440304-1' ) LIMIT 1  [ RunTime:0.022730s ]
-[ 2012-08-01T13:26:32+08:00 ] SQL: SHOW COLUMNS FROM `reservation_option` [ RunTime:0.027776s ]
-[ 2012-08-01T13:26:32+08:00 ] SQL: SELECT * FROM `reservation_option` WHERE ( `confirmation` = 'GONGSI-440304-1-201208011039011' ) [ RunTime:0.023765s ]
-[ 2012-08-01T13:26:32+08:00 ] SQL: SHOW COLUMNS FROM `location_option` [ RunTime:0.039545s ]
-[ 2012-08-01T13:26:32+08:00 ] SQL: SELECT * FROM `location_option` WHERE ( `location_code` = 'GONGSI-440304-1' ) AND ( `OPTION_ID` NOT IN ('1') ) GROUP BY option_id ORDER BY MANDATORY="Y" desc [ RunTime:0.028297s ]
-[ 2012-08-01T13:26:32+08:00 ] SQL: SHOW COLUMNS FROM `options` [ RunTime:0.026674s ]
-[ 2012-08-01T13:26:32+08:00 ] SQL: SELECT option_id,option_name FROM `options` [ RunTime:0.023498s ]
-[ 2012-08-01T13:26:33+08:00 ] DEBUG: optionPrice运行时间：0.552133
+[ 2012-08-01T15:34:31+08:00 ] DEBUG: Edit运行时间：1.314838
+[ 2012-08-01T15:34:32+08:00 ] SQL: 增值服务SQL：SELECT * FROM `uni_option` WHERE location_code='GONGSI-440304-1' and (rate_code='LOC' or rate_code is NULL) AND LEFT(NOW(),10)=START_DATE  and option_id not in (5,1)
+[ 2012-08-01T15:34:30+08:00 ] SQL: SHOW COLUMNS FROM `location` [ RunTime:0.088357s ]
+[ 2012-08-01T15:34:30+08:00 ] SQL: SHOW COLUMNS FROM `reservation` [ RunTime:0.092152s ]
+[ 2012-08-01T15:34:30+08:00 ] SQL: SELECT * FROM `reservation` WHERE reservation_id=9 LIMIT 1  [ RunTime:0.067396s ]
+[ 2012-08-01T15:34:31+08:00 ] SQL: SHOW COLUMNS FROM `agreement` [ RunTime:0.083775s ]
+[ 2012-08-01T15:34:31+08:00 ] SQL: SELECT * FROM `agreement` WHERE ( `agreement_id` = 'HT201208011339020' ) LIMIT 1  [ RunTime:0.062883s ]
+[ 2012-08-01T15:34:31+08:00 ] SQL: SHOW COLUMNS FROM `uni_rate` [ RunTime:0.091382s ]
+[ 2012-08-01T15:34:31+08:00 ] SQL: SELECT * FROM `uni_rate` WHERE ( `location_code` = 'GONGSI-440304-1' ) LIMIT 1  [ RunTime:0.059889s ]
+[ 2012-08-01T15:34:31+08:00 ] SQL: SHOW COLUMNS FROM `vendor` [ RunTime:0.121236s ]
+[ 2012-08-01T15:34:31+08:00 ] SQL: SELECT * FROM `vendor` WHERE ( `vendor_code` = 'W-GONGSI' ) LIMIT 1  [ RunTime:0.079984s ]
+[ 2012-08-01T15:34:31+08:00 ] SQL: SHOW COLUMNS FROM `member_type` [ RunTime:0.075441s ]
+[ 2012-08-01T15:34:31+08:00 ] SQL: SELECT * FROM `member_type` WHERE ( `member_type_id` = '11' ) LIMIT 1  [ RunTime:0.087365s ]
+[ 2012-08-01T15:34:31+08:00 ] SQL: SHOW COLUMNS FROM `location_cartype_model` [ RunTime:0.118763s ]
+[ 2012-08-01T15:34:31+08:00 ] SQL: SELECT * FROM `location_cartype_model` WHERE ( `CAR_MODEL_CODE` = 'BENCHIAMG-BENCHISJIAMG-3-6.0-AMT' ) AND ( `LOCATION_CODE` = 'GONGSI-440304-1' ) LIMIT 1  [ RunTime:0.071998s ]
+[ 2012-08-01T15:34:31+08:00 ] SQL: SHOW COLUMNS FROM `reservation_option` [ RunTime:0.087683s ]
+[ 2012-08-01T15:34:32+08:00 ] SQL: SELECT * FROM `reservation_option` WHERE ( `confirmation` = 'GONGSI-440304-1-201208011339020' ) [ RunTime:0.091634s ]
+[ 2012-08-01T15:34:32+08:00 ] NOTIC: [8] Undefined variable: disabled common.php 第 718 行.
+[ 2012-08-01T15:34:32+08:00 ] SQL: SHOW COLUMNS FROM `uni_option` [ RunTime:0.115854s ]
+[ 2012-08-01T15:34:32+08:00 ] SQL: SELECT * FROM `uni_option` WHERE location_code='GONGSI-440304-1' and (rate_code='LOC' or rate_code is NULL) AND LEFT(NOW(),10)=START_DATE  and option_id not in (5,1) [ RunTime:0.140483s ]
+[ 2012-08-01T15:34:32+08:00 ] SQL: SHOW COLUMNS FROM `options` [ RunTime:0.140864s ]
+[ 2012-08-01T15:34:32+08:00 ] SQL: SELECT option_id,option_name FROM `options` [ RunTime:0.071407s ]
+[ 2012-08-01T15:34:35+08:00 ] DEBUG: optionPrice运行时间：2.026588
+[ 2012-08-01T15:50:35+08:00 ] SQL: SHOW COLUMNS FROM `location` [ RunTime:0.255953s ]
+[ 2012-08-01T15:50:40+08:00 ] SQL: SHOW COLUMNS FROM `location_brand` [ RunTime:0.192034s ]
+[ 2012-08-01T15:50:40+08:00 ] SQL: SELECT * FROM `location_brand` WHERE BRAND_CODE="GONGSI" [ RunTime:0.115426s ]
+[ 2012-08-01T15:50:41+08:00 ] SQL: SHOW COLUMNS FROM `location` [ RunTime:0.812033s ]
+[ 2012-08-01T15:50:41+08:00 ] SQL: SELECT location_code,location_name FROM `location` WHERE location_code="GONGSI-440304-1" [ RunTime:0.155069s ]
+[ 2012-08-01T15:50:41+08:00 ] SQL: SELECT location_code,location_name FROM `location` WHERE location_code="GONGSI-440303-1" [ RunTime:0.175587s ]
+[ 2012-08-01T15:50:41+08:00 ] SQL: SELECT location_code,location_name FROM `location` WHERE location_code="GONGSI-440304-2" [ RunTime:0.163697s ]
+[ 2012-08-01T15:51:10+08:00 ] SQL: SHOW COLUMNS FROM `user` [ RunTime:0.140118s ]
+[ 2012-08-01T15:51:10+08:00 ] SQL: SELECT * FROM `user` WHERE ( `account` = 'admin' ) AND ( `status` > 0 ) LIMIT 1  [ RunTime:0.183514s ]
+[ 2012-08-01T15:51:10+08:00 ] SQL: UPDATE `user` SET `last_login_time`=1343807470,`login_count`=login_count+1,`last_login_ip`='127.0.0.1' WHERE ( `id` = '1' ) [ RunTime:0.270730s ]
+[ 2012-08-01T15:51:13+08:00 ] SQL: SHOW COLUMNS FROM `location` [ RunTime:0.187738s ]
+[ 2012-08-01T15:51:15+08:00 ] SQL: SHOW COLUMNS FROM `location_brand` [ RunTime:0.116140s ]
+[ 2012-08-01T15:51:15+08:00 ] SQL: SELECT * FROM `location_brand` WHERE BRAND_CODE="GONGSI" [ RunTime:0.107558s ]
+[ 2012-08-01T15:51:15+08:00 ] SQL: SHOW COLUMNS FROM `location` [ RunTime:0.107919s ]
+[ 2012-08-01T15:51:15+08:00 ] SQL: SELECT location_code,location_name FROM `location` WHERE location_code="GONGSI-440304-1" [ RunTime:0.163622s ]
+[ 2012-08-01T15:51:15+08:00 ] SQL: SELECT location_code,location_name FROM `location` WHERE location_code="GONGSI-440303-1" [ RunTime:0.115147s ]
+[ 2012-08-01T15:51:15+08:00 ] SQL: SELECT location_code,location_name FROM `location` WHERE location_code="GONGSI-440304-2" [ RunTime:0.095409s ]
+[ 2012-08-01T15:51:17+08:00 ] SQL: SHOW COLUMNS FROM `location` [ RunTime:0.168019s ]
+[ 2012-08-01T15:51:22+08:00 ] SQL: SHOW COLUMNS FROM `location_brand` [ RunTime:0.616218s ]
+[ 2012-08-01T15:51:23+08:00 ] SQL: SELECT * FROM `location_brand` WHERE BRAND_CODE="GONGSI" [ RunTime:1.290970s ]
+[ 2012-08-01T15:51:23+08:00 ] SQL: SHOW COLUMNS FROM `location` [ RunTime:0.188030s ]
+[ 2012-08-01T15:51:24+08:00 ] SQL: SELECT location_code,location_name FROM `location` WHERE location_code="GONGSI-440304-1" [ RunTime:0.159268s ]
+[ 2012-08-01T15:51:24+08:00 ] SQL: SELECT location_code,location_name FROM `location` WHERE location_code="GONGSI-440303-1" [ RunTime:0.151603s ]
+[ 2012-08-01T15:51:24+08:00 ] SQL: SELECT location_code,location_name FROM `location` WHERE location_code="GONGSI-440304-2" [ RunTime:0.131622s ]
+[ 2012-08-01T15:51:25+08:00 ] SQL: SHOW COLUMNS FROM `location` [ RunTime:0.127924s ]
+[ 2012-08-01T15:51:27+08:00 ] SQL: SHOW COLUMNS FROM `reservation` [ RunTime:0.333128s ]
+[ 2012-08-01T15:51:27+08:00 ] NOTIC: [8] Undefined variable: asc IndexAction.class.php 第 62 行.
+[ 2012-08-01T15:51:27+08:00 ] SQL: SHOW COLUMNS FROM `index` [ RunTime:0.163241s ]
+[ 2012-08-01T15:51:27+08:00 ] NOTIC: [8] Array to string conversion Db.class.php 第 507 行.
+[ 2012-08-01T15:51:27+08:00 ] SQL: SELECT COUNT(RESERVATION_ID) AS tp_count FROM `reservation` WHERE ( `CONFIRMATION` LIKE '%GONGSI-440304-1%' ) AND ( (`STATUS` != 'CONTRACT') AND (`STATUS` != 'CANCEL')  ) LIMIT 1  [ RunTime:0.167966s ]
+[ 2012-08-01T15:51:27+08:00 ] NOTIC: [8] Array to string conversion Db.class.php 第 507 行.
+[ 2012-08-01T15:51:27+08:00 ] SQL: SELECT reservation_id,right(CONFIRMATION,15) as confirmation,real_name,identity_code,work_phone,left(pickup_date,16) as pickup_date,left(return_date,16) as return_date,car_type_name,CAR_MODEL_NAME,status FROM `reservation` WHERE ( `CONFIRMATION` LIKE '%GONGSI-440304-1%' ) AND ( (`STATUS` != 'CONTRACT') AND (`STATUS` != 'CANCEL')  ) ORDER BY `RESERVATION_ID` desc LIMIT 0,30  [ RunTime:0.193803s ]
+[ 2012-08-01T15:51:27+08:00 ] NOTIC: [2] urlencode() expects parameter 1 to be string, array given IndexAction.class.php 第 91 行.
+[ 2012-08-01T15:51:27+08:00 ] NOTIC: [8] Undefined index:  real_name IndexAction.class.php 第 101 行.
+[ 2012-08-01T15:51:27+08:00 ] NOTIC: [8] Undefined index:  pickup_date IndexAction.class.php 第 103 行.
+[ 2012-08-01T15:51:27+08:00 ] NOTIC: [8] Undefined index:  identity_code IndexAction.class.php 第 104 行.
+[ 2012-08-01T15:51:27+08:00 ] NOTIC: [8] Undefined variable: menu IndexAction.class.php 第 120 行.
+[ 2012-08-01T15:51:27+08:00 ] SQL: SHOW COLUMNS FROM `reservationby` [ RunTime:0.181316s ]
+[ 2012-08-01T15:51:27+08:00 ] SQL: SELECT * FROM `reservationby` [ RunTime:0.175808s ]
+[ 2012-08-01T15:51:27+08:00 ] NOTIC: [8] Undefined index:  home_phone 0573c70d8602d961e53f714ea77bd87c.php 第 173 行.
+[ 2012-08-01T15:51:27+08:00 ] NOTIC: [8] Undefined index:  home_phone 0573c70d8602d961e53f714ea77bd87c.php 第 173 行.
+[ 2012-08-01T15:51:27+08:00 ] NOTIC: [8] Undefined index:  home_phone 0573c70d8602d961e53f714ea77bd87c.php 第 173 行.
+[ 2012-08-01T15:51:27+08:00 ] NOTIC: [8] Undefined index:  home_phone 0573c70d8602d961e53f714ea77bd87c.php 第 173 行.
+[ 2012-08-01T15:51:29+08:00 ] SQL: SHOW COLUMNS FROM `user` [ RunTime:0.203992s ]
+[ 2012-08-01T15:51:29+08:00 ] SQL: SELECT * FROM `user` WHERE ( `account` = 'admin' ) AND ( `status` > 0 ) LIMIT 1  [ RunTime:0.107323s ]
+[ 2012-08-01T15:51:29+08:00 ] SQL: UPDATE `user` SET `last_login_time`=1343807489,`login_count`=login_count+1,`last_login_ip`='127.0.0.1' WHERE ( `id` = '1' ) [ RunTime:0.215162s ]
+[ 2012-08-01T15:51:33+08:00 ] SQL: SHOW COLUMNS FROM `location` [ RunTime:0.763946s ]
+[ 2012-08-01T15:51:36+08:00 ] SQL: SHOW COLUMNS FROM `location_brand` [ RunTime:0.180118s ]
+[ 2012-08-01T15:51:36+08:00 ] SQL: SELECT * FROM `location_brand` WHERE BRAND_CODE="GONGSI" [ RunTime:0.167562s ]
+[ 2012-08-01T15:51:36+08:00 ] SQL: SHOW COLUMNS FROM `location` [ RunTime:0.163764s ]
+[ 2012-08-01T15:51:36+08:00 ] SQL: SELECT location_code,location_name FROM `location` WHERE location_code="GONGSI-440304-1" [ RunTime:0.167204s ]
+[ 2012-08-01T15:51:37+08:00 ] SQL: SELECT location_code,location_name FROM `location` WHERE location_code="GONGSI-440303-1" [ RunTime:0.139568s ]
+[ 2012-08-01T15:51:37+08:00 ] SQL: SELECT location_code,location_name FROM `location` WHERE location_code="GONGSI-440304-2" [ RunTime:0.211564s ]
+[ 2012-08-01T15:51:39+08:00 ] SQL: SHOW COLUMNS FROM `location` [ RunTime:0.223850s ]
+[ 2012-08-01T15:51:40+08:00 ] SQL: SHOW COLUMNS FROM `location_brand` [ RunTime:0.131909s ]
+[ 2012-08-01T15:51:40+08:00 ] SQL: SELECT * FROM `location_brand` WHERE BRAND_CODE="GONGSI" [ RunTime:0.207428s ]
+[ 2012-08-01T15:51:40+08:00 ] SQL: SHOW COLUMNS FROM `location` [ RunTime:0.124008s ]
+[ 2012-08-01T15:51:40+08:00 ] SQL: SELECT location_code,location_name FROM `location` WHERE location_code="GONGSI-440304-1" [ RunTime:0.187888s ]
+[ 2012-08-01T15:51:41+08:00 ] SQL: SELECT location_code,location_name FROM `location` WHERE location_code="GONGSI-440303-1" [ RunTime:0.230824s ]
+[ 2012-08-01T15:51:41+08:00 ] SQL: SELECT location_code,location_name FROM `location` WHERE location_code="GONGSI-440304-2" [ RunTime:0.260363s ]
+[ 2012-08-01T15:51:42+08:00 ] SQL: SHOW COLUMNS FROM `location` [ RunTime:0.140253s ]
+[ 2012-08-01T15:51:43+08:00 ] SQL: SHOW COLUMNS FROM `reservation` [ RunTime:0.072950s ]
+[ 2012-08-01T15:51:43+08:00 ] NOTIC: [8] Undefined variable: asc IndexAction.class.php 第 62 行.
+[ 2012-08-01T15:51:43+08:00 ] SQL: SHOW COLUMNS FROM `index` [ RunTime:0.067665s ]
+[ 2012-08-01T15:51:43+08:00 ] NOTIC: [8] Array to string conversion Db.class.php 第 507 行.
+[ 2012-08-01T15:51:43+08:00 ] SQL: SELECT COUNT(RESERVATION_ID) AS tp_count FROM `reservation` WHERE ( `CONFIRMATION` LIKE '%GONGSI-440304-1%' ) AND ( (`STATUS` != 'CONTRACT') AND (`STATUS` != 'CANCEL')  ) LIMIT 1  [ RunTime:0.059555s ]
+[ 2012-08-01T15:51:43+08:00 ] NOTIC: [8] Array to string conversion Db.class.php 第 507 行.
+[ 2012-08-01T15:51:43+08:00 ] SQL: SELECT reservation_id,right(CONFIRMATION,15) as confirmation,real_name,identity_code,work_phone,left(pickup_date,16) as pickup_date,left(return_date,16) as return_date,car_type_name,CAR_MODEL_NAME,status FROM `reservation` WHERE ( `CONFIRMATION` LIKE '%GONGSI-440304-1%' ) AND ( (`STATUS` != 'CONTRACT') AND (`STATUS` != 'CANCEL')  ) ORDER BY `RESERVATION_ID` desc LIMIT 0,30  [ RunTime:0.119107s ]
+[ 2012-08-01T15:51:43+08:00 ] NOTIC: [2] urlencode() expects parameter 1 to be string, array given IndexAction.class.php 第 91 行.
+[ 2012-08-01T15:51:43+08:00 ] NOTIC: [8] Undefined index:  real_name IndexAction.class.php 第 101 行.
+[ 2012-08-01T15:51:43+08:00 ] NOTIC: [8] Undefined index:  pickup_date IndexAction.class.php 第 103 行.
+[ 2012-08-01T15:51:43+08:00 ] NOTIC: [8] Undefined index:  identity_code IndexAction.class.php 第 104 行.
+[ 2012-08-01T15:51:43+08:00 ] NOTIC: [8] Undefined variable: menu IndexAction.class.php 第 120 行.
+[ 2012-08-01T15:51:43+08:00 ] SQL: SHOW COLUMNS FROM `reservationby` [ RunTime:0.155459s ]
+[ 2012-08-01T15:51:43+08:00 ] SQL: SELECT * FROM `reservationby` [ RunTime:0.176040s ]
+[ 2012-08-01T15:51:43+08:00 ] NOTIC: [8] Undefined index:  home_phone 0573c70d8602d961e53f714ea77bd87c.php 第 173 行.
+[ 2012-08-01T15:51:43+08:00 ] NOTIC: [8] Undefined index:  home_phone 0573c70d8602d961e53f714ea77bd87c.php 第 173 行.
+[ 2012-08-01T15:51:43+08:00 ] NOTIC: [8] Undefined index:  home_phone 0573c70d8602d961e53f714ea77bd87c.php 第 173 行.
+[ 2012-08-01T15:51:43+08:00 ] NOTIC: [8] Undefined index:  home_phone 0573c70d8602d961e53f714ea77bd87c.php 第 173 行.
