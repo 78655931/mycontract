@@ -2,7 +2,6 @@
 <script type="text/javascript" charset="utf-8" src="__PUBLIC__/js/card.js"></script>
 
 <script type="text/javascript" charset="utf-8">
-	//alert(CALC_DISCOUNT_URL+"?"+carTypeCode+"&"+carModelCode+"&"+pickupLocationCode+"&"+pickupDate+"&"+returnDate+"&"+uniDiscId);
 	CALC_DISCOUNT_URL = 'http://172.16.100.47:8099/crsCarRental/rcaculateDiscount';
 	var rate_code = '{$vo.RATE_CODE}';
 	var carTypeCode = '{$vo.CAR_TYPE_CODE}';
@@ -22,238 +21,192 @@
 </script>
 
 <script type="text/javascript" charset="utf-8">
-	$.ajaxSettings.global=false;
-	var totalPrice =0;
-$(document).ready(function() {
+    $.ajaxSettings.global=false;
+    var totalPrice =0;
+    $(document).ready(function() {
+            var str;
+            str = SynCardOcx1.FindReader();
+            if(str>0){
+
+            SynCardOcx1.SetSexType (1);
+            SynCardOcx1.SetNationType(2);
+            }
+            DAYS ='{$vo.BASE_RATE_QTY}';
+            optionprice(DAYS);
+            var dates = $( "#from, #to" ).datetimepicker({
+defaultdate: "+1w",
+timeFormat: 'hh:mm',
+showmonthafteryear: true,
+numberofmonths: 2,  
+mindate: 0 ,
+dateFormat:'yy-mm-dd',
+closetext:'关闭',
+duration: 'fast',
+showanim:'fadein',
+showon:'button', 
+buttontext:'选择日期',
+showbuttonpanel: false,
+stepHour: 2,//设置步长
+stepMinute: 10,
+stepSecond: 10,
+hourGrid: 4,
+minuteGrid: 10,
+
+onSelect: function( selectedDate ) {
+
+    var option = this.id == "from" ? "minDate" : "maxDate",
+    instance = $( this ).data( "datepicker" ),
+    date = $.datepicker.parseDate(
+            instance.settings.dateFormat ||
+            $.datepicker._defaults.dateFormat,
+            selectedDate, instance.settings );
+    //dates.not( this ).datetimepicker( "option", option, date );
+
+    var begintime = $("#from").val();
+    var endtime = $("#to").val();
+
+    //计算时间 差 
+    if(begintime != "" && endtime != ""){
+        var   bt   =   new Date(Date.parse(begintime.replace(/-/g,   "/")));   
+
+        var   et   =   new  Date(Date.parse(endtime.replace(/-/g,   "/"))); 
+
+        var days = et.getTime() - bt.getTime(); 
+        var day =Math.round(days/(3600*24*1000)) ;
+        DAYS = day;
+        $("#delta-t").text(day);
+        $("#delta-o").text(day);
+        $("#delta-i").html('<input type="hidden" name="BASE_RATE_QTY" value="'+day+'"/>');
+        $("input.checkbox-option").attr('checked', false);
+        $("#optionprice").html("");
+        $("#total-amt").html("");
+        optionprice(DAYS);
+    }
+
+}
+});
 
 
-		//$("#myform").validate();
-        //alert(pickupDate);
-        
+var options = {
+beforeSubmit : showRequest, // pre-submit callback
+               success : showResponse // post-submit callback
+};
+$('#myform').submit(function() {
+        // 提交表单
+        //alert("aaa");
+        $('<input type="hidden" name="TOTAL_PRICE">').val($("#total-amt").text()).appendTo("#myform");
+        //{$vo.OPTIONS_CHARGES}
 
-	var str;
-		str = SynCardOcx1.FindReader();
-		if(str>0){
+        $('<input type="hidden" name="TOTAL_PRICE">').val($("#total-amt").text()).appendTo("#myform");
+        $('<input type="hidden" name="OPTIONS_CHARGES">').val($("#charge").text()).appendTo("#myform");
+        $('<input type="hidden" name="MANDATORY_CHARGES">').val($("#mandy").text()).appendTo("#myform");
+        $(this).ajaxSubmit(options);
+        // 为了防止普通浏览器进行表单提交和产生页面导航（防止页面刷新？）返回false
+        return false;
+        });
 
-		SynCardOcx1.SetSexType (1);
-		SynCardOcx1.SetNationType(2);
-	}
-		DAYS ='{$vo.BASE_RATE_QTY}';
-	optionprice(DAYS);
-		var dates = $( "#from, #to" ).datetimepicker({
-			defaultdate: "+1w",
-			timeFormat: 'hh:mm',
-			showmonthafteryear: true,
-			numberofmonths: 2,  
-			mindate: 0 ,
-			dateFormat:'yy-mm-dd',
-			closetext:'关闭',
-			duration: 'fast',
-			showanim:'fadein',
-			showon:'button', 
-			buttontext:'选择日期',
-			showbuttonpanel: false,
-			stepHour: 2,//设置步长
-			stepMinute: 10,
-			stepSecond: 10,
-			hourGrid: 4,
-			minuteGrid: 10,
+function showRequest(formData, jqForm, options) {
+    var queryString = $.param(formData);
+    return true;
+}
+// post-submit callback
+function showResponse(responseText, statusText, xhr, $form) {
+    if (responseText == 1) {
+        PRINTURL = '__APP__'+'/Agreement/gotoPrint/id/'+'{$vo.agreementid|base64_encode}';
+        alertMsg.correct('合同生成成功!');
+        $('#subbtn').hide();
+        $("#crtagreement").show().html('<input  type="button" onclick="openDialog();" value="打印合同"/>');
+    } else {
+        alert(responseText);
+    }
 
-			onSelect: function( selectedDate ) {
+}
 
-				var option = this.id == "from" ? "minDate" : "maxDate",
-				instance = $( this ).data( "datepicker" ),
-				date = $.datepicker.parseDate(
-					instance.settings.dateFormat ||
-					$.datepicker._defaults.dateFormat,
-				selectedDate, instance.settings );
-				//dates.not( this ).datetimepicker( "option", option, date );
+});
 
-				var begintime = $("#from").val();
-				var endtime = $("#to").val();
+function ReadCard_onclick()
+{
+    var nRet;
+    SynCardOcx1.SetReadType(0);
+    nRet = SynCardOcx1.ReadCardMsg();
+    var REAL_NAME = $("#REAL_NAME").val();
+    var IDENTITY_CODE = $("#IDENTITY_CODE").val();
+    if(nRet==0)
+    {	
+        $("#sex").val(SynCardOcx1.Sex);
+        document.all['address'].value = SynCardOcx1.Address;
+        document.all['age'].value = SynCardOcx1.Born;
+        if(SynCardOcx1.NameA.trim() != REAL_NAME)
+        {
+            alert("姓名信息不符");
+        }
+        if(SynCardOcx1.CardNo.trim()!=IDENTITY_CODE)
+        {
+            alert("身份证号码不符");
+        }
+    }
+} 
 
-				//计算时间 差 
-				if(begintime != "" && endtime != ""){
-					var   bt   =   new Date(Date.parse(begintime.replace(/-/g,   "/")));   
+function optionprice(days){
+    var opp =0;
+    var perunit;
+    var unit;
+    var flats;
+    var charge=0;
+    var mandy =0;
+    var reservationid ='{$Think.get.confirmation}';
+    $.getJSON('__URL__/optionprice',{'reservationid':reservationid},function(data){
+            $.each(data,function(i,item){
+                var shows;
+                if(item.block=="true"){
+                shows = "block";
+                opp+=parseInt(item.AMT);
+                }else{
 
-					var   et   =   new  Date(Date.parse(endtime.replace(/-/g,   "/"))); 
+                shows = "none";
+                }
+                perunit = item.PER_UNIT;
+                switch(perunit){
+                case "1":
+                unit="次";
+                flats = parseInt(perunit);
+                break;
+                case "D":
+                unit = "天";
+                flats = days;
+                break;
+                case "H":
+                unit = "每小时";
+                break;
+                case "W":
+                unit = "每周";
+                break;
+                case "M":
+                unit="每月";
+                break;
+                }
+                if(item.QTY==null){
+                    item.QTY=1;
+                    item.AMT=parseInt(item.RATE)*item.QTY*flats;
 
-					var days = et.getTime() - bt.getTime(); 
-					var day =Math.round(days/(3600*24*1000)) ;
-					DAYS = day;
-					$("#delta-t").text(day);
-					$("#delta-o").text(day);
-					$("#delta-i").html('<input type="hidden" name="BASE_RATE_QTY" value="'+day+'"/>');
-					$("input.checkbox-option").attr('checked', false);
-					$("#optionprice").html("");
-					$("#total-amt").html("");
-					optionprice(DAYS);
-				}
+                }
+                if(item.MANDATORY=='N'){
 
-			}
-		});
+                    $("<div style='margin-bottom: 5px;'></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display:'+shows+';"><span class="item">'+item.option_name+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#optionprice");
 
 
-		var options = {
-			beforeSubmit : showRequest, // pre-submit callback
-			success : showResponse // post-submit callback
-		};
-		$('#myform').submit(function() {
-			// 提交表单
-			//alert("aaa");
-		$('<input type="hidden" name="TOTAL_PRICE">').val($("#total-amt").text()).appendTo("#myform");
-			//{$vo.OPTIONS_CHARGES}
+                }else{
 
-		$('<input type="hidden" name="TOTAL_PRICE">').val($("#total-amt").text()).appendTo("#myform");
-		$('<input type="hidden" name="OPTIONS_CHARGES">').val($("#charge").text()).appendTo("#myform");
-		$('<input type="hidden" name="MANDATORY_CHARGES">').val($("#mandy").text()).appendTo("#myform");
-			$(this).ajaxSubmit(options);
-			// 为了防止普通浏览器进行表单提交和产生页面导航（防止页面刷新？）返回false
-			return false;
-		});
-		
-		function showRequest(formData, jqForm, options) {
+                    $("<div style='margin-bottom: 5px;'></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display: block;"><span class="item">'+item.option_name+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#tailmandy");
 
-			//INSERT INTO `agreement_option` (`CONFIRMATION`,`OPTION_ID`,`OPTION_NAME`,`OPTION_TYPE`,`RATE`,`PER_UNIT`,`QTY`,`AMT`,`SEQUENCE`,`MANDATORY`) VALUES ('MENGEN-610101-01-201206111118022','6','送车上门服务','O','10','D',null,null,'6','N')
-			var queryString = $.param(formData);
-
-			//alert(queryString);
-			//alert('About to submit: \n\n' + queryString);
-			return true;
-		}
-		// post-submit callback
-		function showResponse(responseText, statusText, xhr, $form) {
-			if (responseText == 1) {
-				PRINTURL = '__APP__'+'/Agreement/gotoPrint/id/'+'{$vo.agreementid|base64_encode}';
-				//alert(PRINTURL);
-				//return false;
-				//$('#subbtn').attr('disabled', true);
-				  alertMsg.correct('合同生成成功!');
-				//alert("合同生成成功!");
-				$('#subbtn').hide();
-				$("#crtagreement").show().html('<input  type="button" onclick="openDialog();" value="打印合同"/>');
-			} else {
-				alert(responseText);
-			}
-
-		}
-
-	});
-
-	function ReadCard_onclick()
-	{
-		var nRet;
-		SynCardOcx1.SetReadType(0);
-		nRet = SynCardOcx1.ReadCardMsg();
-		//alert(nRet);
-		var REAL_NAME = $("#REAL_NAME").val();
-		var IDENTITY_CODE = $("#IDENTITY_CODE").val();
-		if(nRet==0)
-		{	
-			$("#sex").val(SynCardOcx1.Sex);
-			document.all['address'].value = SynCardOcx1.Address;
-			document.all['age'].value = SynCardOcx1.Born;
-			//$("input[name=IDENTITY_CODE]").val(SynCardOcx1.CardNo);
-
-			if(SynCardOcx1.NameA.trim() != REAL_NAME)
-			{
-				alert("姓名信息不符");
-			}
-			if(SynCardOcx1.CardNo.trim()!=IDENTITY_CODE)
-			{
-				alert("身份证号码不符");
-			}
-			/*if(SynCardOcx1.CardNo!=IDENTITY_CODE)
-			{
-				alert(123);
-				}
-
-				*/
-		}
-	} 
-	
-	function optionprice(days){
-		//alert(days);
-		
-			
-		//var totalPrice=0;
-		var opp =0;
-		var perunit;
-		var unit;
-		var flats;
-		var charge=0;
-		var mandy =0;
-		var reservationid ='{$Think.get.confirmation}';
-		$.getJSON('__URL__/optionprice',{'reservationid':reservationid},function(data){
-			$.each(data,function(i,item){
-				//alert(days * item['RATE']);
-				//alert(item['OPTION_ID']);
-				var shows;
-				if(item.block=="true"){
-					 shows = "block";
-					//opp+=days*item.RATE;
-					opp+=parseInt(item.AMT);
-					 }else{
-			
-					shows = "none";
-					}
-					//$("<option></option>").val(item['CAR_TAG']).text(item.CAR_TAG).appendTo($('#cartags'));
-			     	perunit = item.PER_UNIT;
-				switch(perunit){
-				case "1":
-				unit="次";
-				flats = parseInt(perunit);
-				break;
-				case "D":
-				unit = "天";
-				flats = days;
-				break;
-				case "H":
-					unit = "每小时";
-				break;
-				case "W":
-					unit = "每周";
-				break;
-				case "M":
-					unit="每月";
-				break;
-				}
-				//alert(item.MANDATORY);
-					if(item.QTY==null){
-						item.QTY=1;
-						item.AMT=parseInt(item.RATE)*item.QTY*flats;
-						
-					}
-				if(item.MANDATORY=='N'){
-				
-				$("<div style='margin-bottom: 5px;'></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display:'+shows+';"><span class="item">'+item.option_name+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#optionprice");
-				
-			
-				}else{
-
-				$("<div style='margin-bottom: 5px;'></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display: block;"><span class="item">'+item.option_name+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#tailmandy");
-				
-				mandy+=parseInt(item.AMT);
-				}
-				totalPrice +=days*item.RATE;
-				//$("#total-amt").val(totalPrice);
-		});
-			//	calcChargeAmount();
-				//var rateamt = parseInt($("#rate-amt").text());
-				//var mandy = parseInt($("#mandy").text());
-				//var charge = parseInt($("#charge").text());
-				//$("#charge").text(charge);
-				//$("#mandy").text(mandy);
-				//$("#total-amt").text(rateamt+mandy+charge);
-				//alert(totalPrice);
-	});
-	}
+                    mandy+=parseInt(item.AMT);
+                }
+                totalPrice +=days*item.RATE;
+            });
+    });
+}
 function openDialog(){
-	//	alert(PRINTURL);
-	//$.pdialog.close('contract');
-	//$.pdialog.open(PRINTURL,'newdialog','打印上门取车合同',{max:true,mask:true});
-	window.open(PRINTURL);
-		//$.pdialog.open(PRINTURL, 'openDialog', 'testDialog');
+    window.open(PRINTURL);
 }
 </script>
 <style>
@@ -525,25 +478,6 @@ function openDialog(){
 						</div>
 
 					</td>
-					<!-- <td>
-						<h1>折扣信息</h1>
-						<div  style="width: 484px;">
-							<volist name="discount" id="vs">
-							<if condition="$vs['discountStackable'] eq 'N'">
-							<label class="radio">
-								<input type="radio" <if condition="$vs.discountId eq $vo['discountck']">checked</if> class="discount discount-unstackable"  id="discount-{$vs.discountId}" name="discount" value="{$vs.discountId}" onclick="selectDiscount('{$vs['discountName']}','{$vs['discountId']}','unstackable',this);" />
-								{$vs.discountName}
-							</label>
-							<else/>
-							<label class="checkbox">
-								<input type="checkbox" class="discount discount-stackable" id="discount-{$vs.discountId}" name="discount" value="{$vs.discountId}" onclick="selectDiscount('{$vs['discountName']}','{$vs['discountId']}','stackable',this);" />
-								{$vs.discountName}
-							</label>
-							</if>
-							<input type="hidden" name="discountname" value="{$vs.discountName}"/>
-							</volist>
-						</div>	
-					</td> -->	
 				</tr>
 				<tr>
 					<td colspan="2">
@@ -561,56 +495,4 @@ function openDialog(){
 		</div>
 
 </div>
-<script>
-	/**
-	 * 选择优惠活动
-	 */
-	function selectDiscount(uniDiscName, uniDiscId, stackable,chk) {
-		
-		if(chk.checked){
-		$.post("__URL__/ajax_curl",{'uniDiscId': uniDiscId,'rateCode':rate_code,'carTypeCode':carTypeCode,'carModelCode':carModelCode,'pickupLocationCode':pickupLocationCode,'pickupDate':pickupDate,'returnDate':returnDate}, function(data){
-				
-				// 排他折扣和非排他折扣不能同时使用
-			//alert(data.discMessage.message);
-				if (stackable == 'unstackable') {
-					// 清空选择的非排他折扣
-					//alert("aaa");
-					$('input.discount-stackable').attr('checked', false);
-					$('.cost-discount-stackable').remove();
-					$('.cost-discount-unstackable').remove();
-				} else {
-					// 多个非排他折扣可以共存，选择非排他折扣时，需要清除选择的排他折扣
-					$('input.discount-unstackable').attr('checked', false);
-					$('.cost-discount-unstackable').remove();
-				}
-				
-				
-				$('#tpl-cost-discount').html('<li class="cost cost-discount cost-discount-'+stackable+'  cost-discount-'+uniDiscId+'  hide" ><div class="item">'+uniDiscName+'  <span class="gray">'+ data.discMessage.message+'  </span></div><div class="price"><span class="option-amt red">-'+data.discMessage.count.toFixed(0)+' </span> 元</div></li>').insertBefore("#cost-total");
-				calcTotalAmount();
-				
-		},"json");
-		}else{
-		
-		$('.cost-discount-' + $(this).val()).hide();
-			calcTotalAmount();
-		}
-		
-	}
-	// 绑定排他折扣单选按钮的点击事件
-	$('body').delegate('input.discount-unstackable', 'change', function() {
-		selectDiscount($.trim($(this).parent().text()), $(this).val(), 'unstackable');
-	});
-	
-	// 绑定非排他折扣复选按钮的点击事件
-	$('body').delegate('input.discount-stackable', 'change', function() {
-		if ($(this).is(':checked')) {
-			selectDiscount($.trim($(this).parent().text()), $(this).val(), 'stackable');
-		} else {
-			// 当取消选择非排他折扣时，清除其价格信息
-			//alert($(this).val());
-			$('.cost-discount-' + $(this).val()).hide();
-			calcTotalAmount();
-		}
-	});
 
-</script>
