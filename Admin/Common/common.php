@@ -734,10 +734,11 @@ function getlocationopt($localcode, $confirmation='') {
 	$options = $Model->getField('option_id,option_name');
 	if ($listOpt) {
 		foreach ( $listOpt as $key => $val ) {
-
+            /**
 			if ($val ['REAL_INV']) {
 				$real_inv = $val ['REAL_INV'];
-			}
+            }
+            **/
 			if ($val['MANDATORY']=='Y') {
 				// code...
 				$o= "disabled checked";
@@ -757,7 +758,8 @@ function getlocationopt($localcode, $confirmation='') {
 /*
  * 增值服务价格
  */
-function optionPrice($localcode, $confirmation, $xday) {
+/**
+ * function optionPrice($localcode, $confirmation, $xday) {
 	// echo $xday;
 	$Model = M ( "Location","AdvModel" );
 	$Model->addConnect ( C ( "DB_CRS" ), 1 );
@@ -805,7 +807,8 @@ function optionPrice($localcode, $confirmation, $xday) {
 
 	}
 	return $html;
-}
+ }
+    **/
 function convert_stat($stat){
 
 	switch($stat){

@@ -21,10 +21,11 @@
 </script>
 
 <script type="text/javascript" charset="utf-8">
-    $.ajaxSettings.global=false;
+    $.ajaxSettings.global=true;
     var totalPrice =0;
     $(document).ready(function() {
             var str;
+            
             str = SynCardOcx1.FindReader();
             if(str>0){
 
@@ -448,7 +449,6 @@ function openDialog(){
 					<td style="width:270px;">
 
 						<input type="hidden" name="RATE_AMT" value="{$vo.BASE_RATE_AMT}"/>
-						<input type="hidden" name="CURRENT_KM" value="{$vo.CURRENT_KM}"/>
 						<input type="hidden" name="MANDATORY_CHARGES" value="{$vo.MANDATORY_CHARGES}"/>
 						<div id="delta-i"></div>
 
@@ -458,7 +458,6 @@ function openDialog(){
 							<label class="label-right">基本租金: </label><span class="option-amt" id="rate-amt">{$vo.BASE_RATE_AMT}元</span></li>
 							<li class="cost"><span id="tailmandy"></span></li>
 							<li align="right" class="cost"><label class="label-right">必须费用合计: </label><span id="mandy" >{$vo.MANDATORY_CHARGES}</span>元</li>
-							<!--<li> {$location_code|optionPrice=$confirmation,$vo['BASE_RATE_QTY']} </li>-->
 
 							<li align="right" class="cost"><label class="label-right" id="feeoption">增值服务费用合计: </label><span  id="charge">{$vo.OPTIONS_CHARGES}</span>元</li>
 							<li id="optionprice">
@@ -481,12 +480,8 @@ function openDialog(){
 				</tr>
 				<tr>
 					<td colspan="2">
-						<if condition="$vo['status'] eq 'CONTRACT'">
-						<span id="crtagreement" style="display:block">
-							<else/>
 							<input  type="submit" id="subbtn" value="生成合同" />
-							<span id="crtagreement" style="display:none">
-								</if><a href="__APP__/agreement/showcontract/id/{$vo.agreementid}" max="true" mask=true target="dialog" >打印合同</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="__APP__/agreement/showcontract/id/{$vo.agreementid}" target="dialog"  max="true" mask=true >查看合同列表</a>
+                            <span id="crtagreement" style="display:none"></span>
 							</td>
 						</tr>	
 					</tbody>

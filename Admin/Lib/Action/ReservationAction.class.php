@@ -131,7 +131,8 @@ class ReservationAction extends CommonAction {
 		$this->assign("vo",$list);
 		$this->display();
 	}
-	function edit() {
+    function edit() {
+        Debug::mark('start');
 		$Model = M ( "Location","AdvModel" );
 		$Model->addConnect ( C ( "DB_CRS" ), 1 );
 		$Model->switchConnect ( 1, "reservation" );
@@ -183,7 +184,9 @@ class ReservationAction extends CommonAction {
 		$this->assign('datenow',date('Y-m-d h:m'));
 		$this->assign ( 'confirmation', $_REQUEST ['confirmation'] );
 		$this->assign ( 'location_code', $vo ['PICKUP_LOCATION_CODE'] );
-		$this->assign ( 'vo', $vo );
+        $this->assign ( 'vo', $vo );
+        Debug::mark('end');
+        Log::write('Edit运行时间：'.Debug::useTime('start','end'), Log::DEBUG);
 		$this->display ();
 	}
 	public function selectCar(){
@@ -578,7 +581,8 @@ class ReservationAction extends CommonAction {
 		echo $result;exit;
 	}
 	public function optionprice()
-	{
+    {   
+        Debug::mark('start');
 		// code...
 		$Model = M ( "Location","AdvModel" );
 		$Model->addConnect ( C ( "DB_CRS" ), 1 );
@@ -618,7 +622,9 @@ class ReservationAction extends CommonAction {
 				$listOpt[$k]['option_name'] = $options[$optionid];
 				$listOpt[$k]['QTY'] = $reservation_options[$optionid];
 				$listOpt[$k]['AMT'] = $reservation_amt[$optionid];
-		}
+        }
+        Debug::mark('end');
+        Log::write('optionPrice运行时间：'.Debug::useTime('start','end'), Log::DEBUG);
 		header ( "Content-Type:text/html; charset=utf-8" );
 		exit ( json_encode ( $listOpt ) );
 	}
