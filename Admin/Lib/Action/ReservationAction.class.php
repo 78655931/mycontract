@@ -581,7 +581,60 @@ class ReservationAction extends CommonAction {
 		echo $result;exit;
 	}
 	public function optionprice()
-    {   
+    { 
+        $Model = M ( "Location","AdvModel" );
+        $Model->addConnect ( C ( "DB_CRS" ), 1 );
+        $map2 ['confirmation'] = $_SESSION['location_code'].'-'.$_GET['reservationid'];
+        $map ['location_code'] = $_SESSION['location_code'];
+        $localcode = $_SESSION['location_code'];
+        $Model->switchConnect ( 1, "reservation_option" );
+        $listOpt['res'] = $Model->where ( $map2 )->select ();
+        $html = "";
+        $perunit = '';
+        $real_inv = '';
+        if ($listOpt['res']) {
+            foreach ( $listOpt['res'] as $k => $v ) {
+                /**
+                if ($v['MANDATORY']=='Y') {
+                    $disabled = "disabled";
+                }
+                $html .= '<label class="checkbox inline">
+                    <input type="checkbox" name="option_r[]" '.$disabled.' class="checkbox-option" checked="true"  value="' . $v ['OPTION_ID'] . '" />
+                    ' . $v ['OPTION_NAME'] . '
+                    </label> ';
+                    **/
+                $optionID[] = $v['OPTION_ID'];
+            }
+        }
+        $Model->switchConnect ( 1, "uni_option" );
+        $wh ='';
+        if(!empty($listOpt['res'])){
+            $wh.=" and option_id not in (".implode(',',$optionID).")";
+        }
+        $listOpt['uni'] = $Model->where ( "location_code='".$localcode."' and (rate_code='LOC' or rate_code is NULL) AND LEFT(NOW(),10)=START_DATE ".$wh )->select ();
+
+        Log::write('增值服务SQL：'.$Model->getLastSql(), Log::SQL);
+        /**
+        if ($listOpt) {
+            foreach ( $listOpt as $key => $val ) {
+                if ($val['MANDATORY']=='Y') {
+                    $o= "disabled checked";
+
+                }else{
+                    $o='';
+                }
+                $optionid = $val['OPTION_ID'];
+                $html .= '<label class="checkbox inline">
+                    <input type="checkbox" name="option_u[]" '.$o.' class="checkbox-option" value="' . $val ['UNI_OPTION_ID'] . '" />
+                    ' . $options[$optionid] . '
+                    </label> ';
+            }
+        }
+        **/
+        header ( "Content-Type:text/html; charset=utf-8" );
+        exit ( json_encode ( $listOpt ) );
+
+     /**
         Debug::mark('start');
 		// code...
 		$Model = M ( "Location","AdvModel" );
@@ -627,7 +680,9 @@ class ReservationAction extends CommonAction {
         Debug::mark('end');
         Log::write('optionPrice运行时间：'.Debug::useTime('start','end'), Log::DEBUG);
 		header ( "Content-Type:text/html; charset=utf-8" );
-		exit ( json_encode ( $listOpt ) );
+        exit ( json_encode ( $listOpt ) );
+        **/
+
 	}
 
 }

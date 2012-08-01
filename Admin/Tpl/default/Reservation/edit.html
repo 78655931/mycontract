@@ -25,13 +25,14 @@
     var totalPrice =0;
     $(document).ready(function() {
             var str;
-            
+            /**
             str = SynCardOcx1.FindReader();
             if(str>0){
 
             SynCardOcx1.SetSexType (1);
             SynCardOcx1.SetNationType(2);
             }
+            **/
             DAYS ='{$vo.BASE_RATE_QTY}';
             optionprice(DAYS);
             var dates = $( "#from, #to" ).datetimepicker({
@@ -155,9 +156,81 @@ function optionprice(days){
     var flats;
     var charge=0;
     var mandy =0;
+    var disable;
+    var o;
     var reservationid ='{$Think.get.confirmation}';
     $.getJSON('__URL__/optionprice',{'reservationid':reservationid},function(data){
-            $.each(data,function(i,item){
+            $.each(data['res'],function(i,item){
+                perunit = item.PER_UNIT;
+                switch(perunit){
+                case "1":
+                unit="次";
+                flats = parseInt(perunit);
+                break;
+                case "D":
+                unit = "天";
+                flats = days;
+                break;
+                case "H":
+                unit = "每小时";
+                break;
+                case "W":
+                unit = "每周";
+                break;
+                case "M":
+                unit="每月";
+                break;
+                }
+                if(item.QTY==null){
+                    item.QTY=1;
+                    item.AMT=parseInt(item.RATE)*item.QTY*flats;
+
+                }
+                // alert(item.OPTION_NAME);
+                if(item.MANDATORY=='Y'){
+
+                    disable= "disabled"; 
+
+                    $("<div></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display: block;"><span class="item">'+item.OPTION_NAME+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#tailmandy");
+
+                }else{
+                    disable="";
+                    $("<div></div>").append('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display:none;"><span class="item">'+item.OPTION_NAME+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#optionprice");
+                }
+                $("#Soption").append('<label class="checkbox inline"><input type="checkbox" name="option[]" '+disable+' class="checkbox-option" checked="true"  value="' +item['OPTION_ID'] + '" />' + item ["OPTION_NAME"] + '</label>');
+                });
+            $.each(data['uni'],function(i,item){
+                    perunit = item.PER_UNIT;
+                    switch(perunit){
+                    case "1":
+                    unit="次";
+                    flats = parseInt(perunit);
+                    break;
+                    case "D":
+                    unit = "天";
+                    flats = days;
+                    break;
+                    case "H":
+                    unit = "每小时";
+                    break;
+                    case "W":
+                    unit = "每周";
+                    break;
+                    case "M":
+                    unit="每月";
+                    break;
+                    }
+                    if(item.QTY==null){
+                        item.QTY=1;
+                        item.AMT=parseInt(item.RATE)*item.QTY*flats;
+
+                    }
+
+                    $("<div></div>").append('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display:none;"><span class="item">'+item.OPTION_NAME+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#optionprice");
+                    $("#Soption").append('<label class="checkbox inline"><input type="checkbox" name="option[]"  class="checkbox-option" value="' +item['OPTION_ID'] + '" />'+item["OPTION_NAME"]+'</label> ');
+                    });
+
+            /**$.each(data,function(i,item){
                 var shows;
                 if(item.block=="true"){
                 shows = "block";
@@ -203,7 +276,8 @@ function optionprice(days){
                     mandy+=parseInt(item.AMT);
                 }
                 totalPrice +=days*item.RATE;
-            });
+                });
+                **/
     });
 }
 function openDialog(){
@@ -269,7 +343,9 @@ function openDialog(){
 	<table style="float:left;width:18%">
 		<tr>
 			<td >
-			    <object classid='clsid:4B3CB088-9A00-4D24-87AA-F65C58531039' id='SynCardOcx1' codeBase='SynCardOcx.CAB#version=1,0,0,1' style='width:100px;height:150px' ></object>
+                <!--
+                <object classid='clsid:4B3CB088-9A00-4D24-87AA-F65C58531039' id='SynCardOcx1' codeBase='SynCardOcx.CAB#version=1,0,0,1' style='width:100px;height:150px' ></object>
+                -->
 
 			</td>
 		</tr>
@@ -472,8 +548,7 @@ function openDialog(){
 					</td>
 					<td>	
 						<h1>增值服务</h1>
-						<div style="width:220px">
-							{$location_code|getlocationopt=$confirmation}
+						<div style="width:220px" id="Soption">
 						</div>
 
 					</td>

@@ -689,20 +689,10 @@ function getCartype($car_type_code, $condition = '') {
  */
 function getlocationopt($localcode, $confirmation='') {
     //Date:20120801 16:16
-	//echo "flowin";
 	$Model = M ( "Location","AdvModel" );
 	$Model->addConnect ( C ( "DB_CRS" ), 1 );
-	// $locationOpt = M ( 'location_option' );
-	//$reservationOpt = M ( 'reservation_option' );
-	//$Model->switchConnect ( 1, "location_option" );
 	$map2 ['confirmation'] = $localcode . '-' . $confirmation;
-	//$map2['MANDATORY'] ='Y';
-
-	//$map['MANDATORY'] ='N';
 	$map ['location_code'] = $localcode;
-	//$map ['confirmation'] = $localcode . '-' . $confirmation;
-	// echo $localcode;
-    //echo $Model->getLastSql();
 	$Model->switchConnect ( 1, "reservation_option" );
 	$reserOpt = $Model->where ( $map2 )->select ();
 	$html = "";
@@ -711,9 +701,7 @@ function getlocationopt($localcode, $confirmation='') {
 	if ($reserOpt) {
 		foreach ( $reserOpt as $k => $v ) {
 			if ($v['MANDATORY']=='Y') {
-				// code...
 				$disabled = "disabled";
-
 			}
 			$html .= '<label class="checkbox inline">
 				<input type="checkbox" name="option_r[]" '.$disabled.' class="checkbox-option" checked="true"  value="' . $v ['OPTION_ID'] . '" />
@@ -722,29 +710,19 @@ function getlocationopt($localcode, $confirmation='') {
 			$optionID[] = $v['OPTION_ID'];
 		}
 	}
-
     $Model->switchConnect ( 1, "uni_option" );
     $wh ='';
 	if(!empty($reserOpt)){
         $wh.=" and option_id not in (".implode(',',$optionID).")";
 	}
-		//$map['RATE_CODE'] =array(array('eq',''),array('eq','LOC'));
     $listOpt = $Model->where ( "location_code='".$localcode."' and (rate_code='LOC' or rate_code is NULL) AND LEFT(NOW(),10)=START_DATE ".$wh )->select ();
 
         Log::write('增值服务SQL：'.$Model->getLastSql(), Log::SQL);
-	//dump($optionID);exit;
-	//echo $Model->getLastSql();
 	$Model->switchConnect ( 1, "options" );
 	$options = $Model->getField('option_id,option_name');
 	if ($listOpt) {
 		foreach ( $listOpt as $key => $val ) {
-            /**
-			if ($val ['REAL_INV']) {
-				$real_inv = $val ['REAL_INV'];
-            }
-            **/
-			if ($val['MANDATORY']=='Y') {
-				// code...
+            if ($val['MANDATORY']=='Y') {
 				$o= "disabled checked";
 				
 			}else{
