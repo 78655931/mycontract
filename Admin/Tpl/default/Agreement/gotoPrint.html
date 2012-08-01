@@ -131,7 +131,7 @@ function optionprice(days){
 				totalPrice +=days*item.RATE;
 			});
 			$("#total-amt").val(totalPrice);
-			$("#optionprices").text(optionprices);
+			$("#optionprices").text('{$vo.OPTIONS_CHARGES}');
 	});
 }
 

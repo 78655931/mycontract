@@ -1,0 +1,76 @@
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+		<title>Test</title>
+
+	</head>
+	<body>
+
+		<div layoutH="10">
+			<table class="list" width="98%">
+				<tbody>
+					<tr>
+						<td>
+
+							<table layoutH="1000" class="table">
+								<thead>
+									<tr>
+										<th width="80">预定人名称</th>
+										<th width="200">取车时间</th>
+										<th width="200">还车时间</th>
+										<th width="200">预定车型</th>
+										<th width="100">均价</th>
+										<th width="100">租期类型</th>
+										<th width="100">超天价格</th>
+										<th width="100">超小时价格</th>
+										<th width="100">超公里价格</th>
+										<th width="100">费用总计</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>{$vo.REAL_NAME}</td>
+										<td>{$vo.PICKUP_DATE}</td>
+										<td>{$vo.RETURN_DATE}</td>
+										<td >{$vo.CAR_MODEL_NAME}</td>
+										<td >{$vo.BASE_RATE_AMT}</td>
+										<td>XXX</td>
+										<td>{$vo.XDAY}</td>
+										<td>{$vo.XHOUR}</td>
+										<td>XXX</td>
+										<td id="TOTAL_PRICE1">{$vo.TOTAL_PRICE}</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div layoutH="120">
+			<table class="list" width="98%">
+				<tbody>
+					<tr>
+						<td>
+							<img name="n1_r6_c7" src="__PUBLIC__/Images/1_r6_c7.png" width="107" height="135" border="0" id="n1_r6_c7" alt="" />
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div layoutH="120">
+			<table class="list" width="98%">
+				<tbody>
+					<tr>
+						<td>
+							<img src="aaa.jpg"  />
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+
+	</body>
+</html>

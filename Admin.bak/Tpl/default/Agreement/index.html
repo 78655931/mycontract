@@ -1,0 +1,47 @@
+<include file="Public:pagerForm" />
+<include file="Public:_form" />
+<table layoutH="100%" class="table" width="1100">
+	<thead>
+		<tr>
+			<th width="12%">合同编号</th>
+			<th width="6%">客户姓名</th>
+			<th width="12%">身份证号</th>
+			<th width="8%">客户电话</th>
+			<th width="10%">取车时间</th>
+			<th width="10%">还车时间</th>
+			<th width="25%">车型</th>
+			<th width="5%">状态</th>
+			<th width="8%"></td>
+		</tr>
+
+	</thead>
+
+	<tbody>
+
+		<volist id="vo" name="list">
+		<tr style=" text-align: center;">
+			<td >{$vo['agreement_id']}</td>
+			<td >{$vo['REAL_NAME']}</td>
+			<td >{$vo['IDENTITY_CODE']}</td>
+			<td >{$vo['work_phone']}</td>
+			<td >{$vo['createdate']|substr=0,16}</td>
+			<td >{$vo['RETURN_DATE']}</td>
+			<td >{$vo['CAR_MODEL_NAME']}</td>
+			{$vo['status']|convert_stat}
+			<td ><ul class="toolBar"> <li><a class="edit" mask=true href="__URL__/showcontract/id/{$vo['agreement_id']}" target="dialog"  max=true><span>查看合同</span></a>&nbsp;<if condition="$vo['status'] neq 'RETURN'"><span id="returncar"> <a href="__URL__/returnedcar/agreement_id/{$vo.agreement_id}/id/{$vo.id}" target="dialog" width="440" height="185">还车</a></span> </if> </li></ul>
+
+			</td>
+		</tr>
+		</volist>
+
+
+	</tbody>
+</table>
+<div class="panelBar">
+	<div class="pages">
+		<span>共{$totalCount}条</span>
+	</div>
+	<div class="pagination" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+</div>
+
+

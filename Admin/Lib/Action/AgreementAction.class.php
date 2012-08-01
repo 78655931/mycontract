@@ -447,11 +447,14 @@ class AgreementAction extends CommonAction {
 		$Model->addConnect ( C ( "DB_CRS" ), 1 );
 		$Model->switchConnect ( 1, "agreement" );
 		if($_GET['agreement_id']){
+			//合同列表还车链接的隐藏
 			$vo = $Model->where('agreement_id="'.$_GET['agreement_id'].'"')->find();
 			$this->assign("vo",$vo);
 			$this->display("Agreement:returncar");
 			exit;
 		}
+		//取合同信息
+		$agreement = $Model->where('agreement_id="'.$_POST['agreement_id'].'"')->find();
 		$map['RETURN_KM'] = $_POST['return_km'];
 		$map['RETURN_OIL'] = $_POST['return_oil'];
 		$map['REAL_RETURN_DATE'] = $_POST['REAL_RETURN_DATE'];
@@ -484,6 +487,10 @@ class AgreementAction extends CommonAction {
 			
 			//修改车状态
 			unset($map);
+			$Model->switchConnect(1,"car_model");
+			$carmodel=$Model->where('CAR_MODEL_NAME="'.$agreement['CAR_MODEL_NAME'].'"')->find();
+			
+			Log::write('车癿SQL：'.$Model->getLastSql(), Log::SQL); 
 			$Model->switchConnect(1,"car");
 			$map['STATUS'] = 2;
 			if (false === $Model->create ($map)) {
@@ -491,7 +498,19 @@ class AgreementAction extends CommonAction {
 			}
 			$Model->where('CAR_TAG="'.$vo['CAR_TAG'].'"')->save($map);
 			$Model->switchConnect(1,'uni_inventory');
-			$Model->where("LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$vo['CAR_MODEL_CODE']."' and left(START_DATE,10)='".date('Y-m-d')."'")->setInc('REAL_INT',1);
+			//查询还车日期区间
+			//$returndateList = $Model->execute("select END_DATE from `uni_inventory` where  left(END_DATE,10)>= '".substr($_POST['REAL_RETURN_DATE'],0,10)."' and left(END_DATE,10)<= '".substr($agreement['RETURN_DATE'],0,10)."' ");
+			$returndateList = $Model->where("left(END_DATE,10)>= '".substr($_POST['REAL_RETURN_DATE'],0,10)."' and left(END_DATE,10)<= '".substr($agreement['RETURN_DATE'],0,10)."'")->select();
+		
+			
+			Log::write('Retrun癿SQL：'.$Model->getLastSql(), Log::SQL); 
+			//更新还车库存
+			foreach($returndateList as $key=>$val){
+
+			$Model->execute("UPDATE `uni_inventory` SET `REAL_INT`=REAL_INT+1  where LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$carmodel['CAR_MODEL_CODE']."' and  left(END_DATE,10) ='".substr($val[END_DATE],0,10)."'  ");
+
+			Log::write('还车癿SQL：'.$Model->getLastSql(), Log::SQL); 
+			}
 
 			//真实库存
 			echo $vo['status'];exit;

@@ -1,0 +1,50 @@
+<include file="Public:pagerForm" />
+<div class="pageHeader">
+	<!--form rel="pagerForm" method="post" action="__URL__/selectCar/" onsubmit="return dwzSearch(this, 'dialog');">
+	<div class="searchBar">
+		<ul class="searchContent">
+			<li>
+				<label>车牌号:</label>
+				<input class="textInput" name="CAR_TAG" value="" type="text">
+			</li>	  
+		</ul>
+		<div class="subBar">
+			<ul>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">查询</button></div></div></li>
+			</ul>
+		</div>
+	</div>
+	</form-->
+</div>
+<div class="pageContent">
+
+	<table class="table" layoutH="118" targettype="dialog" width="100%">
+		<thead>
+			<tr>
+				<th orderfield="drivername" width="80">司机名称</th>
+				<th orderfield="driverphone" width="100">联系手机</th>
+				<th width="80">查找带回</th>
+			</tr>
+		</thead>			
+
+		<tbody>
+			<volist id="vo" name="list">
+			<tr>
+				<td>{$vo.drivername}</td>
+				<td>{$vo.driverphone}</td>
+				<td>
+					<a class="btnSelect" href="javascript:$.bringBack({ drivername:'{$vo.drivername}', driverphone:'{$vo.driverphone}', status:'{$vo.status}'})" title="查找带回">选择</a>
+				</td>
+			</tr>
+
+			</volist>
+		</tbody>
+	</table>
+
+<div class="panelBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+

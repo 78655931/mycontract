@@ -147,7 +147,8 @@ class ReservationAction extends CommonAction {
 			$vo ['status'] = $agreeList ['status'];
 			$vo['agreement_id'] = $agreeList['id'];
 
-		}
+        }
+        /**
 		//折扣信息
 		$ipaddress="172.16.100.173";
 		$discount_url = C('DISCOUNT');
@@ -165,11 +166,12 @@ class ReservationAction extends CommonAction {
 			$vs[]=(array)$v;
 
 		}
-		/*折扣选择*/
+		//折扣选择
 		$Model->switchConnect ( 1, "reservation_disc" );
 		$discountck = $Model->where("CONFIRMATION='".$vo['CONFIRMATION']."'")->find();
 		$vo['discountck'] = $discountck['UNI_DISC_ID'];
-		$this->assign("discount",$vs);
+        $this->assign("discount",$vs);
+        **/
 		//均价
 		$average = round($vo['BASE_RATE_AMT'] /$vo['BASE_RATE_QTY']);
 		$vo ['agreementid'] = 'HT' . substr ( $vo ['CONFIRMATION'], - 15 );
@@ -311,6 +313,8 @@ class ReservationAction extends CommonAction {
 			}
 			**/
 			foreach ($resOpt as $key=>$val){
+
+				if(in_array($val['OPTION_ID'],$_REQUEST['option'])){
 				//$data['CONFIRMATION'] = $val['CONFIRMATION'];
 				$data['CONFIRMATION'] = $_POST ['agreement_id'];
 				$data['OPTION_ID'] = $val['OPTION_ID'];
@@ -324,6 +328,7 @@ class ReservationAction extends CommonAction {
 				$data['MANDATORY'] = $val['MANDATORY'];	
 				$optionID[] = $val['OPTION_ID'];
 				$model->add($data);
+				}
 				//echo $model->getLastSql();
 			}
 			unset($data);
@@ -405,8 +410,9 @@ class ReservationAction extends CommonAction {
 					$cares = $model->execute("update car set status=1 where CAR_TAG='".$cartag."' and CAR_MODEL_CODE='".$carmodelcode."'");
 				}
 				$model->switchConnect(1,'uni_inventory');
-				$model->where("LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$carmodelcode."' and left(START_DATE,10)='".date('Y-m-d')."'")->setDec('REAL_INT',1);
-				//$model->setDec('REAL_INT',,1);
+				//$model->where("LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$carmodelcode."' and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($_POST['RETURN_DATE'],0,10)."'")->setDec('REAL_INT',1);
+				$model->execute("UPDATE `uni_inventory` SET `REAL_INT`=REAL_INT-1 where LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$carmodelcode."' and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($_POST['RETURN_DATE'],0,10)."'");
+				Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
 				
 			header ( "Content-Type:text/html; charset=utf-8" );
 			exit ( json_encode ( 1 ) );

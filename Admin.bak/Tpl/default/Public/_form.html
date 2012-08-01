@@ -1,0 +1,63 @@
+<tagLib name="html" />
+<script type="text/javascript">
+	$(function(){
+	var dates = $( "#from, #to" ).datepicker({
+			defaultdate: "+1w",
+			showmonthafteryear: true,
+			numberofmonths: 2,  
+			mindate: 0 ,
+			dateFormat:'yy-mm-dd',
+			closetext:'关闭',
+			duration: 'fast',
+			showanim:'fadein',
+			showon:'button', 
+			buttontext:'选择日期',
+			showbuttonpanel: false,
+			stepHour: 2,//设置步长
+
+			onSelect: function( selectedDate ) {
+
+				
+
+			}
+		});
+	})
+</script>
+<div class="pageHeader">
+	<form action="__URL__" method="post" onsubmit="return navTabSearch(this)" >
+		<input type="hidden" name="pageNum" value="1" />
+		<table>
+			<tr>
+				<td>身份证号</td>
+				<td><input type="text" name="IDENTITY_CODE" value="{$IDENTITY_CODE}" /></td>
+				<td>客户电话</td>
+				<td><input type="text"  name="WORK_PHONE" value="{$WORK_PHONE}"/></td>
+				<td>预定单编号</td>
+				<td><input type="text" name="CONFIRMATION" value="{$CONFIRMATION}"/></td>
+			</tr>
+				<tr>
+					<td>取车时间</td>
+					<td><input type="text" name="PICKUP_DATE" value="{$PICKUP_DATE}" id="from"/></td>
+					<td>还车时间</td>
+					<td><input  id="to" type="text" name="RETURN_DATE" value="{$RETURN_DATE}"/> 
+</td>
+					<td>客户姓名</td>
+					<td><input type="text" title="名称查询" name="REAL_NAME" value="{$REAL_NAME}" class="medium" > <input type="submit" value="查询" />
+</td>
+				</tr>
+		</table>
+		<!--<div class="searchBar">
+			<div class="fLeft">
+				<ul>
+					<li>身份证号: <input type="text" name="IDENTITY_CODE" value="{$IDENTITY_CODE}" /> 客户电话: <input type="text"  name="WORK_PHONE" value="{$WORK_PHONE}"/>预定单编号: <input type="text" name="CONFIRMATION" value="{$CONFIRMATION}"/></li>
+					<li>取车时间: <input type="text" name="PICKUP_DATE" value="{$PICKUP_DATE}" id="from"/> 还车时间: <input  id="to" type="text" name="RETURN_DATE" value="{$RETURN_DATE}"/> 
+					客户姓名:<input type="text" title="名称查询" name="REAL_NAME" value="{$REAL_NAME}" class="medium" > <input type="submit" value="查询" />
+
+</li>
+				</ul>
+								
+			</div>
+
+		</div>-->
+	</form>
+</div>

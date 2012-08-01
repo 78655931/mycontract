@@ -28,7 +28,9 @@ $(document).ready(function() {
 
 
 		//$("#myform").validate();
-		//alert(pickupDate);
+        //alert(pickupDate);
+        
+
 	var str;
 		str = SynCardOcx1.FindReader();
 		if(str>0){
@@ -338,12 +340,12 @@ function openDialog(){
 		<input type="hidden" name="SOURCE_CODE" value="<?php echo ($vo["SOURCE_CODE"]); ?>"/>
 		<input type="hidden" name="VENDOR_CODE" value="<?php echo ($vo["VENDOR_CODE"]); ?>"/>
 		<input type="hidden" name="VENDOR_PASS" value="<?php echo (getObjInfo($vo["VENDOR_CODE"],'vendor','vendorCode','VENDOR_PASSWORD')); ?>"/>
-		<table class="list" width="98%" style="margin-top:10px;height:233px">
+		<table class="list" width="80%" style="margin-top:10px;height:233px;float:right">
 			<tr>
 				<td colspan="2" style="text-align:center">会员信息</td>
 			</tr>
 			<tr>
-				<td  style="width: 400px;">
+				<td  style="width: 50%">
 					<label class="label-left">会员类型:</label>
 					<input type="text" name="MEMBER_TYPE_NAME" class="required textInput" readonly value="<?php echo (getMemberName($vo["MEMBER_TYPE_ID"])); ?>"/></td>
 				<td>
@@ -352,7 +354,7 @@ function openDialog(){
 				</td>
 			</tr>	
 			<tr>
-				<td  style="width: 400px;">
+				<td  >
 					<label class="label-left">姓名:</label>
 					<input type="text"   id="REAL_NAME"  class="required textInput" name="REAL_NAME" value="<?php echo ($vo["REAL_NAME"]); ?>"/>	</td>
 				<td>
@@ -361,7 +363,7 @@ function openDialog(){
 				</td>
 			</tr>	
 			<tr>
-				<td  style="width: 400px;">
+				<td  >
 					<label class="label-left">性别:</label>
 					<input type="text"  name="sex" id="sex" value="" class="required  textInput"/>
 					出生日期:<input type="text"  name="age"  value="" class="required  textInput"/>
@@ -372,7 +374,7 @@ function openDialog(){
 				</td>
 			</tr>	
 			<tr>
-				<td  style="width: 400px;">
+				<td  >
 					<label class="label-left">电子邮件:</label>
 					<input type="text" name="email" value="<?php echo ($vo["EMAIL"]); ?>"  />
 				</td>
@@ -387,7 +389,7 @@ function openDialog(){
 				</td>
 			</tr>	
 			<tr>
-				<td  style="width: 400px;">
+				<td  >
 					<label class="label-left">身份证号码:</label>
 					<input type="text"  id="IDENTITY_CODE" name="IDENTITY_CODE" value="<?php echo ($vo["IDENTITY_CODE"]); ?>" class="required textInput"/>
 
@@ -399,7 +401,7 @@ function openDialog(){
 				</td>
 			</tr>	
 			<tr>
-				<td  style="width: 400px;">
+				<td  >
 					<label class="label-left">身份证地址:</label>
 					<input type="text"  name="address" size="50"  value="" class="required textInput"/>
 
@@ -411,7 +413,7 @@ function openDialog(){
 				</td>
 			</tr>	
 			<tr>
-				<td  colspan="2" style="width: 400px;">
+				<td  colspan="2" >
 					<label class="label-left">现住址:</label>
 					<input type="text" size="50" name="consummeraddr" value="<?php echo ($vo["CONSUMMER_ADDR"]); ?>" />
 
@@ -432,7 +434,9 @@ function openDialog(){
 						<br />
 						<div style="display:block;margin-bottom:10px">
 							<label style="width:15px">实际取车时间:</label>	
-							<input type="text" readonly  name="PICKUP_DATE"     value="<?php echo ($datenow); ?>" id="from1"/>	
+							<!--<input type="text" readonly  name="PICKUP_DATE"     value="<?php echo ($datenow); ?>" id="from1"/>	-->
+
+							<input type="text" readonly  name="PICKUP_DATE"     value="<?php echo (substr($vo["PICKUP_DATE"],0,16)); ?>" id="from1"/>	
 						</div>
 						<div style="display:block;margin-bottom:10px">
 							<label style="width:15px">实际还车时间:</label>
@@ -503,7 +507,7 @@ function openDialog(){
 							<li align="right" class="cost"><label class="label-right">必须费用合计: </label><span id="mandy" ><?php echo ($vo["MANDATORY_CHARGES"]); ?></span>元</li>
 							<!--<li> <?php echo (optionPrice($location_code,$confirmation,$vo['BASE_RATE_QTY'])); ?> </li>-->
 
-							<li align="right" class="cost"><label class="label-right" id="feeoption">增值服务费用合计: </label><span  id="charge"><?php echo ($vo["OPTIONS_CHARGES"]); ?>元</span></li>
+							<li align="right" class="cost"><label class="label-right" id="feeoption">增值服务费用合计: </label><span  id="charge"><?php echo ($vo["OPTIONS_CHARGES"]); ?></span>元</li>
 							<li id="optionprice">
 							
 							</li>

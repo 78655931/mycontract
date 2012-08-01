@@ -1,0 +1,284 @@
+<html>
+<head>
+<link rel="stylesheet" href="__PUBLIC__/css/booking.css" type="text/css" media="screen" />
+<script type="text/javascript" src="__PUBLIC__/js/booking.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.form.js"></script>
+<script type="text/javascript" charset="utf-8">
+	$(document).ready(function() {  
+			var options = {
+beforeSubmit : showRequest, // pre-submit callback
+success : showResponse // post-submit callback
+};
+$('#myform').submit(function() {
+	// 提交表单
+	//alert("aaa");
+	$(this).ajaxSubmit(options);
+	// 为了防止普通浏览器进行表单提交和产生页面导航（防止页面刷新？）返回false
+	return false;
+	});
+
+function showRequest(formData, jqForm, options) {
+
+//INSERT INTO `agreement_option` (`CONFIRMATION`,`OPTION_ID`,`OPTION_NAME`,`OPTION_TYPE`,`RATE`,`PER_UNIT`,`QTY`,`AMT`,`SEQUENCE`,`MANDATORY`) VALUES ('MENGEN-610101-01-201206111118022','6','送车上门服务','O','10','D',null,null,'6','N')
+var queryString = $.param(formData);
+
+//alert(queryString);
+//alert('About to submit: \n\n' + queryString);
+return true;
+}
+// post-submit callback
+function showResponse(responseText, statusText, xhr, $form) {
+	if (responseText == 1) {
+		$('#crtagreement').show();
+		$('#subbtn').attr('disabled', true);
+	} else {
+		alert(responseText);
+	}
+
+}
+
+}); 
+
+</script>
+</head>
+<body>
+<form id="myform" action="__URL__/createagreement" method="post">
+	<input type="hidden" name="REAL_NAME" value="{$vo.REAL_NAME}" />
+	<input type="hidden" name="CAR_MODEL_NAME" value="{$vo.CAR_MODEL_NAME}"/>
+	<input type="hidden" name="XDAY" value="{$vo.XDAY}"/>
+	<input type="hidden" name="XHOUR" value="{$vo.XHOUR}" />
+	<input type="hidden" name="TOTAL_PRICE" value="{$vo.TOTAL_PRICE}"/>
+	<input type="hidden" name="confirmation" value="{$confirmation}"/>
+	<input type="hidden" name="location_code" value="{$location_code}"/>
+
+
+	<table width="100%" class="list">
+		<thead>
+			<tr>
+				<th width="80">预定人名称</th>
+				<th width="200">取车时间</th>
+				<th width="200">还车时间</th>
+				<th width="200">预定车型</th>
+				<th width="100">均价</th>
+				<th width="100">租期类型</th>
+				<th width="100">超天价格</th>
+				<th width="100">超小时价格</th>
+				<th width="100">超公里价格</th>
+				<th width="100">费用总计</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>{$vo.REAL_NAME}</td>
+				<td>{$vo.PICKUP_DATE}</td>
+				<td>{$vo.RETURN_DATE}</td>
+				<td >{$vo.CAR_MODEL_NAME}</td>
+				<td >{$vo.BASE_RATE_AMT}</td>
+				<td>XXX</td>
+				<td>{$vo.XDAY}</td>
+				<td>{$vo.XHOUR}</td>
+				<td>XXX</td>
+				<td id="TOTAL_PRICE1">{$vo.TOTAL_PRICE}</td>
+			</tr>
+		</tbody>
+	</table>
+
+			<table class="list" width="98%">
+				<tbody>
+					<tr>
+						<td style="width: 240px;">
+							<div class="panel " defH="211">
+								<div>
+									<img name="n1_r6_c7" src="__PUBLIC__/Images/1_r6_c7.png" width="107" height="135" border="0" id="n1_r6_c7" alt="" />
+								</div>
+							</div>
+						</td>
+						<td>
+							
+							<h1>客户信息</h1>
+							
+											  <table class="table">
+													<tr>
+														<td  style="width: 350px;">会员类型:<input type="text" name="MEMBER_TYPE_NAME" value="{$vo.MEMBER_TYPE_NAME}"/></td>
+														<td>
+															租车人手机:
+															<input type="text" name="work_phone" value="{$vo.WORK_PHONE}"/>
+														</td>
+													</tr>	
+													<tr>
+														<td  style="width: 350px;">姓名：	<input type="text"  disabled name="REAL_NAME" value="{$vo.REAL_NAME}"/>	</td>
+														<td>
+															紧急联系人:<input type="text" name="contactperson" value="{$vo.contactperson}"/>
+															电话:<input type="text" name="contactphone" value=""/>
+														</td>
+													</tr>	
+													<tr>
+														<td  style="width: 350px;">
+															性别:<input type="text" disabled name="sex" id="sex" value=""/>
+																出生日期:<input type="text" disabled name="age" disabled value=""/>
+														</td>
+														<td>
+									驾驶证号码:
+																			<input type="text" name="IDENTITY_CODE" value="{$vo.IDENTITY_CODE}"/>
+
+														</td>
+													</tr>	
+													<tr>
+														<td  style="width: 350px;">
+									电子邮件:
+									<input type="text" name="email" value="{$vo.EMAIL}" />
+														
+														</td>
+														<td>
+															驾驶证准驾车型:
+																			<select name="vehicletype" >
+																				<option value="C1">C1</option>
+																				<option value="C2">C2</option>
+																		</select>
+														</td>
+													</tr>	
+													<tr>
+														<td  style="width: 350px;">
+									身份证号码:
+																			<input type="text" name="IDENTITY_CODE" value="{$vo.IDENTITY_CODE}"/>
+														
+														</td>
+														<td>
+															驾驶证发布城市:
+																			<input type="text" name="driverofcity" value=""/>
+															
+														</td>
+													</tr>	
+													<tr>
+														<td  style="width: 350px;">
+									身份证地址:
+																			<input type="text" disabled name="address" value=""/>
+														
+														</td>
+														<td>
+															驾驶证取证时间:
+																			<input type="text" name="taketime" value="" />
+															
+														</td>
+													</tr>	
+													<tr>
+														<td  colspan="2" style="width: 350px;">
+									现住址:
+																			<input type="text" size="50" name="consummeraddr" value="{$vo.CONSUMMER_ADDR}" />
+														
+														</td>
+													</tr>	
+												</table>	
+										
+						</td>	
+					</tr>
+				</tbody>
+			</table>
+	
+	/*************************/
+			<table class="list" width="98%">
+				<tbody>
+					<tr>
+						<td style="width: 300px;">
+							<div class="panel" defH="100" |>
+															
+								<div><h1>
+									租车时间({$vo.BASE_RATE_QTY}天)
+									<input type="hidden" name="BASE_RATE_QTY" value="{$vo.BASE_RATE_QTY}"/>
+								</h1>
+									<p>取车时间:<input type="text" class="date" name="RETURN_DATE" format="yyyy-MM-dd HH:ss" class="date textInput"   value="{$vo.RETURN_DATE}" size="20"/></p>
+									<p>
+									还车时间:<input type="text" class="date" name="PICKUP_DATE" format="yyyy-MM-dd HH:ss" class="date textInput "   value="{$vo.PICKUP_DATE}" size="20"/>	
+
+									</p>
+									</div>
+							</div>
+						</td>
+						<td>
+
+			<table class="list" width="98%">
+								<thead>
+									<tr>
+										<th width="100">车牌号</th>
+										<th width="100">车辆类型</th>
+										<th width="100">车辆型号</th>
+										<th width="100">当前里程</th>
+										<th width="100">当前油量</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td><input class="readonly" name="master.dwz_devLookup.CAR_TAG" value="" readonly="readonly" type="text"/></td>
+										<td>
+											<input class="readonly" name="master.dwz_devLookup.CAR_MODEL" value=""  readonly="readonly" type="text"/>
+										</td>
+										<td>
+											<input class="readonly" name="master.dwz_devLookup.CAR_MODEL_NAME" value="" readonly="readonly" type="text" />
+										</td>
+										<td>
+											<input class="text" name="master.dwz_devLookup.CURRENT_KM" value="" readonly="readonly" type="text" />
+										</td>
+										<td>
+											<input class="text" name="master.dwz_devLookup.CURRENT_OIL" value="" readonly="readonly" type="text" />
+										</td>
+									</tr>
+									<tr>
+										<td colspan="5" style=" padding-left: 300px;">
+												<a class="btnLook" target="dialog" href="__APP__/Reservation/selectCar/modelcode/{$vo['CAR_MODEL_CODE']}" lookupGroup="master" lookupName="devLookup">选 车</a>	
+												<span class="info">选 车</span>
+											
+											</td>
+										</tr>	
+								</tbody>
+							</table>
+					
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		
+			<table class="list" width="98%">
+				<tbody>
+					<tr>
+						<td style="width: 300px;">
+						
+								<input type="hidden" name="RATE_AMT" value="{$vo.BASE_RATE_AMT}"/>
+								<input type="hidden" name="CURRENT_KM" value="{$vo.CURRENT_KM}"/>
+								<input type="hidden" name="MANDATORY_CHARGES" value="{$vo.MANDATORY_CHARGES}"/>
+								<input type="hidden" name="BASE_RATE_QTY" value="{$vo.BASE_RATE_QTY}"/>
+								
+					
+									<h1>价格计算(租期{$vo.BASE_RATE_QTY}天)</h1>
+									<ul>
+										<li align="right" class="cost">基本租金:<span class="option-amt">{$vo.BASE_RATE_AMT}</span></li>
+										<li align="right" class="cost">必须费用:<span class="option-amt">{$vo.MANDATORY_CHARGES}</span></li>
+										<li align="right" class="cost">增值服务费用:<span class="option-amt">{$vo.OPTIONS_CHARGES}</span></li>
+										<li> {$location_code|optionPrice=$confirmation,$vo['BASE_RATE_QTY']} </li>
+										<li align="right">租金总价: <span id="total-amt">{$vo['BASE_RATE_AMT']+$vo['MANDATORY_CHARGES']+$vo['OPTIONS_CHARGES']}</span> 元
+									</ul>
+							
+						</td>
+						<td>	
+								<h1>增值服务</h1>
+									{$location_code|getlocationopt=$confirmation}
+									</div>
+						
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+						<if condition="$vo['status'] eq 1">
+							<span id="crtagreement" style="display:block">
+							<else/>
+						<input  type="submit" id="subbtn" value="生成合同" />
+						<span id="crtagreement" style="display:none">
+						</if><a href="__URL__/gotoPrint/agreementid/{$vo.agreementid}">打印合同</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="__APP__/agreement/showcontract/id/{$vo.agreementid}" target="dialog"  width="1024" height="900" >查看合同列表</a>
+						</td>
+						</tr>	
+				</tbody>
+			</table>
+		
+		</form>
+
+	</body>
+</html>

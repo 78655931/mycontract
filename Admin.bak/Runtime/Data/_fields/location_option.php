@@ -1,0 +1,25 @@
+<?php
+return array (
+  0 => 'LOCATION_OPTION_ID',
+  1 => 'OPTION_ID',
+  2 => 'CAR_TYPE_CODE',
+  3 => 'RATE_CODE',
+  4 => 'LOCATION_CODE',
+  5 => 'START_DATE',
+  6 => 'END_DATE',
+  7 => 'LOCATION_OPTION_DESC',
+  8 => 'SELECT_DESC',
+  9 => 'NOT_SELECT_DESC',
+  10 => 'RATE',
+  11 => 'PER_UNIT',
+  12 => 'FLAG',
+  13 => 'MANDATORY',
+  14 => 'TAXABLE',
+  15 => 'SEQUENCE',
+  16 => 'MAX_AMOUNT',
+  17 => 'CRATE_DATE',
+  18 => 'STATUS',
+  '_autoinc' => true,
+  '_pk' => 'LOCATION_OPTION_ID',
+);
+?>

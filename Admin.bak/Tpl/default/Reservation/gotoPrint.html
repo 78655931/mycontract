@@ -1,0 +1,130 @@
+<html>
+	<tcpdf method="write2DBarcode" params="{$params}" />
+	<h1>合同编号:{$vo.reservationID}</h1>
+	<table border="1"> 
+		<tr>
+			<td>
+				所在部门:		
+			</td>
+			<td>
+				业务受理人:
+			</td>
+			<td>
+				业务类型:
+			</td>
+
+			<td>
+				预定上客时间:{$vo.bookingTime}
+			</td>
+
+		</tr>	
+		<tr>
+			<td colspan="3">
+					客户名称:{$vo.reservationBy}
+			</td>
+			<td>
+				预定车型:{$vo.carModelName}
+			</td>
+			
+		</tr>	
+<tr>
+			<td>
+				供应车型:{$vo.carModelName}
+			</td>
+			<td>
+				车牌号码:{$vo.carTag}
+			</td>
+			<td>
+				司机姓名:{$vo.drivername}
+			</td>
+
+			<td>
+				用车人:{$vo.user}
+			</td>
+
+		</tr>	
+<tr>
+			<td>
+				订车人:{$vo.reservationBy}
+			</td>
+			<td colspan="2">
+				订车人联系:{$vo.phonenumber}
+			</td>
+			<td>
+				用车人联系:{$vo.userPhone}
+			</td>
+
+			
+		</tr>	
+<tr>
+			<td colspan="3">
+					上客地点:{$vo.addrFrom}
+			</td>
+			
+			<td>
+					附加费方式:{$vo.additional}
+			</td>
+
+		</tr>	
+<tr>
+			<td>
+					公里基数:{$vo.currentkm}
+			</td>
+			<td>
+					超公司单价:{$vo.overKM}
+			</td>
+			<td>
+					小时基数:
+			</td>
+
+			<td>
+					超小时单价:{$vo.overH}	
+			</td>
+
+		</tr>	
+<tr>
+			<td>
+				基价含通行费:
+			</td>
+			<td>
+				基价含停车费:
+			</td>
+			<td>
+				基价含住宿费:
+			</td>
+
+			<td>
+				基价含饭贴:
+			</td>
+
+		</tr>	
+<tr>
+			<td>
+				基价含其它费:
+			</td>
+			<td>
+				付款方式:{$vo.clearingWay}
+			</td>
+			<td>
+				基本车价:{$vo.carRent}
+			</td>
+
+			<td>
+				预付金额:{$vo.BookingPrice}
+			</td>
+
+		</tr>	
+<tr>
+			<td colspan="2">
+				备注:{$vo.remark}
+			</td>
+			<td>
+				航班号:{$vo.flight}
+			</td>
+			<td>
+				举牌内容:{$vo.muller}
+			</td>
+		</tr>	
+
+	</table>
+</html>
