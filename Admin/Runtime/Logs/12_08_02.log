@@ -1,4 +1,0 @@
-[ 2012-08-02T12:47:17+08:00 ] DEBUG: Edit运行时间：0.688595
-[ 2012-08-02T12:47:31+08:00 ] SQL: 增值服务SQL：SELECT * FROM `uni_option` WHERE location_code='GONGSI-440304-1' and (rate_code='LOC' or rate_code is NULL) AND LEFT(NOW(),10)=START_DATE  and option_id not in (3,1)
-[ 2012-08-02T12:47:47+08:00 ] DEBUG: Edit运行时间：0.630744
-[ 2012-08-02T12:47:51+08:00 ] SQL: 增值服务SQL：SELECT * FROM `uni_option` WHERE location_code='GONGSI-440304-1' and (rate_code='LOC' or rate_code is NULL) AND LEFT(NOW(),10)=START_DATE  and option_id not in (3,1)
