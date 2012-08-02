@@ -594,15 +594,7 @@ class ReservationAction extends CommonAction {
         $real_inv = '';
         if ($listOpt['res']) {
             foreach ( $listOpt['res'] as $k => $v ) {
-                /**
-                if ($v['MANDATORY']=='Y') {
-                    $disabled = "disabled";
-                }
-                $html .= '<label class="checkbox inline">
-                    <input type="checkbox" name="option_r[]" '.$disabled.' class="checkbox-option" checked="true"  value="' . $v ['OPTION_ID'] . '" />
-                    ' . $v ['OPTION_NAME'] . '
-                    </label> ';
-                    **/
+                
                 $optionID[] = $v['OPTION_ID'];
             }
         }
@@ -614,74 +606,9 @@ class ReservationAction extends CommonAction {
         $listOpt['uni'] = $Model->where ( "location_code='".$localcode."' and (rate_code='LOC' or rate_code is NULL) AND LEFT(NOW(),10)=START_DATE ".$wh )->select ();
 
         Log::write('增值服务SQL：'.$Model->getLastSql(), Log::SQL);
-        /**
-        if ($listOpt) {
-            foreach ( $listOpt as $key => $val ) {
-                if ($val['MANDATORY']=='Y') {
-                    $o= "disabled checked";
-
-                }else{
-                    $o='';
-                }
-                $optionid = $val['OPTION_ID'];
-                $html .= '<label class="checkbox inline">
-                    <input type="checkbox" name="option_u[]" '.$o.' class="checkbox-option" value="' . $val ['UNI_OPTION_ID'] . '" />
-                    ' . $options[$optionid] . '
-                    </label> ';
-            }
-        }
-        **/
         header ( "Content-Type:text/html; charset=utf-8" );
         exit ( json_encode ( $listOpt ) );
 
-     /**
-        Debug::mark('start');
-		// code...
-		$Model = M ( "Location","AdvModel" );
-        $Model->addConnect ( C ( "DB_CRS" ), 1 );
-        //if($_GET[''])
-		$reservationid = $_SESSION['location_code'].'-'.$_GET['reservationid'];
-		$map ['CONFIRMATION'] = $reservationid;
-		$Model->switchConnect ( 1, "reservation_option" );
-		$reserOpt = $Model->where ( $map )->select ();
-		if ($reserOpt) {
-			foreach ( $reserOpt as $k => $v ) {
-				//if ($v['MANDATORY']=='N') {
-					// code...
-
-					$optionID[] = $v['OPTION_ID'];
-					$resO[$v['OPTION_ID']] = $v['MANDATORY'];
-				//}
-			}
-		}
-		$Model->switchConnect ( 1, "location_option" );
-		unset($map);
-		$map['location_code'] = $_SESSION['location_code'];
-		// $locationOpt = M ( 'location_option' );
-
-		$listOpt = $Model->where ( $map )->group ( 'option_id' )->select ();
-		//echo $Model->getLastSql();
-		$Model->switchConnect ( 1, "options" );
-		$options = $Model->getField('option_id,option_name');
-		$Model->switchConnect ( 1, "reservation_option" );
-		$reservation_options = $Model->where('CONFIRMATION="'.$reservationid.'"')->getField('CONFIRMATION,qty');
-		$reservation_amt = $Model->where('CONFIRMATION="'.$reservationid.'"')->getField('CONFIRMATION,amt');
-		foreach($listOpt as $k=>$v){
-				if (in_array($v['OPTION_ID'],$optionID)) {
-					// code...
-					$listOpt[$k]['block'] ="true";
-					$listOpt[$k]['MANDATORY']=$resO[$v['OPTION_ID']];
-				}
-				$optionid = $v['OPTION_ID'];
-				$listOpt[$k]['option_name'] = $options[$optionid];
-				$listOpt[$k]['QTY'] = $reservation_options[$optionid];
-				$listOpt[$k]['AMT'] = $reservation_amt[$optionid];
-        }
-        Debug::mark('end');
-        Log::write('optionPrice运行时间：'.Debug::useTime('start','end'), Log::DEBUG);
-		header ( "Content-Type:text/html; charset=utf-8" );
-        exit ( json_encode ( $listOpt ) );
-        **/
 
 	}
 

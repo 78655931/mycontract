@@ -120,7 +120,7 @@ function optionprice(days){
 
                 }else{
                     disable="";
-                    $("<div></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display:none;"><span class="item">'+item.OPTION_NAME+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#optionprice");
+                    $("<div></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display:block;"><span class="item">'+item.OPTION_NAME+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#optionprice");
                 }
                 $("#Soption").append('<label class="checkbox inline"><input type="checkbox" name="option[]" '+disable+' class="checkbox-option" checked="true"  value="' +item['OPTION_ID'] + '" />' + item ["OPTION_NAME"] + '</label>');
                 });
@@ -158,88 +158,88 @@ function optionprice(days){
                     var costElem = $('#cost-option-' + $(this).val());
                     $(this).is(':checked') ? showCost(costElem) : hideCost(costElem);
                     });
-function showCost(costElem) {
-		
-		costElem.addClass('cost-highlight').fadeIn('fast', function() {
-			$(this).removeClass('cost-highlight');
-			//$("#feeoption").show();
-			calcChargeAmount();
+            function showCost(costElem) {
 
-			//calcMandyAmount();
-			//console.log(charge);
-			calcTotalAmount();
-		});
-	}
-	
-	function hideCost(costElem, removeCost) {
-		costElem.addClass('cost-highlight').fadeOut('fast', function() {
-			$(this).removeClass('cost-highlight');
-		//	$("#feeoption").hide();
-			calcTotalAmount();
+                costElem.addClass('cost-highlight').fadeIn('fast', function() {
+                        $(this).removeClass('cost-highlight');
+                        //$("#feeoption").show();
+                        calcChargeAmount();
 
-			//calcMandyAmount();
-			calcChargeAmount();
-			removeCost && $(this).remove();
-		});
-	}
-	function calcMandyAmount(){
+                        //calcMandyAmount();
+                        //console.log(charge);
+                        calcTotalAmount();
+                        });
+            }
 
-			var mandy =0;
-			$('#tailsmandy .cost .option-amt:visible').each(function() {
-			
-			var otail = $(this).html();
+            function hideCost(costElem, removeCost) {
+                costElem.addClass('cost-highlight').fadeOut('fast', function() {
+                        $(this).removeClass('cost-highlight');
+                        //	$("#feeoption").hide();
+                        calcTotalAmount();
 
-			if(otail){
+                        //calcMandyAmount();
+                        calcChargeAmount();
+                        removeCost && $(this).remove();
+                        });
+            }
+            function calcMandyAmount(){
 
-				var ot = parseFloat(otail);
-				//console.log(option2);
-				mandy+=ot;
-			}
-			
-	});
-	
-        $('#mandy').html(mandy.toFixed(2));
-			//$('#charge').text(charge);
-	}
-	function calcChargeAmount(){
+                var mandy =0;
+                $('#tailsmandy .cost .option-amt:visible').each(function() {
 
-			var charge =0;
-			$('#optionprice .cost .option-amt:visible').each(function() {
-			
-			var option1 = $(this).html();
+                        var otail = $(this).html();
 
-			if(option1){
+                        if(otail){
 
-				var option2 = parseFloat(option1);
-				//console.log(option2);
-				charge+=option2;
-			}
-			
-	});
+                        var ot = parseFloat(otail);
+                        //console.log(option2);
+                        mandy+=ot;
+                        }
 
-        $('#charge').html(charge.toFixed(2));
-			//$('#charge').text(charge);
-	}
+                        });
 
-	/**
-	 * 重新计算订单总价
-	 */
-    function calcTotalAmount() {
-    	var totalAmt = 0;
-        $('.cost .option-amt:visible').each(function() {
-			
-			var optionAmt = $(this).html();
-			if(optionAmt){
-				
-				var optionAmt = parseFloat(optionAmt);
-				totalAmt += optionAmt;
-			}
-        	
-        });
-	//alert(totalAmt);
-        $('#total-amt').html(totalAmt.toFixed(2));
-      //  $('#rate-amt').html(totalAmt.toFixed(2));
-    }
+                $('#mandy').html(mandy.toFixed(2));
+                //$('#charge').text(charge);
+            }
+            function calcChargeAmount(){
+
+                var charge =0;
+                $('#optionprice .cost .option-amt:visible').each(function() {
+
+                        var option1 = $(this).html();
+
+                        if(option1){
+
+                        var option2 = parseFloat(option1);
+                        //console.log(option2);
+                        charge+=option2;
+                        }
+
+                        });
+
+                $('#charge').html(charge.toFixed(2));
+                //$('#charge').text(charge);
+            }
+
+            /**
+             * 重新计算订单总价
+             */
+            function calcTotalAmount() {
+                var totalAmt = 0;
+                $('.cost .option-amt:visible').each(function() {
+
+                        var optionAmt = $(this).html();
+                        if(optionAmt){
+
+                        var optionAmt = parseFloat(optionAmt);
+                        totalAmt += optionAmt;
+                        }
+
+                        });
+                //alert(totalAmt);
+                $('#total-amt').html(totalAmt.toFixed(2));
+                //  $('#rate-amt').html(totalAmt.toFixed(2));
+            }
 
 
     });

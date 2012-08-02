@@ -4,14 +4,12 @@
     var totalPrice =0;
     $(document).ready(function() {
             var str;
-            /**
             str = SynCardOcx1.FindReader();
             if(str>0){
 
             SynCardOcx1.SetSexType (1);
             SynCardOcx1.SetNationType(2);
             }
-            **/
             DAYS ='<?php echo ($vo["BASE_RATE_QTY"]); ?>';
             optionprice(DAYS);
 
@@ -122,7 +120,7 @@ function optionprice(days){
 
                 }else{
                     disable="";
-                    $("<div></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display:none;"><span class="item">'+item.OPTION_NAME+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#optionprice");
+                    $("<div></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display:block;"><span class="item">'+item.OPTION_NAME+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#optionprice");
                 }
                 $("#Soption").append('<label class="checkbox inline"><input type="checkbox" name="option[]" '+disable+' class="checkbox-option" checked="true"  value="' +item['OPTION_ID'] + '" />' + item ["OPTION_NAME"] + '</label>');
                 });
@@ -309,9 +307,7 @@ function openDialog(){
 	<table style="float:left;width:18%">
 		<tr>
 			<td >
-                <!--
                 <object classid='clsid:4B3CB088-9A00-4D24-87AA-F65C58531039' id='SynCardOcx1' codeBase='SynCardOcx.CAB#version=1,0,0,1' style='width:100px;height:150px' ></object>
-                -->
 
 			</td>
 		</tr>
