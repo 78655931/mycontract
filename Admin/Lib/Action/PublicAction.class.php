@@ -229,7 +229,7 @@ class PublicAction extends Action {
 
 			// 缓存访问权限
             RBAC::saveAccessList();
-			$this->success('登录成功！',200,true);
+			$this->success('登录成功！');
 
 		}
 	}
