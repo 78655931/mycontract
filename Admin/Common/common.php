@@ -740,8 +740,8 @@ function getlocationopt($localcode, $confirmation='') {
 /*
  * 增值服务价格
  */
-/**
- * function optionPrice($localcode, $confirmation, $xday) {
+
+  function optionPrice($localcode, $confirmation, $xday) {
 	// echo $xday;
 	$Model = M ( "Location","AdvModel" );
 	$Model->addConnect ( C ( "DB_CRS" ), 1 );
@@ -790,7 +790,7 @@ function getlocationopt($localcode, $confirmation='') {
 	}
 	return $html;
  }
-    **/
+    
 function convert_stat($stat){
 
 	switch($stat){
