@@ -114,7 +114,7 @@ function optionprice(days){
                 // alert(item.OPTION_NAME);
                 if(item.MANDATORY=='Y'){
 
-                    disable= "disabled"; 
+                    disable= "readonly"; 
 
                     $("<div></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display: block;"><span class="item">'+item.OPTION_NAME+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#tailmandy");
 

@@ -287,7 +287,6 @@ class ReservationAction extends CommonAction {
 			echo $model->getError ();
 			exit ();
 		}
-		//dump($_POST);exit;
 				// 保存当前数据对象
 		$list = $model->add ( $_POST );
 		if ($list !== false) { // 保存成功
