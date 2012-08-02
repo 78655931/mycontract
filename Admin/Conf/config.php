@@ -12,7 +12,7 @@ $config	= array(
 	'DB_PORT'=>'3306',
 	'DB_PREFIX'=>'',
 
-	'APP_DEBUG'=>true,	//调试模式开�?
+	'APP_DEBUG'=>false,	//调试模式开�?
 
 	'VAR_PAGE'=>'pageNum',
 	'DB_CRS'=>array(

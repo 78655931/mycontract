@@ -1,25 +1,4 @@
-<script type="text/javascript" src="__PUBLIC__/js/booking.js"></script>
 <script type="text/javascript" charset="utf-8" src="__PUBLIC__/js/card.js"></script>
-
-<script type="text/javascript" charset="utf-8">
-	CALC_DISCOUNT_URL = 'http://172.16.100.47:8099/crsCarRental/rcaculateDiscount';
-	var rate_code = '{$vo.RATE_CODE}';
-	var carTypeCode = '{$vo.CAR_TYPE_CODE}';
-	var carModelCode= '{$vo.CAR_MODEL_CODE}';
-	var pickupLocationCode = '{$vo.PICKUP_LOCATION_CODE}';
-	var pickupDate = '{$vo.PICKUP_DATE|substr=0,16}';
-	pickupDate =pickupDate.replaceAll("-","");
-	pickupDate = pickupDate.replace(" ","");
-	pickupDate = pickupDate.replace(":","");
-	
-	var returnDate = '{$vo.RETURN_DATE|substr=0,16}';
-	//alert(pickDate);
-	returnDate = returnDate.replaceAll("-","");
-	returnDate = returnDate.replace(" ","");
-	returnDate = returnDate.replace(":","");
-
-</script>
-
 <script type="text/javascript" charset="utf-8">
     $.ajaxSettings.global=true;
     var totalPrice =0;
@@ -35,58 +14,6 @@
             **/
             DAYS ='{$vo.BASE_RATE_QTY}';
             optionprice(DAYS);
-            var dates = $( "#from, #to" ).datetimepicker({
-defaultdate: "+1w",
-timeFormat: 'hh:mm',
-showmonthafteryear: true,
-numberofmonths: 2,  
-mindate: 0 ,
-dateFormat:'yy-mm-dd',
-closetext:'关闭',
-duration: 'fast',
-showanim:'fadein',
-showon:'button', 
-buttontext:'选择日期',
-showbuttonpanel: false,
-stepHour: 2,//设置步长
-stepMinute: 10,
-stepSecond: 10,
-hourGrid: 4,
-minuteGrid: 10,
-
-onSelect: function( selectedDate ) {
-
-    var option = this.id == "from" ? "minDate" : "maxDate",
-    instance = $( this ).data( "datepicker" ),
-    date = $.datepicker.parseDate(
-            instance.settings.dateFormat ||
-            $.datepicker._defaults.dateFormat,
-            selectedDate, instance.settings );
-    //dates.not( this ).datetimepicker( "option", option, date );
-
-    var begintime = $("#from").val();
-    var endtime = $("#to").val();
-
-    //计算时间 差 
-    if(begintime != "" && endtime != ""){
-        var   bt   =   new Date(Date.parse(begintime.replace(/-/g,   "/")));   
-
-        var   et   =   new  Date(Date.parse(endtime.replace(/-/g,   "/"))); 
-
-        var days = et.getTime() - bt.getTime(); 
-        var day =Math.round(days/(3600*24*1000)) ;
-        DAYS = day;
-        $("#delta-t").text(day);
-        $("#delta-o").text(day);
-        $("#delta-i").html('<input type="hidden" name="BASE_RATE_QTY" value="'+day+'"/>');
-        $("input.checkbox-option").attr('checked', false);
-        $("#optionprice").html("");
-        $("#total-amt").html("");
-        optionprice(DAYS);
-    }
-
-}
-});
 
 
 var options = {
@@ -195,7 +122,7 @@ function optionprice(days){
 
                 }else{
                     disable="";
-                    $("<div></div>").append('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display:none;"><span class="item">'+item.OPTION_NAME+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#optionprice");
+                    $("<div></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display:none;"><span class="item">'+item.OPTION_NAME+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#optionprice");
                 }
                 $("#Soption").append('<label class="checkbox inline"><input type="checkbox" name="option[]" '+disable+' class="checkbox-option" checked="true"  value="' +item['OPTION_ID'] + '" />' + item ["OPTION_NAME"] + '</label>');
                 });
@@ -226,58 +153,97 @@ function optionprice(days){
 
                     }
 
-                    $("<div></div>").append('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display:none;"><span class="item">'+item.OPTION_NAME+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#optionprice");
+                    $("<div></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display:none;"><span class="item">'+item.OPTION_NAME+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#optionprice");
                     $("#Soption").append('<label class="checkbox inline"><input type="checkbox" name="option[]"  class="checkbox-option" value="' +item['OPTION_ID'] + '" />'+item["OPTION_NAME"]+'</label> ');
+            });
+            $('.checkbox-option').click(function() {
+                    var costElem = $('#cost-option-' + $(this).val());
+                    $(this).is(':checked') ? showCost(costElem) : hideCost(costElem);
                     });
+function showCost(costElem) {
+		
+		costElem.addClass('cost-highlight').fadeIn('fast', function() {
+			$(this).removeClass('cost-highlight');
+			//$("#feeoption").show();
+			calcChargeAmount();
 
-            /**$.each(data,function(i,item){
-                var shows;
-                if(item.block=="true"){
-                shows = "block";
-                opp+=parseInt(item.AMT);
-                }else{
+			//calcMandyAmount();
+			//console.log(charge);
+			calcTotalAmount();
+		});
+	}
+	
+	function hideCost(costElem, removeCost) {
+		costElem.addClass('cost-highlight').fadeOut('fast', function() {
+			$(this).removeClass('cost-highlight');
+		//	$("#feeoption").hide();
+			calcTotalAmount();
 
-                shows = "none";
-                }
-                perunit = item.PER_UNIT;
-                switch(perunit){
-                case "1":
-                unit="次";
-                flats = parseInt(perunit);
-                break;
-                case "D":
-                unit = "天";
-                flats = days;
-                break;
-                case "H":
-                unit = "每小时";
-                break;
-                case "W":
-                unit = "每周";
-                break;
-                case "M":
-                unit="每月";
-                break;
-                }
-                if(item.QTY==null){
-                    item.QTY=1;
-                    item.AMT=parseInt(item.RATE)*item.QTY*flats;
+			//calcMandyAmount();
+			calcChargeAmount();
+			removeCost && $(this).remove();
+		});
+	}
+	function calcMandyAmount(){
 
-                }
-                if(item.MANDATORY=='N'){
+			var mandy =0;
+			$('#tailsmandy .cost .option-amt:visible').each(function() {
+			
+			var otail = $(this).html();
 
-                    $("<div style='margin-bottom: 5px;'></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display:'+shows+';"><span class="item">'+item.option_name+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#optionprice");
+			if(otail){
+
+				var ot = parseFloat(otail);
+				//console.log(option2);
+				mandy+=ot;
+			}
+			
+	});
+	
+        $('#mandy').html(mandy.toFixed(2));
+			//$('#charge').text(charge);
+	}
+	function calcChargeAmount(){
+
+			var charge =0;
+			$('#optionprice .cost .option-amt:visible').each(function() {
+			
+			var option1 = $(this).html();
+
+			if(option1){
+
+				var option2 = parseFloat(option1);
+				//console.log(option2);
+				charge+=option2;
+			}
+			
+	});
+
+        $('#charge').html(charge.toFixed(2));
+			//$('#charge').text(charge);
+	}
+
+	/**
+	 * 重新计算订单总价
+	 */
+    function calcTotalAmount() {
+    	var totalAmt = 0;
+        $('.cost .option-amt:visible').each(function() {
+			
+			var optionAmt = $(this).html();
+			if(optionAmt){
+				
+				var optionAmt = parseFloat(optionAmt);
+				totalAmt += optionAmt;
+			}
+        	
+        });
+	//alert(totalAmt);
+        $('#total-amt').html(totalAmt.toFixed(2));
+      //  $('#rate-amt').html(totalAmt.toFixed(2));
+    }
 
 
-                }else{
-
-                    $("<div style='margin-bottom: 5px;'></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display: block;"><span class="item">'+item.option_name+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#tailmandy");
-
-                    mandy+=parseInt(item.AMT);
-                }
-                totalPrice +=days*item.RATE;
-                });
-                **/
     });
 }
 function openDialog(){
@@ -565,4 +531,4 @@ function openDialog(){
 		</div>
 
 </div>
-
+<script type="text/javascript" src="__PUBLIC__/js/booking.js"></script>

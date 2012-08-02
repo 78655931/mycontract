@@ -36,7 +36,6 @@
 <script src="__PUBLIC__/js/jquery.ui.js" type="text/javascript"></script>    
 <script src="__PUBLIC__/js/jquery.ui.i18n.js" type="text/javascript"></script>   
 <script src="__PUBLIC__/js/jquery.datepicker.addon.js" type="text/javascript"></script>  
-
 <script type="text/javascript">
 function fleshVerify(){
 	//重载验证码

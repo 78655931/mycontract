@@ -4,7 +4,13 @@
  */
 $(function() {
 	
-	
+	// 勾选和取消增值服务时，重新计算订单总价
+	$('.checkbox-option').click(function() {
+		console.log("Click");
+        //var costElem = $('#cost-option-' + $(this).val());
+        //$(this).is(':checked') ? showCost(costElem) : hideCost(costElem);
+	});
+
 function showCost(costElem) {
 		
 		costElem.addClass('cost-highlight').fadeIn('fast', function() {
@@ -88,15 +94,6 @@ function showCost(costElem) {
       //  $('#rate-amt').html(totalAmt.toFixed(2));
     }
 
-	// 勾选和取消增值服务时，重新计算订单总价
-	$('.checkbox-option').click(function() {
-		
-	//alert(111);
-		//alert($(this).val());
-        var costElem = $('#cost-option-' + $(this).val());
-		
-        $(this).is(':checked') ? showCost(costElem) : hideCost(costElem);
-	});
 	
 	
 	/**
