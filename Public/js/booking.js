@@ -5,13 +5,7 @@
 $(function() {
 	
 	// 勾选和取消增值服务时，重新计算订单总价
-	$('.checkbox-option').click(function() {
-		console.log("Click");
-        //var costElem = $('#cost-option-' + $(this).val());
-        //$(this).is(':checked') ? showCost(costElem) : hideCost(costElem);
-	});
-
-function showCost(costElem) {
+	function showCost(costElem) {
 		
 		costElem.addClass('cost-highlight').fadeIn('fast', function() {
 			$(this).removeClass('cost-highlight');
@@ -76,7 +70,7 @@ function showCost(costElem) {
 
 	/**
 	 * 重新计算订单总价
-	 */
+	 * */
     function calcTotalAmount() {
     	var totalAmt = 0;
         $('.cost .option-amt:visible').each(function() {

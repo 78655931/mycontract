@@ -1,8 +1,9 @@
 <script type="text/javascript" charset="utf-8" src="__PUBLIC__/js/card.js"></script>
 <script type="text/javascript" charset="utf-8">
-    $.ajaxSettings.global=true;
+    $.ajaxSettings.global=false;
     var totalPrice =0;
     $(document).ready(function() {
+            /**
             var str;
             str = SynCardOcx1.FindReader();
             if(str>0){
@@ -10,6 +11,7 @@
             SynCardOcx1.SetSexType (1);
             SynCardOcx1.SetNationType(2);
             }
+            **/
             DAYS ='{$vo.BASE_RATE_QTY}';
             optionprice(DAYS);
 
@@ -114,15 +116,16 @@ function optionprice(days){
                 // alert(item.OPTION_NAME);
                 if(item.MANDATORY=='Y'){
 
-                    disable= "readonly"; 
 
                     $("<div></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display: block;"><span class="item">'+item.OPTION_NAME+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#tailmandy");
 
+                $("#Soption").append('<label class="checkbox inline"><input type="checkbox" name="option[]" disabled class="checkbox-option" checked="true"  value="' +item['OPTION_ID'] + '" /><input type="hidden" name="option[]" disabled class="checkbox-option"   value="' +item['OPTION_ID'] + '" />' + item ["OPTION_NAME"] + '</label>');
+
                 }else{
-                    disable="";
+
+                    $("#Soption").append('<label class="checkbox inline"><input type="checkbox" name="option[]" onclick="doclick(this);"  class="checkbox-option" checked="true"  value="' +item['OPTION_ID'] + '" />' + item ["OPTION_NAME"] + '</label>');
                     $("<div></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display:block;"><span class="item">'+item.OPTION_NAME+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#optionprice");
                 }
-                $("#Soption").append('<label class="checkbox inline"><input type="checkbox" name="option[]" '+disable+' class="checkbox-option" checked="true"  value="' +item['OPTION_ID'] + '" />' + item ["OPTION_NAME"] + '</label>');
                 });
             $.each(data['uni'],function(i,item){
                     perunit = item.PER_UNIT;
@@ -152,18 +155,35 @@ function optionprice(days){
                     }
 
                     $("<div></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display:none;"><span class="item">'+item.OPTION_NAME+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#optionprice");
-                    $("#Soption").append('<label class="checkbox inline"><input type="checkbox" name="option[]"  class="checkbox-option" value="' +item['OPTION_ID'] + '" />'+item["OPTION_NAME"]+'</label> ');
+                    $("#Soption").append('<label class="checkbox inline"><input type="checkbox" name="option[]"  onclick="doclick(this);" class="checkbox-option" value="' +item['OPTION_ID'] + '" />'+item["OPTION_NAME"]+'</label> ');
+                    
+
             });
-            $('.checkbox-option').click(function() {
-                    var costElem = $('#cost-option-' + $(this).val());
-                    $(this).is(':checked') ? showCost(costElem) : hideCost(costElem);
-                    });
-            function showCost(costElem) {
+            /**$('.checkbox-option').click(function() {
+                // console.log("Click");
+                        alert(111);
+                       // var costElem = $('#cost-option-' + $(this).val());
+                       // $(this).is(':checked') ? showCost(costElem) : hideCost(costElem);
+                });
+                **/
+                 
+            
+
+    });
+}
+
+function doclick(obj){
+    var costElem = $('#cost-option-' + obj.value);
+   obj.checked ? showCost(costElem) : hideCost(costElem);
+
+}
+//
+function showCost(costElem) {
 
                 costElem.addClass('cost-highlight').fadeIn('fast', function() {
-                        $(this).removeClass('cost-highlight');
-                        //$("#feeoption").show();
-                        calcChargeAmount();
+                    $(this).removeClass('cost-highlight');
+                    //$("#feeoption").show();
+                    calcChargeAmount();
 
                         //calcMandyAmount();
                         //console.log(charge);
@@ -240,10 +260,7 @@ function optionprice(days){
                 $('#total-amt').html(totalAmt.toFixed(2));
                 //  $('#rate-amt').html(totalAmt.toFixed(2));
             }
-
-
-    });
-}
+//
 function openDialog(){
     window.open(PRINTURL);
 }
@@ -307,7 +324,8 @@ function openDialog(){
 	<table style="float:left;width:18%">
 		<tr>
 			<td >
-                <object classid='clsid:4B3CB088-9A00-4D24-87AA-F65C58531039' id='SynCardOcx1' codeBase='SynCardOcx.CAB#version=1,0,0,1' style='width:100px;height:150px' ></object>
+                <!--<object classid='clsid:4B3CB088-9A00-4D24-87AA-F65C58531039' id='SynCardOcx1' codeBase='SynCardOcx.CAB#version=1,0,0,1' style='width:100px;height:150px' ></object>
+                -->
 
 			</td>
 		</tr>
@@ -526,5 +544,5 @@ function openDialog(){
 			</form>
 		</div>
 
-</div>
-<script type="text/javascript" src="__PUBLIC__/js/booking.js"></script>
+    </div>
+
