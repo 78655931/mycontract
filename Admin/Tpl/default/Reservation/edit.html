@@ -293,11 +293,13 @@ function openDialog(){
 
 	<table width="98%" class="list">
 		<thead>
-			<tr>
-				<th width="80">预定人名称</th>
+            <tr>
+
+				<th width="80">预订单编号</th>
+				<th width="80">预订人名称</th>
 				<th width="200">取车时间</th>
 				<th width="200">还车时间</th>
-				<th width="200">预定车型</th>
+				<th width="200">预订车型</th>
 				<th width="100">均价</th>
 				<th width="100">租期类型</th>
 				<th width="100">超天价格</th>
@@ -307,7 +309,8 @@ function openDialog(){
 			</tr>
 		</thead>
 		<tbody>
-			<tr>
+            <tr>
+				<td>{$vo.CONFIRMATION|substr=-15}</td>
 				<td>{$vo.REAL_NAME}</td>
 				<td>{$vo.PICKUP_DATE|substr=0,16}</td>
 				<td>{$vo.RETURN_DATE|substr=0,16}</td>

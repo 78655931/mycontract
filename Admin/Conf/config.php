@@ -3,25 +3,25 @@ $siteconfig	=	require './siteconfig.inc.php';
 $config	= array(
     'URL_MODEL'=>1, // 如果你的环境不支持PATHINFO 请设置为3
 	'DB_TYPE'=>'mysql',
-	//'DB_HOST'=>'117.34.70.20',
-	'DB_HOST'=>'localhost',
+	'DB_HOST'=>'117.34.70.20',
+	//'DB_HOST'=>'localhost',
 
 	'DB_NAME'=>'test',
 	'DB_USER'=>'root',
-	'DB_PWD'=>'',
+	'DB_PWD'=>'123.com',
 	'DB_PORT'=>'3306',
 	'DB_PREFIX'=>'',
 
-	'APP_DEBUG'=>false,	//调试模式开�?
+	'APP_DEBUG'=>true,	//调试模式开�?
 
 	'VAR_PAGE'=>'pageNum',
 	'DB_CRS'=>array(
 		'dbms' => 'mysql',
 		'username' => 'root',
-		'password' => '',
-		'hostname' => 'localhost',
+		'password' => '123.com',
+	//	'hostname' => 'localhost',
 
-		//'hostname' => '117.34.70.20',
+		'hostname' => '117.34.70.20',
 		'hostport' => '3306',
 		'database' => 'ry_crsengine_db',
     ),
