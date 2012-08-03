@@ -119,7 +119,7 @@ function optionprice(days){
 
                     $("<div></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display: block;"><span class="item">'+item.OPTION_NAME+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#tailmandy");
 
-                $("#Soption").append('<label class="checkbox inline"><input type="checkbox" name="option[]" disabled class="checkbox-option" checked="true"  value="' +item['OPTION_ID'] + '" /><input type="hidden" name="option[]" disabled class="checkbox-option"   value="' +item['OPTION_ID'] + '" />' + item ["OPTION_NAME"] + '</label>');
+                $("#Soption").append('<label class="checkbox inline"><input type="checkbox" name="options" disabled class="checkbox-option" checked="true"  value="' +item['OPTION_ID'] + '" /><input type="hidden" name="option[]"    value="' +item['OPTION_ID'] + '" />' + item ["OPTION_NAME"] + '</label>');
 
                 }else{
 

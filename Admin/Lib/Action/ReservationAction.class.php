@@ -267,7 +267,6 @@ class ReservationAction extends CommonAction {
 		$_POST ['createdate'] = date('Y-m-d h:m:s');
 		$_POST ['status'] = "CONTRACT";
 		//$data = str_ireplace("master_dwz_devLookup_","",$_REQUEST);
-		//dump($data);exit;
 		$_POST['CAR_TAG'] =$_POST['master_dwz_devLookup_CAR_TAG'];
 		$_POST['CAR_MODEL'] = $_POST['master_dwz_devLookup_CAR_MODEL'];
 		$_POST['CAR_MODEL_NAME'] = $_POST['master_dwz_devLookup_CAR_MODEL_NAME'];
