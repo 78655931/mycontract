@@ -28,8 +28,10 @@ class AgreementAction extends CommonAction {
 		// 排序字段 默认为主键名
 		if (! empty ( $_REQUEST ['_order'] )) {
 			$order = $_REQUEST ['_order'];
-		} else {
-			$order = ! empty ( $sortBy ) ? $sortBy : $Model->getPk ();
+        } else {
+            //echo "OR";
+            $order = 'status';
+			//$order = ! empty ( $sortBy ) ? $sortBy : $Model->getPk ();
 		}
 		// 排序方式默认按照倒序排列
 		// 接受 sost参数 0 表示倒序 非0都 表示正序
@@ -37,7 +39,7 @@ class AgreementAction extends CommonAction {
 			// $sort = $_REQUEST ['_sort'] ? 'asc' : 'desc';
 			$sort = $_REQUEST ['_sort'] == 'asc' ? 'asc' : 'desc'; // zhanghuihua@msn.com
 		} else {
-			$sort = $asc ? 'asc' : 'desc';
+			$sort = $asc ? 'asc' : '="CONTRACT" desc';
 		}
 		$map = $this->_search();
 		if (method_exists($this, '_filter')) {
@@ -46,7 +48,6 @@ class AgreementAction extends CommonAction {
 		$map['STATUS'] =array('neq','CANCEL') ;
 		// 取得满足条件的记录数
 		$count = $Model->where ( $map )->count ( $Model->getPk () );
-		//echo $Model->getLastSql();exit;
 		if ($count > 0) {
 			import ( "@.ORG.Page" );
 			// 创建分页对象
@@ -59,7 +60,9 @@ class AgreementAction extends CommonAction {
 			$p = new Page ( $count, $listRows );
 			// 分页查询数据
 
-			$voList = $Model->where ( $map )->order ( "`" . $order . "` " . $sort )->limit ( $p->firstRow . ',' . $p->listRows )->findAll ();
+            $voList = $Model->where ( $map )->order ( "`" . $order . "` " . $sort )->limit ( $p->firstRow . ',' . $p->listRows )->findAll ();
+
+            //echo $Model->getLastSql();
 			// 分页跳转的时候保证查询条件
 			foreach ( $map as $key => $val ) {
 				if ( is_array ( $val )) {

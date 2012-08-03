@@ -229,6 +229,7 @@ class PublicAction extends Action {
 
 			// 缓存访问权限
             RBAC::saveAccessList();
+            //redirect(__APP__);
 			$this->success('登录成功！');
 
 		}
