@@ -3,7 +3,8 @@
     $.ajaxSettings.global=false;
     var totalPrice =0;
     $(document).ready(function() {
-            /**
+        try{
+            $("#ocard").html("<object classid='clsid:4B3CB088-9A00-4D24-87AA-F65C58531039' id='SynCardOcx1' codeBase='SynCardOcx.CAB#version=1,0,0,1' style='width:100px;height:150px' ></object>");
             var str;
             str = SynCardOcx1.FindReader();
             if(str>0){
@@ -11,7 +12,10 @@
             SynCardOcx1.SetSexType (1);
             SynCardOcx1.SetNationType(2);
             }
-            **/
+        }catch(e){
+            //console.log("");
+        }
+            
             DAYS ='{$vo.BASE_RATE_QTY}';
             optionprice(DAYS);
 
@@ -327,8 +331,7 @@ function openDialog(){
 	<table style="float:left;width:18%">
 		<tr>
 			<td >
-                <!--<object classid='clsid:4B3CB088-9A00-4D24-87AA-F65C58531039' id='SynCardOcx1' codeBase='SynCardOcx.CAB#version=1,0,0,1' style='width:100px;height:150px' ></object>
-                -->
+               <div id="ocard"></div> 
 
 			</td>
 		</tr>
