@@ -1,6 +1,6 @@
 <script type="text/javascript" src="__PUBLIC__/js/booking.js"></script>
 <script type="text/javascript" charset="utf-8" src="__PUBLIC__/js/card.js"></script>
-
+<!--
 <script type="text/javascript" charset="utf-8">
 	//alert(CALC_DISCOUNT_URL+"?"+carTypeCode+"&"+carModelCode+"&"+pickupLocationCode+"&"+pickupDate+"&"+returnDate+"&"+uniDiscId);
 CALC_DISCOUNT_URL = 'http://172.16.100.47:8099/crsCarRental/rcaculateDiscount';
@@ -20,7 +20,7 @@ returnDate = returnDate.replace(" ","");
 returnDate = returnDate.replace(":","");
 
 </script>
-
+-->
 
 
 <script type="text/javascript" charset="utf-8">
@@ -28,16 +28,21 @@ returnDate = returnDate.replace(":","");
 
 var totalPrice =0;
 $(document).ready(function() {
-	//alert(pickupDate);
-	var str;
+    //alert(pickupDate);
+    try{
+        var str;
+        $("#objcard").html("<object classid='clsid:4B3CB088-9A00-4D24-87AA-F65C58531039' id='SynCardOcx1' codeBase='SynCardOcx.CAB#version=1,0,0,1' style='width:100px;height:150px' ></object>");
+        str = SynCardOcx1.FindReader();
 
-	str = SynCardOcx1.FindReader();
+        if(str>0){
 
-	if(str>0){
-
-		SynCardOcx1.SetSexType (1);
-		SynCardOcx1.SetNationType(2);
-	}
+            SynCardOcx1.SetSexType (1);
+            SynCardOcx1.SetNationType(2);
+        }
+    }catch(e){
+    
+    }
+	
 	
 	DAYS = 2;
 	getCarType();
@@ -191,7 +196,7 @@ function ReadCard_onclick()
 } 
 function getCarType(){
 
-	$.getJSON('__URL__/getCarType',function(data){
+    $.getJSON('__URL__/getCarType',function(data){
 			$.each(data.resultResponse.carTypes.carType,function(i,item){
 				$('<option></option>').val(item['carTypeCode']).text(item.carTypeName).appendTo($('#cartypecode'));
 			})
@@ -345,8 +350,7 @@ function getCarType(){
 </style>
 <div class="pageContent" style="height:900px;overflow:auto">
 
-	<div style="float: left;  margin-top: 70px;">
-<object classid='clsid:4B3CB088-9A00-4D24-87AA-F65C58531039' id='SynCardOcx1' codeBase='SynCardOcx.CAB#version=1,0,0,1' style='width:100px;height:150px' ></object>
+	<div style="float: left;  margin-top: 70px;" id="objcard">
 
 </div>	
 <div id="membered"></div>
@@ -637,4 +641,4 @@ function getCarType(){
 				});
 				$('#total-amt').html(totalAmt.toFixed(2));
 			}
-		</script-->
+        </script> -->

@@ -1,6 +1,22 @@
 <?php
 class ReservationAction extends CommonAction {
-
+	public function _filter(&$map){
+		if(!empty($_POST['REAL_NAME']))  
+		$map['REAL_NAME'] = array('eq',"".$_POST['REAL_NAME']."");
+		if(!empty($_POST['IDENTITY_CODE']))
+			$map['IDENTITY_CODE'] = array('eq',"".$_POST['IDENTITY_CODE']."");
+		if(!empty($_POST['CONFIRMATION']))
+			$map['CONFIRMATION'] = array('like',"%".$_POST['CONFIRMATION']."%");
+		if(!empty($_POST['PICKUP_DATE']))
+			$map['PICKUP_DATE'] = array('like',"%".$_POST['PICKUP_DATE']."%");
+		if(!empty($_POST['RETURN_DATE']))
+			$map['RETURN_DATE'] = array('like',"%".$_POST['RETURN_DATE']."%");
+		if(!empty($_POST['WORK_PHONE']))
+			$map['WORK_PHONE'] = array('eq',"".$_POST['WORK_PHONE']."");
+		if(!empty($_POST['STATUS']))
+		$map['STATUS'] = array('eq',"".$_POST['STATUS']."");
+	}
+		
 	public function index() {
 		// 新增新的数据库参数
 		//$Model = D ( "Location" );
@@ -8,8 +24,8 @@ class ReservationAction extends CommonAction {
 		$Model->addConnect ( C ( "DB_CRS" ), 1 );
 		// 切换数据库
 		$Model->switchConnect ( 1, "reservation" );
-		// $nowdate = Date("Y-m-d");
-		$nowdate = '2011-12-04';
+		 $nowdate = Date("Y-m-d");
+		//$nowdate = '2011-12-04';
 		$where = " left(booking_date,10)='" . $nowdate . "'";
 
 		// 排序字段 默认为主键名
@@ -30,24 +46,27 @@ class ReservationAction extends CommonAction {
 		if (method_exists($this, '_filter')) {
 			$this->_filter($map);
 		}
-		$map['STATUS'] = array('not in','CONTRACT');
+		$map['CONFIRMATION'] = array('like',"%".$_SESSION['location_code']."%");
+		if(empty($_POST['STATUS']))
+		$map['STATUS'] = array(array('neq','CONTRACT'),array('neq','CANCEL'),array('neq','RETURN'));
 		//dump($map);exit;
 		// 取得满足条件的记录数
 		$count = $Model->where ( $map )->count ( $Model->getPk () );
-		//echo $Model->getLastSql();exit;
+	//	echo $Model->getLastSql();
 		if ($count > 0) {
 			import ( "@.ORG.Page" );
 			// 创建分页对象
 			if (! empty ( $_REQUEST ['listRows'] )) {
 				$listRows = $_REQUEST ['listRows'];
 			} else {
-				$listRows = '30';
+				$listRows = '20';
 			}
 
 			$p = new Page ( $count, $listRows );
+			//dump($p);
 			// 分页查询数据
 			//dump($map);exit;
-			$voList = $Model->where ( $map )->field ( 'reservation_id,right(CONFIRMATION,15) as confirmation,real_name,identity_code,work_phone,left(pickup_date,16) as pickup_date,left(return_date,16) as return_date,car_type_name,CAR_MODEL_NAME,status' )->order ( "`" . $order . "` " . $sort )->limit ( $p->firstRow . ',' . $p->listRows )->findAll ();
+			$voList = $Model->where ( $map )->field ( 'reservation_id,right(CONFIRMATION,15) as confirmation,real_name,identity_code,home_phone,left(pickup_date,16) as pickup_date,left(return_date,16) as return_date,car_type_name,CAR_MODEL_NAME,status' )->order ( "`" . $order . "` " . $sort )->limit ( $p->firstRow . ',' . $p->listRows )->findAll ();
 			// 分页跳转的时候保证查询条件
 			foreach ( $map as $key => $val ) {
 				if ( is_array ( $val )) {
@@ -56,6 +75,7 @@ class ReservationAction extends CommonAction {
 			}
 			// 分页显示
 			$page = $p->show ();
+			//echo $page;exit;
 			// 列表排序显示
 			$sortImg = $sort; // 排序图标
 			$sortAlt = $sort == 'desc' ? '升序排列' : '倒序排列'; // 排序提示
@@ -65,6 +85,14 @@ class ReservationAction extends CommonAction {
 			//dump($voList);exit;
 			$this->assign('pickup_date',$_REQUEST['pickup_date']);
 			$this->assign('identitycode',$_REQUEST['identity_code']);
+			$this->assign("REAL_NAME",$_POST['REAL_NAME']);
+			$this->assign("IDENTITY_CODE",$_POST['IDENTITY_CODE']);
+			$this->assign("CONFIRMATION",$_POST['CONFIRMATION']);
+			$this->assign("PICKUP_DATE",$_POST['PICKUP_DATE']);
+			$this->assign("RETURN_DATE",$_POST['RETURN_DATE']);
+			$this->assign("WORK_PHONE",$_POST['WORK_PHONE']);
+			$this->assign("STATUS",$_POST['STATUS']);
+
 			$this->assign ( 'lists', $voList );
 			$this->assign ( 'sort', $sort );
 			$this->assign ( 'order', $order );
@@ -82,9 +110,9 @@ class ReservationAction extends CommonAction {
 		// $this->assign('list',$reslist);
 		$this->assign ( 'menu', $menu );
 		
-		$dj =  D("Reservationby");
-		$djList = $dj->findAll ();
-		$this->assign("list",$djList);
+		//$dj =  D("Reservationby");
+		//$djList = $dj->findAll ();
+		//$this->assign("list",$djList);
 		$this->display();			
 	}
 	public function djedit(){
@@ -103,7 +131,8 @@ class ReservationAction extends CommonAction {
 		$this->assign("vo",$list);
 		$this->display();
 	}
-	function edit() {
+    function edit() {
+        Debug::mark('start');
 		$Model = M ( "Location","AdvModel" );
 		$Model->addConnect ( C ( "DB_CRS" ), 1 );
 		$Model->switchConnect ( 1, "reservation" );
@@ -119,7 +148,8 @@ class ReservationAction extends CommonAction {
 			$vo ['status'] = $agreeList ['status'];
 			$vo['agreement_id'] = $agreeList['id'];
 
-		}
+        }
+        /**
 		//折扣信息
 		$ipaddress="172.16.100.173";
 		$discount_url = C('DISCOUNT');
@@ -137,29 +167,35 @@ class ReservationAction extends CommonAction {
 			$vs[]=(array)$v;
 
 		}
-		/*折扣选择*/
+		//折扣选择
 		$Model->switchConnect ( 1, "reservation_disc" );
 		$discountck = $Model->where("CONFIRMATION='".$vo['CONFIRMATION']."'")->find();
 		$vo['discountck'] = $discountck['UNI_DISC_ID'];
-		$this->assign("discount",$vs);
+        $this->assign("discount",$vs);
+        **/
 		//均价
 		$average = round($vo['BASE_RATE_AMT'] /$vo['BASE_RATE_QTY']);
 		$vo ['agreementid'] = 'HT' . substr ( $vo ['CONFIRMATION'], - 15 );
+		$Model->switchConnect ( 1, "uni_rate" );
+		$unirate = $Model->getByLocationCode(substr ( $vo ['CONFIRMATION'], 0,15 ));
+		$this->assign('unirate',$unirate);
+		
 		$this->assign('average',$average);
 		$this->assign('datenow',date('Y-m-d h:m'));
 		$this->assign ( 'confirmation', $_REQUEST ['confirmation'] );
 		$this->assign ( 'location_code', $vo ['PICKUP_LOCATION_CODE'] );
-		$this->assign ( 'vo', $vo );
+        $this->assign ( 'vo', $vo );
+        Debug::mark('end');
+        Log::write('Edit运行时间：'.Debug::useTime('start','end'), Log::DEBUG);
 		$this->display ();
 	}
 	public function selectCar(){
-		$Model = M( "Location","AdvModel" );
+		$Model = M( "Car","AdvModel" );
 		$Model->addConnect ( C ( "DB_CRS" ), 1 );
 		$Model->switchConnect ( 1, "Car" );
 		$carmodelcode = $_REQUEST ['modelcode'];
 		$map['CAR_MODEL_CODE'] = $carmodelcode;
 		$map['status'] = 2;
-		$Model->switchConnect ( 1, "Car" );
 		$list = $this->_lists ( $Model, $map, 'CAR_ID', false, 'CAR_ID' );
 		//dump($list);exit;
 		if(empty($list)){
@@ -178,6 +214,11 @@ class ReservationAction extends CommonAction {
 			}
 			$Model->switchConnect ( 1, "Car" );
 			$list = $this->_lists ( $Model, $map, 'CAR_ID', false, 'CAR_ID' );
+			if (empty($list)) {
+				// code...
+				$this->error ('库存为空!');
+				exit;
+			}
 		}
 		$this->display();
 	}
@@ -221,10 +262,11 @@ class ReservationAction extends CommonAction {
 		$model->switchConnect ( 1, "agreement" );
 		$optionidList = $_POST['option'];
 		$_POST ['agreement_id'] = 'HT' . $_REQUEST ['confirmation'];
-		$_POST ['createdate'] = time ();
+	//	$_POST ['createdate'] = time ();
+
+		$_POST ['createdate'] = date('Y-m-d h:m:s');
 		$_POST ['status'] = "CONTRACT";
 		//$data = str_ireplace("master_dwz_devLookup_","",$_REQUEST);
-		//dump($data);exit;
 		$_POST['CAR_TAG'] =$_POST['master_dwz_devLookup_CAR_TAG'];
 		$_POST['CAR_MODEL'] = $_POST['master_dwz_devLookup_CAR_MODEL'];
 		$_POST['CAR_MODEL_NAME'] = $_POST['master_dwz_devLookup_CAR_MODEL_NAME'];
@@ -236,7 +278,9 @@ class ReservationAction extends CommonAction {
 		$carmodelcode = $_POST['CAR_MODEL_CODE'];
 		$carTypeCode = $_POST['master_dwz_devLookup_CAR_TYPE_CODE'];
 		$cartag = $_POST['master_dwz_devLookup_CAR_TAG'];
-		$validate = array (array ('CAR_TAG', 'require', '车牌必须！' ));
+		$validate = array (array ('CAR_TAG', 'require', '车牌必须!' ),array('work_phone','/^(1(([35][0-9])|(47)|[8][01236789]))\d{8}$/','租车人手机格式不正确!'),
+					array('contactperson','require','紧急联系人必须!'),array('contactphone','/^(1(([35][0-9])|(47)|[8][01236789]))\d{8}$/','手机格式不正确!'),array('MEMBER_TYPE_NAME','require','会员类型必须'),array('REAL_NAME','require','客户名称必须'),array('sex','require','性别必须'),array('age','require','出生日期必须'),array('IDENTITY_CODE','require','身份证号码必须'),array('address','require','身份证地址必须'),array('driver_code','require','驾驶证号码必须')
+		);
 		$model->setProperty ( "_validate", $validate );
 		if (false === $model->create ( $_POST )) {
 			echo $model->getError ();
@@ -249,14 +293,13 @@ class ReservationAction extends CommonAction {
 			$map['confirmation']	= $_REQUEST['location_code'].'-'.$_REQUEST['confirmation'];
 			$resOpt = $model->where($map)->group('option_id')->select();
 			unset($map);
-			$model->switchConnect(1,'uni_option');
-			$map['option_id'] = array('in',$_REQUEST['option']);
-			$map['location_code'] = $_REQUEST['location_code'];
-			$uniOpt = $model->where($map)->group('option_id')->select();
 			$model->switchConnect ( 1, "agreement_option" );
+			//$reservationOption = $model->where('CONFIRMATION="'.$map['confirmation'].'"')->getField('OPTION_ID,QTY');
+			/**
 			foreach($uniOpt as $k=>$v)
 			{
-				$data['CONFIRMATION'] = $_REQUEST['location_code'].'-'.$_REQUEST['confirmation'];
+				//$data['CONFIRMATION'] = $_REQUEST['location_code'].'-'.$_REQUEST['confirmation'];
+				$data['CONFIRMATION'] = $_POST ['agreement_id'];
 				$data['OPTION_ID'] = $v['OPTION_ID'];
 				$data['OPTION_NAME'] = $v['OPTION_NAME'];
 				$data['OPTION_TYPE'] = $v['OPTION_TYPE'];
@@ -269,21 +312,74 @@ class ReservationAction extends CommonAction {
 				$model->add($data);
 				//echo $model->getLastSql();exit;
 			}
-			unset($data);
+			**/
 			foreach ($resOpt as $key=>$val){
-				
-				$data['CONFIRMATION'] = $val['CONFIRMATION'];
+
+				if(in_array($val['OPTION_ID'],$_REQUEST['option'])){
+				//$data['CONFIRMATION'] = $val['CONFIRMATION'];
+				$data['CONFIRMATION'] = $_POST ['agreement_id'];
 				$data['OPTION_ID'] = $val['OPTION_ID'];
 				$data['OPTION_NAME'] = $val['OPTION_NAME'];
 				$data['OPTION_TYPE'] = $val['OPTION_TYPE'];
 				$data['RATE'] = $val['RATE'];
 				$data['PER_UNIT'] = $val['PER_UNIT'];
-				$data['QTY'] = $val['QTY'];
-				$data['AMT'] = $val['AMT'];
+				$data['QTY'] =  $val['QTY'];
+				$data['AMT'] = 	$val['AMT'];
 				$data['SEQUENCE'] = $val['SEQUENCE'];
-				$data['MANDATORY'] = $val['MANDATORY'];
+				$data['MANDATORY'] = $val['MANDATORY'];	
+				$optionID[] = $val['OPTION_ID'];
 				$model->add($data);
+				}
+				//echo $model->getLastSql();
 			}
+			unset($data);
+			$model->switchConnect(1,'uni_option');
+			$map['option_id'] = array('in',$_REQUEST['option']);
+			$map['location_code'] = $_REQUEST['location_code'];
+			$map['OPTION_ID'] = array('not in',$optionID);
+			$uniOpt = $model->where($map)->group('option_id')->select();
+
+			$model->switchConnect ( 1, "agreement_option" );
+			foreach($uniOpt as $k=>$v)
+			{
+				
+				if(in_array($v['OPTION_ID'],$_REQUEST['option'])){
+				//$data['CONFIRMATION'] = $_REQUEST['location_code'].'-'.$_REQUEST['confirmation'];
+				$data['CONFIRMATION'] = $_POST ['agreement_id'];
+				$data['OPTION_ID'] = $v['OPTION_ID'];
+				$data['OPTION_NAME'] = $v['OPTION_NAME'];
+				$data['OPTION_TYPE'] = $v['OPTION_TYPE'];
+				$data['RATE'] = $v['RATE'];
+				$data['PER_UNIT'] = $v['PER_UNIT'];
+				$data['QTY'] = 1;
+				$data['AMT'] =  $v['PER_UNIT'];
+				$data['SEQUENCE'] = $v['SEQUENCE'];
+				$data['MANDATORY'] = $v['MANDATORY'];
+				$model->add($data);
+				//echo $model->getLastSql();exit;
+				}
+			}
+			/**
+			foreach ($resOpt as $key=>$val){
+				//$data['CONFIRMATION'] = $val['CONFIRMATION'];
+				$data['CONFIRMATION'] = $_POST ['agreement_id'];
+				$data['OPTION_ID'] = $val['OPTION_ID'];
+				$data['OPTION_NAME'] = $val['OPTION_NAME'];
+				$data['OPTION_TYPE'] = $val['OPTION_TYPE'];
+				$data['RATE'] = $val['RATE'];
+				$data['PER_UNIT'] = $val['PER_UNIT'];
+				$data['QTY'] =  $val['QTY'];
+				$data['AMT'] = 	$val['AMT'];
+				$data['SEQUENCE'] = $val['SEQUENCE'];
+				$data['MANDATORY'] = $val['MANDATORY'];	
+				 //$map['OPTION_ID'] = array('not in',$optionID);
+				if(!in_array($val['OPTION_ID'],$_REQUEST['option']) && $val['MANDATORY']!='Y'){
+
+				$model->add($data);
+				//echo $model->getLastSql();
+				}
+			}
+			**/
 				unset($data);	
 				$model->switchConnect ( 1, "agreement_disc" );
 				$data['CONFIRMATION'] = $_REQUEST['location_code'].'-'.$_REQUEST['confirmation'];
@@ -314,7 +410,10 @@ class ReservationAction extends CommonAction {
 				if($carinfo['STATUS']==2){
 					$cares = $model->execute("update car set status=1 where CAR_TAG='".$cartag."' and CAR_MODEL_CODE='".$carmodelcode."'");
 				}
-				
+				$model->switchConnect(1,'uni_inventory');
+				//$model->where("LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$carmodelcode."' and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($_POST['RETURN_DATE'],0,10)."'")->setDec('REAL_INT',1);
+				$model->execute("UPDATE `uni_inventory` SET `REAL_INT`=REAL_INT-1 where LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$carmodelcode."' and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($_POST['RETURN_DATE'],0,10)."'");
+				Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
 				
 			header ( "Content-Type:text/html; charset=utf-8" );
 			exit ( json_encode ( 1 ) );
@@ -388,8 +487,6 @@ class ReservationAction extends CommonAction {
 		// Print text using writeHTMLCell()
 		$pdf->writeHTMLCell ( $w = 0, $h = 0, $x = '', $y = '', $html, $border = 0, $ln = 1, $fill = 0, $reseth = true, $align = '', $autopadding = true );
 		
-		// ---------------------------------------------------------
-		
 		// Close and output PDF document
 		// This method has several options, check the source code documentation
 		// for more
@@ -400,6 +497,7 @@ class ReservationAction extends CommonAction {
 	
 	protected function _lists($model, $map, $sortBy = '', $asc = false, $id = 'id') {
 		// 排序字段 默认为主键名
+		echo $model;
 		if (isset ( $_REQUEST ['_order'] )) {
 			$order = $_REQUEST ['_order'];
 		} else {
@@ -414,7 +512,6 @@ class ReservationAction extends CommonAction {
 		}
 		// 取得满足条件的记录数
 		$count = $model->where ( $map )->count ( $id );
-		//echo $model->getLastSql();
 		if ($count > 0) {
 			import ( "ORG.Util.Page" );
 			// 创建分页对象
@@ -427,8 +524,7 @@ class ReservationAction extends CommonAction {
 			// 分页查询数据
 
 			$voList = $model->where ( $map )->order ( "`" . $order . "` " . $sort )->limit ( $p->firstRow . ',' . $p->listRows )->findAll ();
-			$carmodel = getCarmodel ( $map ['CAR_MODEL_CODE'], 'CAR_MODEL' );
-
+			//$carmodel = getCarmodel ( $map ['CAR_MODEL_CODE'], 'CAR_MODEL' );
 			foreach ( $voList as $k => $v ) {
 
 				$voList [$k] ['CAR_MODEL'] = getCarmodel ( $v ['CAR_MODEL_CODE'], 'CAR_MODEL' );
@@ -478,33 +574,78 @@ class ReservationAction extends CommonAction {
 		// code...
 	
 		$url="http://172.16.100.47:8099/crsCarRental/rcaculateDiscount?"."uniDiscId=".$_POST['uniDiscId']."&rateCode=".$_POST['rateCode']."&carTypeCode=".$_POST['carTypeCode']."&carModelCode=".$_POST['carModelCode']."&pickupLocationCode=".$_POST['pickupLocationCode']."&pickupDate=".$_POST['pickupDate']."&returnDate=".$_POST['returnDate'];
-		echo $url;exit;
+		
 		$result = $this->curl($url);
 		echo $result;exit;
 	}
 	public function optionprice()
-	{
-		// code...
-		$Model = M ( "Location","AdvModel" );
-		$Model->addConnect ( C ( "DB_CRS" ), 1 );
-		if($_GET['table']){
+    { 
+        $Model = M ( "Location","AdvModel" );
+        $Model->addConnect ( C ( "DB_CRS" ), 1 );
+        $map2 ['confirmation'] = $_SESSION['location_code'].'-'.$_GET['reservationid'];
+        $map ['location_code'] = $_SESSION['location_code'];
+        $localcode = $_SESSION['location_code'];
+        $Model->switchConnect ( 1, "reservation_option" );
+        $listOpt['res'] = $Model->where ( $map2 )->select ();
+        $html = "";
+        $perunit = '';
+        $real_inv = '';
+        if ($listOpt['res']) {
+            foreach ( $listOpt['res'] as $k => $v ) {
+                
+                $optionID[] = $v['OPTION_ID'];
+            }
+        }
+        $Model->switchConnect ( 1, "uni_option" );
+        $wh ='';
+        if(!empty($listOpt['res'])){
+            $wh.=" and option_id not in (".implode(',',$optionID).")";
+        }
+        $listOpt['uni'] = $Model->where ( "location_code='".$localcode."' and (rate_code='LOC' or rate_code is NULL) AND LEFT(NOW(),10)=START_DATE ".$wh )->select ();
 
-			$Model->switchConnect ( 1, "agreement_option" );
-			$map['CONFIRMATION'] =$_GET['CONFIRMATION'];
-		}else{
-			$Model->switchConnect ( 1, "location_option" );
-		// $locationOpt = M ( 'location_option' );
-		$map ['location_code'] = $_SESSION['location_code'];
+        Log::write('增值服务SQL：'.$Model->getLastSql(), Log::SQL);
+        header ( "Content-Type:text/html; charset=utf-8" );
+        exit ( json_encode ( $listOpt ) );
 
-		}
-		$listOpt = $Model->where ( $map )->group ( 'option_id' )->select ();
-		echo $Model->getLastSql();exit;
-		if(empty($listOpt)){
-			exit(json_encode(-1));
-		}
-		header ( "Content-Type:text/html; charset=utf-8" );
-		exit ( json_encode ( $listOpt ) );
-	}
 
+    }
+    public function suggest()
+    {
+        $return['suggestions'] = array('test1','test2');
+        $return['data'] = array('a1','b1');
+        $return['query'] = array('aa');
+        exit(json_encode($return));
+    }
+    public function djOption()
+    {
+        $model = M ( "Location","AdvModel" );
+		$model->addConnect ( C ( "DB_CRS" ), 1 );
+        $model->switchConnect ( 1, "uni_option" );
+        $map['LOCATION_CODE'] = $_SESSION['location_code'];
+        $map['RATE_CODE'] = $_GET['ratecode'];
+        $map['OPTION_CLASS'] = array('neq','Z');
+        //$map['CAR_TYPE_CODE']= array(array('exp','is NULL'),array('eq',$_GET['car_type_code']),'or');
+        $map['START_DATE'] = array('like',"%".substr($_GET['BOOKING_DATE'],0,10)."%");
+        $result = $model->where($map)->findAll();
+        $map['CAR_MODEL_CODE'] = $_GET['CAR_MODEL_CODE'];
+        echo $model->getLastSql();
+        header ( "Content-Type:text/html; charset=utf-8" );
+        exit ( json_encode ( $result ) );
+
+    }
+    public function djRate()
+    {
+        $model = M ( "Location","AdvModel" );
+        $model->addConnect ( C ( "DB_CRS" ), 1 );
+        $model->switchConnect(1,'uni_rate');
+        $map['LOCATION_CODE'] = $_SESSION['location_code'];
+        $map['RATE_CODE'] = $_GET['ratecode'];
+        $map['START_DATE'] = array('like',"%".substr($_GET['BOOKING_DATE'],0,10)."%");
+        $map['CAR_MODEL_CODE'] = $_GET['CAR_MODEL_CODE'];
+        $result = $model->where($map)->findAll();
+        header ( "Content-Type:text/html; charset=utf-8" );
+        exit ( json_encode ( $result ) );
+
+    }
 }
 ?>

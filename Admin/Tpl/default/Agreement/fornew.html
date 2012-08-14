@@ -1,0 +1,287 @@
+<script src="__PUBLIC__/js/jquery.autocomplete-min.js" type="text/javascript"></script>
+<style type="text/css">
+    .bdt{
+        border-top: 1px solid #000;
+    }
+    .bdl{
+        border-left: 1px solid #000;
+    }
+    .cr{
+        text-align: right;
+        float: right;
+    }
+    
+
+    .autocomplete-w1 { background:url("__PUBLIC__/Images/shadow.png") no-repeat bottom right; position:absolute; top:0px; left:0px; margin:8px 0 0 6px; /* IE6 fix: */ _background:none; _margin:0; }
+    .autocomplete { border:1px solid #999; background:#FFF; cursor:default; text-align:left; max-height:350px; overflow:auto; margin:-6px 6px 6px -6px; /* IE6 specific: */ _height:350px;  _margin:0; _overflow-x:hidden; }
+.autocomplete .selected { background:#F0F0F0; }
+.autocomplete div { padding:2px 5px; white-space:nowrap; }
+.autocomplete strong { font-weight:normal; color:#3399FF; }
+    
+</style>
+<script type="text/javascript">
+    doPlan();
+    $('select[name="stat"]').change(function(){
+        var o = $('select[name="stat"]').val();
+        if(o=='perday'){
+            $('.layoutBox2').hide();
+            $('.layoutBox').show();
+        }else if(o=='flight'){
+            $('.layoutBox').hide();
+            $('.layoutBox2').show();
+        }else{
+            
+            $('.layoutBox2').hide();
+            $('.layoutBox').hide();
+        }
+    });
+    $('select[name="days"]').change(function(){
+        $("#trip").html('');
+        var dates = new Date($('#date').val().replace("-","/").replace("-","/")) ;
+        doPlan();
+        //var   now   =   new   Date(); 
+        //var   newDate   =   DateAdd( "d ",5,date); 
+        //var nowdate='';
+        //console.log(newDate.getFullYear());
+        
+                    
+    });
+    function doPlan(){
+        var i = $('select[name="days"]').val();
+        //var i =i;
+        var l ='' ;
+        var str="";
+        str += "<select name=\"_hour\">";
+        for (h = 0; h <= 9; h++) {
+            str += "<option value=\"0" + h + "\">0" + h + "</option>";
+        }
+        for (h = 10; h <= 23; h++) {
+            str += "<option value=\"" + h + "\">" + h + "</option>";
+        }
+        str += "</select>:<select name=\"_minute\">";
+        for (m = 0; m <= 9; m++) {
+            str += "<option value=\"0" + m + "\">0" + m + "</option>";
+        }
+        for (m = 10; m <= 59; m++) {
+            str += "<option value=\"" + m + "\">" + m + "</option>";
+        }
+        str += "</select>";
+        for(var j=1;j<=i;j++){
+            nowdate = DateAdd("d ",j, new Date($('#date').val().replace("-","/").replace("-","/")));
+            if(j==i){
+                times = DateAdd("h ",j, new Date($('#date').val().replace("-","/").replace("-","/")));
+                l += '<li>'+nowdate.getFullYear()+"-"+(nowdate.getMonth()+1)+"-"+nowdate.getDate()+str+'</li><li><textarea id="" name="" rows="10" cols="30" style="width: 496px; height: 54px;"></textarea></li>';
+            }else{
+
+                l += '<li>'+nowdate.getFullYear()+"-"+(nowdate.getMonth()+1)+"-"+nowdate.getDate()+'<input id="" name="" type="checkbox" />过夜</li><li><textarea id="" name="" rows="10" cols="30" style="width: 496px; height: 54px;"></textarea></li>';
+            }
+        }
+
+        $("<ul></ul>").html(l).appendTo("#trip");
+    }
+function   DateAdd(interval,number,date)
+{
+/*
+  *   功能:实现VBScript的DateAdd功能.
+  *   参数:interval,字符串表达式，表示要添加的时间间隔.
+  *   参数:number,数值表达式，表示要添加的时间间隔的个数.
+  *   参数:date,时间对象.
+  *   返回:新的时间对象.
+  *   var   now   =   new   Date();
+  *   var   newDate   =   DateAdd( "d ",5,now);
+  *---------------   DateAdd(interval,number,date)   -----------------
+  */
+        switch(interval)
+        {
+                case   "y "   :   {
+                        date.setFullYear(date.getFullYear()+number);
+                        return   date;
+                        break;
+                }
+                case   "q "   :   {
+                        date.setMonth(date.getMonth()+number*3);
+                        return   date;
+                        break;
+                }
+                case   "m "   :   {
+                        date.setMonth(date.getMonth()+number);
+                        return   date;
+                        break;
+                }
+                case   "w "   :   {
+                        date.setDate(date.getDate()+number*7);
+                        return   date;
+                        break;
+                }
+                case   "d "   :   {
+                        date.setDate(date.getDate()+number);
+                        return   date;
+                        break;
+                }
+                case   "h "   :   {
+                        date.setHours(date.getHours()+number);
+                        return   date;
+                        break;
+                }
+                case   "m "   :   {
+                        date.setMinutes(date.getMinutes()+number);
+                        return   date;
+                        break;
+                }
+                case   "s "   :   {
+                        date.setSeconds(date.getSeconds()+number);
+                        return   date;
+                        break;
+                }
+                default   :   {
+                        date.setDate(d.getDate()+number);
+                        return   date;
+                        break;
+                }
+        }
+}
+var options;
+var a;
+$(function(){
+    options = { 
+        serviceUrl: '__URL__/suggest'//获取数据的后台页面
+    };
+    a = $('#REAL_NAME').autocomplete(options);
+    var a = {
+        serviceUrl: '__URL__/suggest',//获取数据的后台页面
+        delimiter: /(,|;)\s*/,
+        onSelect:  function(value, data){ 
+        },//选中之后的回调函数
+        deferRequestBy: 0, //单位微秒
+        params: { country: 'Yes' },//参数
+        noCache: false //是否启用缓存 默认是开启缓存的
+    };
+    $("#MEMORY_CODE").focus(function(){
+        $("#rep").html('<td>公司名称</td><td><input type="text" name="COMPANY_NAME" id="COMPANY_NAME"></td>');
+    });
+    $("#member_phone").focus(function(){
+        $("#rep").html('<td>姓名</td><td ><input name="REAL_NAME" id="REAL_NAME" type="text" /></td><td>身份证号</td><td><input type="text" id="INDENTITY_CODE" name="INDENTITY_CODE" /></td>');
+    });
+});
+             </script>
+
+
+
+<div class="layoutBox" >
+    <div layoutH="80">
+<table  class="list" height="98%" width="98%">
+    <tr>
+        <td>
+            <table >
+                <tr>
+                    <td>会员手机</td>
+                    <td ><input id="member_phone" name="member_phone" type="text" /></td>
+                    <td>助记符</td>
+                    <td><input type="text"  name="MEMORY_CODE" id="MEMORY_CODE"/></td>
+                </tr>
+                <tr id="rep">
+
+                    <td>姓名</td>
+                    <td ><input name="REAL_NAME" id="REAL_NAME" type="text" /></td>
+                    <td>身份证号</td>
+                    <td><input type="text" id="INDENTITY_CODE" name="INDENTITY_CODE" /></td>
+                </tr>
+                <tr>
+                    <td>取车日期</td>
+                    <td>
+                        <input id="" name="" type="text" />
+                    </td>
+                    <td>取车城市
+                    </td>
+                    <td>
+                        <input id="" name="" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>取车门店</td>
+                    <td colspan="3"><input id="" name="" type="text" /></td>
+                </tr>
+                <tr>
+                    <td>还车日期</td>
+                    <td>
+                        <input id="" name="" type="text" />
+                    </td>
+                    <td>还车城市
+                    </td>
+                    <td>
+                        <input id="" name="" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>还车门店</td>
+                    <td colspan="3"><input id="" name="" type="text" /></td>
+                </tr>
+                <tr>
+                    <td>车型</td>
+                    <td colspan="3"><input id="" name="" type="text" /></td>
+                </tr>
+                <tr>
+                    <td>车型</td>
+                    <td colspan="3"><input id="" name="" type="text" /></td>
+                </tr>
+                <tr>
+                    <td colspan="4"><input type="button" value="查询" /></td>
+                </tr>
+            </table>
+        </td>
+        <td rowspan="2" class="bdl">cc</td>
+    </tr>
+    <tr >
+        <td class="bdt">
+            <table width="98%">
+                <tr>
+
+                    <td　colspan="2">政策规则</td>
+                </tr>
+                <tr>
+                    <td>超时费用</td>
+                    <td class="cr">超公里费0元</td>
+                </tr>
+                <tr>
+                    <td>司机过夜食宿费</td>
+                    <td class="cr">司机加班费</td>
+                </tr>
+                <tr>
+                    <td>超4小时算一天</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr >
+        <td class="bdt">
+            <table width="98%">
+                <tr>
+
+                    <td>基本租金</td>
+                    <td class="cr">400元</td>
+                </tr>
+                <tr>
+                    <td>必须费用</td>
+                    <td class="cr">0元</td>
+                </tr>
+                <tr>
+                    <td>增值服务</td>
+                    <td class="cr"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td class="cr">
+                        <input id="" name="" type="checkbox" >依云矿泉水 5元/瓶</input>
+                        <select id="" name=""><option value="">1</option></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>实际金额</td>
+                    <td class="cr"><input id="" name="" type="text" /></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</div>
+</div>

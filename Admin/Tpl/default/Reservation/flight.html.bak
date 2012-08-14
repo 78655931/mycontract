@@ -1,0 +1,541 @@
+<script src="__PUBLIC__/js/jquery.autocomplete-min.js" type="text/javascript"></script>
+<style type="text/css">
+    .bdt{
+        border-top: 1px solid #000;
+    }
+    .bdl{
+        border-left: 1px solid #000;
+    }
+    .cr{
+        text-align: right;
+        float: right;
+    }
+    .layoutBox{
+        display: none;
+    }
+    .layoutBox2{
+        display: none;
+    }
+
+    .autocomplete-w1 { background:url("__PUBLIC__/Images/shadow.png") no-repeat bottom right; position:absolute; top:0px; left:0px; margin:8px 0 0 6px; /* IE6 fix: */ _background:none; _margin:0; }
+    .autocomplete { border:1px solid #999; background:#FFF; cursor:default; text-align:left; max-height:350px; overflow:auto; margin:-6px 6px 6px -6px; /* IE6 specific: */ _height:350px;  _margin:0; _overflow-x:hidden; }
+.autocomplete .selected { background:#F0F0F0; }
+.autocomplete div { padding:2px 5px; white-space:nowrap; }
+.autocomplete strong { font-weight:normal; color:#3399FF; }
+    
+</style>
+<script type="text/javascript">
+    doPlan();
+    $('select[name="stat"]').change(function(){
+        var o = $('select[name="stat"]').val();
+        if(o=='perday'){
+            $('.layoutBox2').hide();
+            $('.layoutBox').show();
+        }else if(o=='flight'){
+            $('.layoutBox').hide();
+            $('.layoutBox2').show();
+        }else{
+            
+            $('.layoutBox2').hide();
+            $('.layoutBox').hide();
+        }
+    });
+    $('select[name="BASE_RATE_QTY"]').change(function(){
+        $("#trip").html('');
+        var dates = new Date($('#BOOKING_DATE').val().replace("-","/").replace("-","/")) ;
+        doPlan();
+        //var   now   =   new   Date(); 
+        //var   newDate   =   DateAdd( "d ",5,date); 
+        //var nowdate='';
+        //console.log(newDate.getFullYear());
+        
+                    
+    });
+    function doPlan(){
+        var i = $('select[name="BASE_RATE_QTY"]').val();
+        //var i =i;
+        var l ='' ;
+        var str="";
+        str += "<select name=\"_hour\">";
+        for (h = 0; h <= 9; h++) {
+            str += "<option value=\"0" + h + "\">0" + h + "</option>";
+        }
+        for (h = 10; h <= 23; h++) {
+            str += "<option value=\"" + h + "\">" + h + "</option>";
+        }
+        str += "</select>:<select name=\"_minute\">";
+        for (m = 0; m <= 9; m++) {
+            str += "<option value=\"0" + m + "\">0" + m + "</option>";
+        }
+        for (m = 10; m <= 59; m++) {
+            str += "<option value=\"" + m + "\">" + m + "</option>";
+        }
+        str += "</select>";
+        for(var j=1;j<=i;j++){
+            nowdate = DateAdd("d ",j, new Date($('#BOOKING_DATE').val().replace("-","/").replace("-","/")));
+            if(j==i){
+                times = DateAdd("h ",j, new Date($('#BOOKING_DATE').val().replace("-","/").replace("-","/")));
+                l += '<li>'+nowdate.getFullYear()+"-"+(nowdate.getMonth()+1)+"-"+nowdate.getDate()+str+'</li><li><textarea id="" name="PLAN" rows="10" cols="30" style="width: 496px; height: 54px;"></textarea></li>';
+            }else{
+
+                l += '<li>'+nowdate.getFullYear()+"-"+(nowdate.getMonth()+1)+"-"+nowdate.getDate()+'<input id="" name="ISOVERNIGHT" type="checkbox" />过夜</li><li><textarea id="" name="PLAN" rows="10" cols="30" style="width: 496px; height: 54px;"></textarea></li>';
+            }
+        }
+
+        $("<ul></ul>").html(l).appendTo("#trip");
+    }
+function   DateAdd(interval,number,date)
+{
+/*
+  *   功能:实现VBScript的DateAdd功能.
+  *   参数:interval,字符串表达式，表示要添加的时间间隔.
+  *   参数:number,数值表达式，表示要添加的时间间隔的个数.
+  *   参数:date,时间对象.
+  *   返回:新的时间对象.
+  *   var   now   =   new   Date();
+  *   var   newDate   =   DateAdd( "d ",5,now);
+  *---------------   DateAdd(interval,number,date)   -----------------
+  */
+        switch(interval)
+        {
+                case   "y "   :   {
+                        date.setFullYear(date.getFullYear()+number);
+                        return   date;
+                        break;
+                }
+                case   "q "   :   {
+                        date.setMonth(date.getMonth()+number*3);
+                        return   date;
+                        break;
+                }
+                case   "m "   :   {
+                        date.setMonth(date.getMonth()+number);
+                        return   date;
+                        break;
+                }
+                case   "w "   :   {
+                        date.setDate(date.getDate()+number*7);
+                        return   date;
+                        break;
+                }
+                case   "d "   :   {
+                        date.setDate(date.getDate()+number);
+                        return   date;
+                        break;
+                }
+                case   "h "   :   {
+                        date.setHours(date.getHours()+number);
+                        return   date;
+                        break;
+                }
+                case   "m "   :   {
+                        date.setMinutes(date.getMinutes()+number);
+                        return   date;
+                        break;
+                }
+                case   "s "   :   {
+                        date.setSeconds(date.getSeconds()+number);
+                        return   date;
+                        break;
+                }
+                default   :   {
+                        date.setDate(d.getDate()+number);
+                        return   date;
+                        break;
+                }
+        }
+}
+var options;
+var a;
+
+$(function(){
+    options = { 
+        serviceUrl: '__URL__/suggest'//获取数据的后台页面
+    };
+    a = $('#REAL_NAME').autocomplete(options);
+    var a = {
+        serviceUrl: '__URL__/suggest',//获取数据的后台页面
+        delimiter: /(,|;)\s*/,
+        onSelect:  function(value, data){ 
+        },//选中之后的回调函数
+        deferRequestBy: 0, //单位微秒
+        params: { country: 'Yes' },//参数
+        noCache: false //是否启用缓存 默认是开启缓存的
+    };
+    $("#CAR_MODEL_CODE").click(function(){
+        var stat = $("#stat").val();
+        var iscity = $("#iscity").val();
+        var ratecode = '';
+        var perunit = '';
+        var flag='';
+        var CAR_MODEL_CODE = $("#CAR_MODEL_CODE").val();
+        var BASE_RATE_QTY = $("#BASE_RATE_QTY").val();
+        var BOOKING_DATE = $("#BOOKING_DATE").val();
+        MANDATORY = 0;
+        DRIVER_CHARGES =0;
+        TOTAL_PRICE =0,RATE=0;
+        
+        if(stat=='perday'&&iscity=='1'){
+            ratecode = "DSR";
+        }else if(stat=='flight'&&iscity=='1'){
+            ratecode = "DSJ";
+        }
+        $.getJSON('__URL__/djOption',{'CAR_MODEL_CODE':CAR_MODEL_CODE,'ratecode':ratecode,'BOOKING_DATE':BOOKING_DATE},function(data){
+            $("#option").html('');
+            $.each(data,function(i,item){
+			
+				if(item.OPTION_NAME.indexOf('司机')>0){
+                    //$("#option").html('<tr><td>'+item.OPTION_NAME+'</td><td></td></tr>');
+					//alert(i);
+					if(i==1)
+					{
+						$('<tr></tr>').html('<td><input type="radio" value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.value,0);" name="optionname" checked/>'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
+						$("#DRIVER_VALUE").val(BASE_RATE_QTY*item.RATE);
+					}else
+					{
+						 $('<tr></tr>').html('<td><input type="radio" value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.value,0); "name="optionname"/>'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
+					}
+					
+                   // DRIVER_CHARGES+= BASE_RATE_QTY*item.RATE;
+                    //alert(DRIVER_CHARGES);
+                }else{
+				    if(item.MANDATORY=='Y'){
+						 var checkValue ="CHECKED";
+						 $("#OPTION_VALUE").val(BASE_RATE_QTY*item.RATE);
+                     }
+                    $('<tr></tr>').html('<td><input DISABLED id="'+i+'" type="checkbox"  value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.id,1);" name="optionname" CHECKED="'+checkValue+'" />'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
+                }
+
+              /*  if(item.FLAG=='S'){
+                    flag= "元";   
+                }
+                if(item.MANDATORY=='Y'){
+                    MANDATORY+=item.MANDATORY;
+                }
+                switch(item.PER_UNIT){
+                        case '1':
+                            perunit = '/次';
+                            break;
+                        case 'D':
+                            perunit = "/天";
+                            break;
+                        case 'H':
+                            perunit = "/小时";
+                            break;
+                        case 'W':
+                            perunit = "/每周";
+                            break;
+                        case 'M':
+                            perunit = "/周末";
+                            break;
+                        case 'B':
+                            perunit = "/瓶";
+                            break;
+                        case 'R':
+                            perunit = "/人";
+                            break;
+                }
+
+                if(item.OPTION_NAME.indexOf('司机')>0){
+                    //$("#option").html('<tr><td>'+item.OPTION_NAME+'</td><td></td></tr>');
+                    $('<tr></tr>').html('<td><input type="radio" name="optionname"/>'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
+                    DRIVER_CHARGES+= BASE_RATE_QTY*item.RATE;
+                    //alert(DRIVER_CHARGES);
+
+                }else{
+                    $('<tr></tr>').html('<td><input type="checkbox" name="optionname"/>'+item.OPTION_NAME+'</td>').appendTo('#option');
+                }*/
+				
+            });
+				 MANDATORY = parseInt($("#DRIVER_VALUE").val())+parseInt($("#OPTION_VALUE").val());
+				 $("#MANDATORY").html(MANDATORY);
+                 $("#MANDATORY").html('<input type="hidden" value="'+MANDATORY+'" name="MANDATORY" >'+MANDATORY+flag+'');
+				 
+
+        });
+       // console.log(DRIVER_CHARGES);
+        $.getJSON('__URL__/djRate',{'CAR_MODEL_CODE':CAR_MODEL_CODE,'ratecode':ratecode,'BOOKING_DATE':BOOKING_DATE},function(data){
+            $.each(data,function(i,item){
+                $("#rate").html(''+item.RATE+flag+'<input type="hidden" name="BASE_RATE_AMT" value="'+item.RATE+'">');
+                RATE=item.RATE;
+            });  
+        });
+        
+        TOTAL_PRICE = DRIVER_CHARGES+MANDATORY+RATE;
+            }); 
+});
+function changeFee(value,type)
+{		
+		
+		if(type==0)
+		{	
+			$("#DRIVER_VALUE").val(value);
+		}else
+		{
+			
+			var temp = $("#"+value).attr("checked");
+			if(temp)
+			{
+				//alert($("#"+value).val());
+				$("#OPTION_VALUE").val($("#"+value).val());
+			}else
+			{
+				$("#OPTION_VALUE").val(0);
+			}
+			
+		}
+	//alert($("#OPTION_VALUE").val());
+	//alert($("#DRIVER_VALUE").val());
+	 var  MANDATORY = parseInt($("#DRIVER_VALUE").val())+parseInt($("#OPTION_VALUE").val());
+	  $("#MANDATORY").html(MANDATORY);
+      $("#MANDATORY").html('<input type="hidden" value="'+MANDATORY+'" name="MANDATORY" >'+MANDATORY+flag+'');
+}
+
+</script>
+带驾类型
+<select id="stat" name="stat">
+    <option value="0" selected>无</option>
+    <option value="perday">日租</option>
+    <option value="flight">接送机</option>
+</select>
+<div class="layoutBox2">
+    <div layoutH="80">
+<table  class="list" height="98%" width="98%">
+    <tr>
+        <td>
+            <table >
+                <tr>
+                    <td>客户名称</td>
+                    <td colspan="3"><input id="REAL_NAME" name="REAL_NAME" type="text" /></td>
+                </tr>
+                <tr>
+                    <td>城市机场</td>
+                    <td ><select id="" name="AIRPORT_NAME"><option value="">宝安机场</option></select></td>
+                    <td>接送范围</td>
+                    <td><select id="iscity" name="iscity"><option value="1">市内</option></select></td>
+                </tr>
+                <tr>
+                    <td>接送类型</td>
+                    <td>
+                        <select  name="PICKUP_RETURN_TYPE">
+                            <option value="1">送</option>
+                            <option value="2">接</option>
+                        </select>
+                    </td>
+                    <td>过桥费
+                        <select id="" name="ROAD_BRIDGE_CHARGE_STATUS">
+                            <option value="0">自理</option>
+                            <option value="">包含</option>
+                        </select>
+                    </td>
+                    <td>
+                        停车费
+                        <select id="" name="PARKING_CHARGE_STATUS">
+                            <option value="0">自理</option>
+                            <option value="">包含</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>接送时间</td>
+                    <td><input id="" name="ARRIVAL_TIME" type="text" /></td>
+                    <td>航班号</td>
+                    <td><input id="" name="AIRLINE" type="text" /></td>
+                </tr>
+                <tr>
+                    <td >上下车地点</td>
+                    <td colspan="3"><input id="" name="UP_DOWN_ADDRESS" type="text" size="80"/></td>
+                </tr>
+                <tr>
+                    <td>联系人</td>
+                    <td><input id="" name="LINKMAN" type="text" /></td>
+                    <td>联系人电话</td>
+                    <td><input id="" name="LINKMAN_PHONE" type="text" /></td>
+                </tr>
+                <tr>
+                    <td>司机要求</td>
+                    <td colspan="3"><textarea id="" name="DRIVER_REQUEST" rows="10" cols="30" style="width: 492px; height: 59px;"></textarea></td>
+                </tr>
+                <tr>
+                    <td colspan="4"><input type="button" value="查询" /></td>
+                </tr>
+            </table>
+        </td>
+        <td rowspan="2" class="bdl">cc</td>
+    </tr>
+    <tr >
+        <td class="bdt">
+            <table width="98%">
+                <tr>
+
+                    <td>基本租金</td>
+                    <td class="cr">400元</td>
+                </tr>
+                <tr>
+                    <td>必须费用</td>
+                    <td class="cr">0元</td>
+                </tr>
+                <tr>
+                    <td>增值服务</td>
+                    <td class="cr "></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td class="cr option">
+                        
+                    </td>
+                </tr>
+                <tr>
+                    <td>总金额</td>
+                    <!--td><span id="TOTAL_PRICE"></span></td-->
+                </tr>
+                <tr>
+                    <td>实际金额</td>
+                    <td class="cr"><input id="" name="REALTOTAL" type="text" /></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</div>
+</div>
+
+<div class="layoutBox" style="display:none">
+    <div layoutH="80">
+<table  class="list" height="98%" width="98%">
+    <tr>
+        <td>
+            <table >
+                <tr>
+                    <td>客户名称</td>
+                    <td colspan="3"><input id="REAL_NAME" name="REAL_NAME" type="text" /></td>
+                </tr>
+                <tr>
+
+                    <td>带驾日期</td>
+                    <td ><input id="BOOKING_DATE" name="BOOKING_DATE" type="text"  value="2012-08-14 09:15"/></td>
+                    <td>带驾范围</td>
+                    <td><select id="" name=""><option value="">市内</option></select></td>
+                </tr>
+                <tr>
+                    <td>租期</td>
+                    <td>
+                        <select id="BASE_RATE_QTY" name="BASE_RATE_QTY">
+                            <option value="0" >无</option>
+                            <option value="1" selected>1</option>天
+                            <option value="2">2</option>天
+                            <option value="3">3</option>天
+                            <option value="4">4</option>天
+                            <option value="5">5</option>天
+                            <option value="6">6</option>天
+                            <option value="7">7</option>天
+                        </select>
+                    </td>
+                    <td>过桥费
+                        <select id="" name="ROAD_BRIDGE_CHARGE_STATUS">
+                            <option value="0">自理</option>
+                            <option value="">包含</option>
+                        </select>
+                    </td>
+                    <td>
+                        停车费
+                        <select id="" name="PARKING_CHARGE_STATUS">
+                            <option value="0">自理</option>
+                            <option value="">包含</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>联系人</td>
+                    <td><input id="" name="LINKMAN" type="text" /></td>
+                    <td>联系电话</td>
+                    <td><input id="" name="LINKMAN_PHONE" type="text" /></td>
+                </tr>
+                <tr>
+                    <td >行程安排</td>
+                    <td colspan="3" id="trip">
+                        
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td>司机要求</td>
+                    <td colspan="3"><textarea id="" name="DRIVER_REQUEST" rows="10" cols="30" style="width: 492px; height: 59px;"></textarea></td>
+                </tr>
+                <tr>
+                    <td colspan="4"><input type="button" value="查询" /></td>
+                </tr>
+            </table>
+        </td>
+        <td rowspan="2" class="bdl">
+                <table>
+                    <tr>
+                        <td><img src="" alt="" /></td>
+                        <td>奥迪(进口)-奥迪TTS-4座-2.0-自动</td>
+                        <td><input id="CAR_MODEL_CODE" value="WOERWO(JINKOU)-WOERWOS60-3-1.6-AT" name="CAR_MODEL_CODE" type="radio" /></td>
+                    </tr>
+                </table>
+        </td>
+    </tr>
+    <tr >
+        <td class="bdt">
+            <table width="98%">
+                <tr>
+
+                    <td　colspan="2">政策规则</td>
+                </tr>
+                <tr>
+                    <td>超时费用</td>
+                    <td class="cr">超公里费0元</td>
+                </tr>
+                <tr>
+                    <td>司机过夜食宿费</td>
+                    <td class="cr">司机加班费</td>
+                </tr>
+                <tr>
+                    <td>超4小时算一天</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr >
+        <td class="bdt">
+            <table width="98%">
+                <tr>
+
+                    <td>基本租金</td>
+                    <td class="cr"><span id="rate"></span></td>
+                </tr>
+                <tr>
+                    <td>必须费用</td>
+                    <td class="cr"><span id="MANDATORY"></span></td>
+					 
+                </tr>
+                <tr>
+                    <td>增值服务</td>
+                    <td class="cr">
+						
+					</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td class="cr " >
+						<input type="text" value="" name="DRIVER_VALUE" id="DRIVER_VALUE"/>
+						<input type="text" value="" name="OPTION_VALUE" id="OPTION_VALUE"/>
+                       
+                    </td>
+                </tr>
+                <tr>
+                    <td>总金额</td>
+                    <td><span id="TOTAL_PRICE">123</span></td>
+                </tr>
+                <tr>
+                    <td>实际金额</td>
+                    <td class="cr"><input id="" name="" type="text" /></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</div>
+</div>
