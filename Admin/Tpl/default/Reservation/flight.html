@@ -255,7 +255,7 @@ $(function(){
                     $("#OPTIONCHARGES").html('<input type="hidden" value="'+OPTIONCHARGES+'" class="OPTIONCHARGES"/>'+OPTIONCHARGES+flag+'');
                     MANDATORY = parseInt($("#DRIVER_VALUE").val())+MANDY;
                     $("#MANDATORY").html(MANDATORY);
-                    $("#MANDATORY").html('<input type="hidden" value="'+MANDATORY+'" name="MANDATORY" class="MANDYTORY">'+MANDATORY+flag+'');
+                    $("#MANDATORY").html('<input type="hidden" value="'+MANDATORY+'" name="MANDATORY" class="MANDATORY">'+MANDATORY+flag+'');
                     TOTAL_PRICE = OPTIONCHARGES+MANDATORY+RATE;
                     $("#TOTAL_PRICE").html('<input type="hidden" value="'+TOTAL_PRICE+'" name="TOTAL_PRICE"  class="TOTAL_PRICE">'+TOTAL_PRICE+flag+'');
                 });  
@@ -289,7 +289,6 @@ function changeFee(value,type)
             
 			
         }
-
         $("#TOTAL_PRICE").text(parseInt($("#BASE_RATE_AMT").val())+parseInt(MANDATORY)+parseInt(fee));
 	//alert($("#OPTION_VALUE").val());
 	//alert($("#DRIVER_VALUE").val());
