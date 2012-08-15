@@ -30,12 +30,12 @@
 <script type="text/javascript">
     $.ajaxSettings.global=false;
     doPlan();
-    $('select[name="stat"]').change(function(){
-        var o = $('select[name="stat"]').val();
-        if(o=='perday'){
+    $('select[name="ratecode"]').change(function(){
+        var o = $('select[name="ratecode"]').val();
+        if(o=='DSB'){
             $('.layoutBox2').hide();
             $('.layoutBox').show();
-        }else if(o=='flight'){
+        }else if(o=='DSJ'){
             $('.layoutBox').hide();
             $('.layoutBox2').show();
         }else{
@@ -60,14 +60,14 @@
         //var i =i;
         var l ='' ;
         var str="";
-        str += "<select name=\"_hour\">";
+        str += "<select name=\"_hour\" id=\"_hour\">";
         for (h = 0; h <= 9; h++) {
             str += "<option value=\"0" + h + "\">0" + h + "</option>";
         }
         for (h = 10; h <= 23; h++) {
             str += "<option value=\"" + h + "\">" + h + "</option>";
         }
-        str += "</select>:<select name=\"_minute\">";
+        str += "</select>:<select name=\"_minute\" id=\"_minute\">";
         for (m = 0; m <= 9; m++) {
             str += "<option value=\"0" + m + "\">0" + m + "</option>";
         }
@@ -77,12 +77,15 @@
         str += "</select>";
         for(var j=1;j<=i;j++){
             nowdate = DateAdd("d ",j, new Date($('#PICKUP_DATE').val().replace("-","/").replace("-","/")));
+            var month=nowdate.getMonth()+1;
+            var monthString = month<9?'0'+month:month;
             if(j==i){
                 times = DateAdd("h ",j, new Date($('#PICKUP_DATE').val().replace("-","/").replace("-","/")));
-                l += '<li>'+nowdate.getFullYear()+"-"+(nowdate.getMonth()+1)+"-"+nowdate.getDate()+str+'</li><li><textarea id="" name="PLAN" rows="10" cols="30" style="width: 496px; height: 54px;"></textarea></li>';
+                
+                l += '<li>'+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+str+'</li><input type="hidden" name="RETURN_DATE" id="RETURN_DATE" value="'+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+'"><li><textarea id="" name="PLAN" rows="10" cols="30" style="width: 496px; height: 54px;"></textarea></li>';
             }else{
 
-                l += '<li>'+nowdate.getFullYear()+"-"+(nowdate.getMonth()+1)+"-"+nowdate.getDate()+'<input id="" name="ISOVERNIGHT" type="checkbox" />过夜</li><li><textarea id="" name="PLAN" rows="10" cols="30" style="width: 496px; height: 54px;"></textarea></li>';
+                l += '<li>'+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+'<input id="" name="ISOVERNIGHT" type="checkbox" />过夜</li><li><textarea id="" name="PLAN" rows="10" cols="30" style="width: 496px; height: 54px;"></textarea></li>';
             }
         }
 
@@ -167,7 +170,7 @@ $(function(){
         noCache: false //是否启用缓存 默认是开启缓存的
     };
     $("#CAR_MODEL_CODE").click(function(){
-        var stat = $("#stat").val();
+        var stat = $("#ratecode").val();
         var iscity = $("#iscity").val();
         var ratecode = '';
         var perunit = '';
@@ -180,9 +183,9 @@ $(function(){
         var TOTAL_PRICE =0,RATE=0;
         var OPTIONCHARGES =0;
         var MANDY = 0;
-        if(stat=='perday'&&iscity=='1'){
+        if(stat=='DSR'&&iscity=='1'){
             ratecode = "DSR";
-        }else if(stat=='flight'&&iscity=='1'){
+        }else if(stat=='DSJ'&&iscity=='1'){
             ratecode = "DSJ";
         }
         $.getJSON('__URL__/djOption',{'CAR_MODEL_CODE':CAR_MODEL_CODE,'ratecode':ratecode,'PICKUP_DATE':PICKUP_DATE},function(data){
@@ -265,8 +268,24 @@ $(function(){
 
         });
        
-            }); 
+    }); 
+
+    
 });
+function findCars(){
+    var RETURN_DATE = $("#RETURN_DATE").val()+$("#_hour").val()+$("#_minute").val();
+RETURN_DATE = RETURN_DATE.replaceAll("-","");
+RETURN_DATE = RETURN_DATE.replace(" ","");
+RETURN_DATE = RETURN_DATE.replace(":","");
+var PICKUP_DATE =$("#PICKUP_DATE").val();
+PICKUP_DATE = PICKUP_DATE.replaceAll("-","");
+PICKUP_DATE = PICKUP_DATE.replace(" ","");
+PICKUP_DATE = PICKUP_DATE.replace(":","");
+
+    $.getJSON('__URL__/findDJCars',{'RETURN_DATE':RETURN_DATE,'DISTRICT_CODE':$("#DISTRICT_CODE").val(),'CITY_CODE':$("#CITY_CODE").val(),'CAR_TYPE_CODE':$("#CAR_TYPE_CODE").val(),'PICKUP_DATE':PICKUP_DATE,'RATE_CODE':$("#ratecode").val()},function(data){
+    
+    });
+}
 function changeFee(value,type)
 {		
 		var fee = $(".OPTIONCHARGES").val(),MANDATORY=$('.MANDATORY').val();
@@ -297,11 +316,13 @@ function changeFee(value,type)
 
 </script>
 带驾类型
-<select id="stat" name="stat">
+<select id="ratecode" name="ratecode">
     <option value="0" selected>无</option>
-    <option value="perday">日租</option>
-    <option value="flight">接送机</option>
+    <option value="DSB">日租</option>
+    <option value="DSJ">接送机</option>
 </select>
+<input name="DISTRICT_CODE" type="hidden" id="DISTRICT_CODE" value="{$vo.DISTRICT_CODE}" />
+<input name="CITY_CODE" type="hidden"  id="CITY_CODE" value="{$vo.CITY_CODE}" />
 <div class="layoutBox2">
     <div layoutH="80">
 <table  class="list" height="98%" width="98%">
@@ -412,7 +433,15 @@ function changeFee(value,type)
             <table >
                 <tr>
                     <td>客户名称</td>
-                    <td colspan="3"><input id="REAL_NAME" name="REAL_NAME" type="text" /></td>
+                    <td ><input id="REAL_NAME" name="REAL_NAME" type="text" /></td>
+                    <td>选择车型</td>
+                    <td> 
+                        <select id="CAR_TYPE_CODE" name="CAR_TYPE_CODE">
+                            <volist name="option" id="vo">
+                            <option value="{$vo.CAR_TYPE_CODE}">{$vo.CAR_TYPE_NAME}</option>
+                            </volist>
+                        </select>
+                    </td>
                 </tr>
                 <tr>
 
@@ -425,8 +454,8 @@ function changeFee(value,type)
                     <td>租期</td>
                     <td>
                         <select id="BASE_RATE_QTY" name="BASE_RATE_QTY">
-                            <option value="0" >无</option>
-                            <option value="1" selected>1</option>天
+                            <option value="0" selected >无</option>
+                            <option value="1" >1</option>天
                             <option value="2">2</option>天
                             <option value="3">3</option>天
                             <option value="4">4</option>天
@@ -467,7 +496,7 @@ function changeFee(value,type)
                     <td colspan="3"><textarea id="" name="DRIVER_REQUEST" rows="10" cols="30" style="width: 492px; height: 59px;"></textarea></td>
                 </tr>
                 <tr>
-                    <td colspan="4"><input type="button" value="查询" /></td>
+                    <td colspan="4"><input type="button" onclick="findCars();" value="查询" /></td>
                 </tr>
             </table>
         </td>

@@ -648,5 +648,33 @@ class ReservationAction extends CommonAction {
         exit ( json_encode ( $result ) );
 
     }
+    public function flight()
+    {
+        $map['LOCATION_CODE'] = $_SESSION['location_code'];
+        $model = M ( "Location","AdvModel" );
+        $model->addConnect ( C ( "DB_CRS" ), 1 );
+        $model->switchConnect(1,'location');
+        $list = $model->where($map)->find();
+        $model->switchConnect(1,'car_type');
+        $option = $model->findAll();
+        $this->assign("option",$option);
+        $this->assign("vo",$list);
+        $this->display();
+    }
+    public function findDJCars()
+    {
+        //echo $_GET['RETURN_DATE'];exit;
+        $selcars = C('SELCAR');
+        $url = $selcars."&psRequest.rateCode=".$_GET['RATE_CODE']."&psRequest.pickupCityCode=".$_GET['CITY_CODE']."&psRequest.pickupDistrictCode=".$_GET['DISTRICT_CODE']."&psRequest.pickupLocationCode=".$_SESSION['location_code']."&psRequest.pickupDate=".$_GET['PICKUP_DATE']."&psRequest.returnCityCode=".$_GET['CITY_CODE']."&psRequest.returnDistrictCode=".$_GET['DISTRICT_CODE']."&psRequest.returnLocationCode=".$_SESSION['location_code']."&psRequest.returnDate=".$_GET['RETURN_DATE']."&psRequest.ipaddress=".$_SERVER["REMOTE_ADDR"]."&psRequest.carTypeCode=".$_GET['CAR_TYPE_CODE']."&psRequest.optionClass=D&psRequest.discountCode=";
+        
+        $result = $this->curl($url);
+        exit($result);
+		$result = json_decode($result);
+		$result = $result->dsResponse->discounts->discount;
+		foreach($result as $k=>$v){
+			$vs[]=(array)$v;
+
+        }
+    }
 }
 ?>
