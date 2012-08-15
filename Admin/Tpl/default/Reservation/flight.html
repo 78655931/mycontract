@@ -220,7 +220,7 @@ $(function(){
                 }
 				if(item.OPTION_NAME.indexOf('司机')>0){
                     //$("#option").html('<tr><td>'+item.OPTION_NAME+'</td><td></td></tr>');
-                    if(item.OPTION_NAME.indexOf('司机')>0)
+                    if(i%2==0)
 					{
 						$('<tr></tr>').html('<td><input type="radio" value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.value,0);" name="optionname" checked/>'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
 						$("#DRIVER_VALUE").val(BASE_RATE_QTY*item.RATE);
@@ -247,52 +247,50 @@ $(function(){
                                     }
 				
             });
-            $("#OPTION_VALUE").val(MANDY);
-                $("#OPTIONCHARGES").text(OPTIONCHARGES+flag);
-				 MANDATORY = parseInt($("#DRIVER_VALUE").val())+MANDY;
-				 $("#MANDATORY").html(MANDATORY);
-                 $("#MANDATORY").html('<input type="hidden" value="'+MANDATORY+'" name="MANDATORY" >'+MANDATORY+flag+'');
-				 
+            $.getJSON('__URL__/djRate',{'CAR_MODEL_CODE':CAR_MODEL_CODE,'ratecode':ratecode,'PICKUP_DATE':PICKUP_DATE},function(data){
+                $.each(data,function(i,item){
+                    $("#rate").html(''+item.RATE+flag+'<input type="hidden" id="BASE_RATE_AMT" name="BASE_RATE_AMT" value="'+item.RATE+'">');
+                    RATE=parseInt(item.RATE);
+                    $("#OPTION_VALUE").val(MANDY);
+                    $("#OPTIONCHARGES").html('<input type="hidden" value="'+OPTIONCHARGES+'" class="OPTIONCHARGES"/>'+OPTIONCHARGES+flag+'');
+                    MANDATORY = parseInt($("#DRIVER_VALUE").val())+MANDY;
+                    $("#MANDATORY").html(MANDATORY);
+                    $("#MANDATORY").html('<input type="hidden" value="'+MANDATORY+'" name="MANDATORY" class="MANDYTORY">'+MANDATORY+flag+'');
+                    TOTAL_PRICE = OPTIONCHARGES+MANDATORY+RATE;
+                    $("#TOTAL_PRICE").html('<input type="hidden" value="'+TOTAL_PRICE+'" name="TOTAL_PRICE"  class="TOTAL_PRICE">'+TOTAL_PRICE+flag+'');
+                });  
+            });
+
+            				 
 
         });
-       // console.log(DRIVER_CHARGES);
-        $.getJSON('__URL__/djRate',{'CAR_MODEL_CODE':CAR_MODEL_CODE,'ratecode':ratecode,'PICKUP_DATE':PICKUP_DATE},function(data){
-            $.each(data,function(i,item){
-                $("#rate").html(''+item.RATE+flag+'<input type="hidden" id="BASE_RATE_AMT" name="BASE_RATE_AMT" value="'+item.RATE+'">');
-                RATE=item.RATE;
-            });  
-        });
-        //alert($('#BASE_RATE_AMT').val());
-        //TOTAL_PRICE = document.getElementByName("BASE_RATE_AMT")+document.getElementByName('MANDATORY');
-        //console.log(TOTAL_PRICE);
+       
             }); 
 });
 function changeFee(value,type)
 {		
-		var fee = 0;
+		var fee = $(".OPTIONCHARGES").val(),MANDATORY=$('.MANDATORY').val();
 		if(type==0)
-		{	
+        {	
             $("#DRIVER_VALUE").val(value);
-            var  MANDATORY = parseInt($("#DRIVER_VALUE").val())+parseInt($("#OPTION_VALUE").val());
-            $("#MANDATORY").html(MANDATORY);
+             MANDATORY = parseInt($("#DRIVER_VALUE").val())+parseInt($("#OPTION_VALUE").val());
+            //$("#MANDATORY").html(MANDATORY);
             $("#MANDATORY").html('<input type="hidden" class="MANDATORY" value="'+MANDATORY+'" name="MANDATORY" >'+MANDATORY+'');
 		}else if(type==3)
 		{
-			
-            //var temp = $("#"+value).attr("checked");
+			fee=0;
             if( $("#optionfee :checkbox").filter(':checked').length==0){
-                $("#OPTIONCHARGES").text(0);
+                $("#OPTIONCHARGES").html('<input type="hidden" value="'+fee+'" class="OPTIONCHARGES"/>'+fee+'');
             }
             $("#optionfee :checkbox").filter(':checked').each(function(){
-                // alert($(this).is(':checked'));
-                //console.log(this.value);
                 fee += parseInt(this.value);
-                //$()
-                $("#OPTIONCHARGES").text(fee);
+                $("#OPTIONCHARGES").html('<input type="hidden" value="'+fee+'" class="OPTIONCHARGES"/>'+fee+'');
             });
             
 			
-		}
+        }
+
+        $("#TOTAL_PRICE").text(parseInt($("#BASE_RATE_AMT").val())+parseInt(MANDATORY)+parseInt(fee));
 	//alert($("#OPTION_VALUE").val());
 	//alert($("#DRIVER_VALUE").val());
 	 
@@ -533,14 +531,14 @@ function changeFee(value,type)
                 <tr>
                     <td></td>
                     <td class="cr " >
-						<input type="text" value="" name="DRIVER_VALUE" id="DRIVER_VALUE"/>
-						<input type="text" value="" name="OPTION_VALUE" id="OPTION_VALUE"/>
+						<input type="hidden" value="" name="DRIVER_VALUE" id="DRIVER_VALUE"/>
+						<input type="hidden" value="" name="OPTION_VALUE" id="OPTION_VALUE"/>
                        
                     </td>
                 </tr>
                 <tr>
                     <td>总金额</td>
-                    <td><span id="TOTAL_PRICE">123</span></td>
+                    <td><span id="TOTAL_PRICE" class="cr"></span></td>
                 </tr>
                 <tr>
                     <td>实际金额</td>

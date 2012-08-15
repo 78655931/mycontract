@@ -643,7 +643,7 @@ class ReservationAction extends CommonAction {
         $map['START_DATE'] = array('like',"%".substr($_GET['PICKUP_DATE'],0,10)."%");
         $map['CAR_MODEL_CODE'] = $_GET['CAR_MODEL_CODE'];
         $result = $model->where($map)->findAll();
-        //echo $model->getLastSql();
+       // echo $model->getLastSql();
         header ( "Content-Type:text/html; charset=utf-8" );
         exit ( json_encode ( $result ) );
 
