@@ -171,10 +171,11 @@ $(function(){
         var CAR_MODEL_CODE = $("#CAR_MODEL_CODE").val();
         var BASE_RATE_QTY = $("#BASE_RATE_QTY").val();
         var BOOKING_DATE = $("#BOOKING_DATE").val();
-        MANDATORY = 0;
-        DRIVER_CHARGES =0;
-        TOTAL_PRICE =0,RATE=0;
-        
+        var  MANDATORY = 0;
+        var DRIVER_CHARGES =0;
+        var TOTAL_PRICE =0,RATE=0;
+        var OPTIONCHARGES =0;
+        var MANDY = 0;
         if(stat=='perday'&&iscity=='1'){
             ratecode = "DSR";
         }else if(stat=='flight'&&iscity=='1'){
@@ -183,11 +184,38 @@ $(function(){
         $.getJSON('__URL__/djOption',{'CAR_MODEL_CODE':CAR_MODEL_CODE,'ratecode':ratecode,'BOOKING_DATE':BOOKING_DATE},function(data){
             $("#option").html('');
             $.each(data,function(i,item){
-			
+                if(item.FLAG=='S'){
+                    flag= "元";   
+                }
+                if(item.MANDATORY=='Y'){
+                    MANDATORY+=item.MANDATORY;
+                }
+                switch(item.PER_UNIT){
+                    case '1':
+                        perunit = '/次';
+                        break;
+                    case 'D':
+                        perunit = "/天";
+                        break;
+                    case 'H':
+                        perunit = "/小时";
+                        break;
+                    case 'W':
+                        perunit = "/每周";
+                        break;
+                    case 'M':
+                        perunit = "/周末";
+                        break;
+                    case 'B':
+                        perunit = "/瓶";
+                        break;
+                    case 'R':
+                        perunit = "/人";
+                        break;
+                }
 				if(item.OPTION_NAME.indexOf('司机')>0){
                     //$("#option").html('<tr><td>'+item.OPTION_NAME+'</td><td></td></tr>');
-					//alert(i);
-					if(i==1)
+					if(i==item.OPTION_NAME.indexOf('司机'))
 					{
 						$('<tr></tr>').html('<td><input type="radio" value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.value,0);" name="optionname" checked/>'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
 						$("#DRIVER_VALUE").val(BASE_RATE_QTY*item.RATE);
@@ -199,55 +227,24 @@ $(function(){
                    // DRIVER_CHARGES+= BASE_RATE_QTY*item.RATE;
                     //alert(DRIVER_CHARGES);
                 }else{
+                    var checkValue = "";
 				    if(item.MANDATORY=='Y'){
-						 var checkValue ="CHECKED";
-						 $("#OPTION_VALUE").val(BASE_RATE_QTY*item.RATE);
-                     }
-                    $('<tr></tr>').html('<td><input DISABLED id="'+i+'" type="checkbox"  value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.id,1);" name="optionname" CHECKED="'+checkValue+'" />'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
-                }
+                         checkValue ="CHECKED";
+                         MANDY +=BASE_RATE_QTY*item.RATE;
+                         $('<tr></tr>').html('<td><input DISABLED id="'+i+'" type="checkbox"  value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.id,1);" name="optionname" CHECKED="'+checkValue+'" />'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
 
-              /*  if(item.FLAG=='S'){
-                    flag= "元";   
-                }
-                if(item.MANDATORY=='Y'){
-                    MANDATORY+=item.MANDATORY;
-                }
-                switch(item.PER_UNIT){
-                        case '1':
-                            perunit = '/次';
-                            break;
-                        case 'D':
-                            perunit = "/天";
-                            break;
-                        case 'H':
-                            perunit = "/小时";
-                            break;
-                        case 'W':
-                            perunit = "/每周";
-                            break;
-                        case 'M':
-                            perunit = "/周末";
-                            break;
-                        case 'B':
-                            perunit = "/瓶";
-                            break;
-                        case 'R':
-                            perunit = "/人";
-                            break;
-                }
-
-                if(item.OPTION_NAME.indexOf('司机')>0){
-                    //$("#option").html('<tr><td>'+item.OPTION_NAME+'</td><td></td></tr>');
-                    $('<tr></tr>').html('<td><input type="radio" name="optionname"/>'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
-                    DRIVER_CHARGES+= BASE_RATE_QTY*item.RATE;
-                    //alert(DRIVER_CHARGES);
-
-                }else{
-                    $('<tr></tr>').html('<td><input type="checkbox" name="optionname"/>'+item.OPTION_NAME+'</td>').appendTo('#option');
-                }*/
+						 //$("#OPTION_VALUE").val(MANDY);
+                    }else{
+                        OPTIONCHARGES += BASE_RATE_QTY*item.RATE;
+                        $('<tr></tr>').html('<td><input  id="'+i+'" type="checkbox"  value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.id,3);" name="optionname" CHECKED="'+checkValue+'" />'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#optionfee');
+                        
+                    }
+                                    }
 				
             });
-				 MANDATORY = parseInt($("#DRIVER_VALUE").val())+parseInt($("#OPTION_VALUE").val());
+            $("#OPTION_VALUE").val(MANDY);
+                $("#OPTIONCHARGES").text(OPTIONCHARGES+flag);
+				 MANDATORY = parseInt($("#DRIVER_VALUE").val())+MANDY;
 				 $("#MANDATORY").html(MANDATORY);
                  $("#MANDATORY").html('<input type="hidden" value="'+MANDATORY+'" name="MANDATORY" >'+MANDATORY+flag+'');
 				 
@@ -256,39 +253,44 @@ $(function(){
        // console.log(DRIVER_CHARGES);
         $.getJSON('__URL__/djRate',{'CAR_MODEL_CODE':CAR_MODEL_CODE,'ratecode':ratecode,'BOOKING_DATE':BOOKING_DATE},function(data){
             $.each(data,function(i,item){
-                $("#rate").html(''+item.RATE+flag+'<input type="hidden" name="BASE_RATE_AMT" value="'+item.RATE+'">');
+                $("#rate").html(''+item.RATE+flag+'<input type="hidden" id="BASE_RATE_AMT" name="BASE_RATE_AMT" value="'+item.RATE+'">');
                 RATE=item.RATE;
             });  
         });
-        
-        TOTAL_PRICE = DRIVER_CHARGES+MANDATORY+RATE;
+        //alert($('#BASE_RATE_AMT').val());
+        //TOTAL_PRICE = document.getElementByName("BASE_RATE_AMT")+document.getElementByName('MANDATORY');
+        //console.log(TOTAL_PRICE);
             }); 
 });
 function changeFee(value,type)
 {		
-		
+		var fee = 0;
 		if(type==0)
 		{	
-			$("#DRIVER_VALUE").val(value);
-		}else
+            $("#DRIVER_VALUE").val(value);
+            var  MANDATORY = parseInt($("#DRIVER_VALUE").val())+parseInt($("#OPTION_VALUE").val());
+            $("#MANDATORY").html(MANDATORY);
+            $("#MANDATORY").html('<input type="hidden" class="MANDATORY" value="'+MANDATORY+'" name="MANDATORY" >'+MANDATORY+'');
+		}else if(type==3)
 		{
 			
-			var temp = $("#"+value).attr("checked");
-			if(temp)
-			{
-				//alert($("#"+value).val());
-				$("#OPTION_VALUE").val($("#"+value).val());
-			}else
-			{
-				$("#OPTION_VALUE").val(0);
-			}
+            //var temp = $("#"+value).attr("checked");
+            if( $("#optionfee :checkbox").filter(':checked').length==0){
+                $("#OPTIONCHARGES").text(0);
+            }
+            $("#optionfee :checkbox").filter(':checked').each(function(){
+                // alert($(this).is(':checked'));
+                //console.log(this.value);
+                fee += parseInt(this.value);
+                //$()
+                $("#OPTIONCHARGES").text(fee);
+            });
+            
 			
 		}
 	//alert($("#OPTION_VALUE").val());
 	//alert($("#DRIVER_VALUE").val());
-	 var  MANDATORY = parseInt($("#DRIVER_VALUE").val())+parseInt($("#OPTION_VALUE").val());
-	  $("#MANDATORY").html(MANDATORY);
-      $("#MANDATORY").html('<input type="hidden" value="'+MANDATORY+'" name="MANDATORY" >'+MANDATORY+flag+'');
+	 
 }
 
 </script>
@@ -508,13 +510,17 @@ function changeFee(value,type)
                 </tr>
                 <tr>
                     <td>必须费用</td>
-                    <td class="cr"><span id="MANDATORY"></span></td>
+                    <td class="cr"><span id="MANDATORY"></span><table id="option">
+								
+                        </table></td>
 					 
                 </tr>
                 <tr>
                     <td>增值服务</td>
-                    <td class="cr">
-						
+                    <td class="cr"> <span id="OPTIONCHARGES"></span>
+						<table id="optionfee">
+						    
+						</table>
 					</td>
                 </tr>
                 <tr>

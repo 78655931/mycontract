@@ -625,7 +625,7 @@ class ReservationAction extends CommonAction {
         $map['RATE_CODE'] = $_GET['ratecode'];
         $map['OPTION_CLASS'] = array('neq','Z');
         //$map['CAR_TYPE_CODE']= array(array('exp','is NULL'),array('eq',$_GET['car_type_code']),'or');
-        $map['START_DATE'] = array('like',"%".substr($_GET['BOOKING_DATE'],0,10)."%");
+        $map['START_DATE'] = array('like',"%".substr($_GET['PICKUP_DATE'],0,10)."%");
         $result = $model->where($map)->group('OPTION_ID')->findAll();
         $map['CAR_MODEL_CODE'] = $_GET['CAR_MODEL_CODE'];
         //echo $model->getLastSql();
@@ -640,9 +640,10 @@ class ReservationAction extends CommonAction {
         $model->switchConnect(1,'uni_rate');
         $map['LOCATION_CODE'] = $_SESSION['location_code'];
         $map['RATE_CODE'] = $_GET['ratecode'];
-        $map['START_DATE'] = array('like',"%".substr($_GET['BOOKING_DATE'],0,10)."%");
+        $map['START_DATE'] = array('like',"%".substr($_GET['PICKUP_DATE'],0,10)."%");
         $map['CAR_MODEL_CODE'] = $_GET['CAR_MODEL_CODE'];
         $result = $model->where($map)->findAll();
+        //echo $model->getLastSql();
         header ( "Content-Type:text/html; charset=utf-8" );
         exit ( json_encode ( $result ) );
 

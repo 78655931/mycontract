@@ -6,6 +6,9 @@
     .bdl{
         border-left: 1px solid #000;
     }
+    #optionfee,#option,#rate{
+        border-bottom:1px solid #000;
+    }
     .cr{
         text-align: right;
         float: right;
@@ -25,6 +28,7 @@
     
 </style>
 <script type="text/javascript">
+    $.ajaxSettings.global=false;
     doPlan();
     $('select[name="stat"]').change(function(){
         var o = $('select[name="stat"]').val();
@@ -42,7 +46,7 @@
     });
     $('select[name="BASE_RATE_QTY"]').change(function(){
         $("#trip").html('');
-        var dates = new Date($('#BOOKING_DATE').val().replace("-","/").replace("-","/")) ;
+        var dates = new Date($('#PICKUP_DATE').val().replace("-","/").replace("-","/")) ;
         doPlan();
         //var   now   =   new   Date(); 
         //var   newDate   =   DateAdd( "d ",5,date); 
@@ -72,9 +76,9 @@
         }
         str += "</select>";
         for(var j=1;j<=i;j++){
-            nowdate = DateAdd("d ",j, new Date($('#BOOKING_DATE').val().replace("-","/").replace("-","/")));
+            nowdate = DateAdd("d ",j, new Date($('#PICKUP_DATE').val().replace("-","/").replace("-","/")));
             if(j==i){
-                times = DateAdd("h ",j, new Date($('#BOOKING_DATE').val().replace("-","/").replace("-","/")));
+                times = DateAdd("h ",j, new Date($('#PICKUP_DATE').val().replace("-","/").replace("-","/")));
                 l += '<li>'+nowdate.getFullYear()+"-"+(nowdate.getMonth()+1)+"-"+nowdate.getDate()+str+'</li><li><textarea id="" name="PLAN" rows="10" cols="30" style="width: 496px; height: 54px;"></textarea></li>';
             }else{
 
@@ -170,7 +174,7 @@ $(function(){
         var flag='';
         var CAR_MODEL_CODE = $("#CAR_MODEL_CODE").val();
         var BASE_RATE_QTY = $("#BASE_RATE_QTY").val();
-        var BOOKING_DATE = $("#BOOKING_DATE").val();
+        var PICKUP_DATE = $("#PICKUP_DATE").val();
         var  MANDATORY = 0;
         var DRIVER_CHARGES =0;
         var TOTAL_PRICE =0,RATE=0;
@@ -181,8 +185,9 @@ $(function(){
         }else if(stat=='flight'&&iscity=='1'){
             ratecode = "DSJ";
         }
-        $.getJSON('__URL__/djOption',{'CAR_MODEL_CODE':CAR_MODEL_CODE,'ratecode':ratecode,'BOOKING_DATE':BOOKING_DATE},function(data){
+        $.getJSON('__URL__/djOption',{'CAR_MODEL_CODE':CAR_MODEL_CODE,'ratecode':ratecode,'PICKUP_DATE':PICKUP_DATE},function(data){
             $("#option").html('');
+            $("#optionfee").html('');
             $.each(data,function(i,item){
                 if(item.FLAG=='S'){
                     flag= "元";   
@@ -215,7 +220,7 @@ $(function(){
                 }
 				if(item.OPTION_NAME.indexOf('司机')>0){
                     //$("#option").html('<tr><td>'+item.OPTION_NAME+'</td><td></td></tr>');
-					if(i==item.OPTION_NAME.indexOf('司机'))
+                    if(item.OPTION_NAME.indexOf('司机')>0)
 					{
 						$('<tr></tr>').html('<td><input type="radio" value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.value,0);" name="optionname" checked/>'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
 						$("#DRIVER_VALUE").val(BASE_RATE_QTY*item.RATE);
@@ -251,7 +256,7 @@ $(function(){
 
         });
        // console.log(DRIVER_CHARGES);
-        $.getJSON('__URL__/djRate',{'CAR_MODEL_CODE':CAR_MODEL_CODE,'ratecode':ratecode,'BOOKING_DATE':BOOKING_DATE},function(data){
+        $.getJSON('__URL__/djRate',{'CAR_MODEL_CODE':CAR_MODEL_CODE,'ratecode':ratecode,'PICKUP_DATE':PICKUP_DATE},function(data){
             $.each(data,function(i,item){
                 $("#rate").html(''+item.RATE+flag+'<input type="hidden" id="BASE_RATE_AMT" name="BASE_RATE_AMT" value="'+item.RATE+'">');
                 RATE=item.RATE;
@@ -415,7 +420,7 @@ function changeFee(value,type)
                 <tr>
 
                     <td>带驾日期</td>
-                    <td ><input id="BOOKING_DATE" name="BOOKING_DATE" type="text"  value="2012-08-14 09:15"/></td>
+                    <td ><input id="PICKUP_DATE" name="PICKUP_DATE" type="text"  value="2012-08-14 09:15"/></td>
                     <td>带驾范围</td>
                     <td><select id="" name=""><option value="">市内</option></select></td>
                 </tr>
@@ -510,17 +515,19 @@ function changeFee(value,type)
                 </tr>
                 <tr>
                     <td>必须费用</td>
-                    <td class="cr"><span id="MANDATORY"></span><table id="option">
-								
-                        </table></td>
+                    <td class="cr">
+                        <table id="option">
+                        </table>
+                    <span id="MANDATORY"></span>
+                </td>
 					 
                 </tr>
                 <tr>
                     <td>增值服务</td>
-                    <td class="cr"> <span id="OPTIONCHARGES"></span>
+                    <td class="cr"> 
 						<table id="optionfee">
-						    
-						</table>
+                        </table>
+                        <span id="OPTIONCHARGES"></span>
 					</td>
                 </tr>
                 <tr>
