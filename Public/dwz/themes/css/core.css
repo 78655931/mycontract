@@ -315,15 +315,13 @@ a:hover {text-decoration:underline;}
 table.list {border-collapse:collapse; border:solid 1px #ededed;}
 table.list thead tr {background:url("../default/images/grid/tableth.png") repeat-x scroll 0 0 #F0EFF0;}
 table.list th {padding:1px 2px; line-height:21px; border-right: solid 1px #D0D0D0; border-bottom:solid 1px #D0D0D0; font-weight:bolder; }
-table.list td {padding:1px 2px; line-height:21px; border-right:solid 1px #ededed;}
+table.list td {padding:1px 2px; line-height:21px; }
 table.list th.asc, .grid .gridHeader th.asc{background-position: 100% 0; background:url(../default/images/order_up.gif) no-repeat right; cursor:pointer;}
 table.list th.desc, .grid .gridHeader th.desc{background-position: 100% 0; background:url(../default/images/order_down.gif) no-repeat right; cursor:pointer;}
 table.list tbody {background-color:#fff;}
 table.list .right {text-align:right;}
 table.list .trbg {background-color:#F8F8F8;}
 table.list .hot {background-color:#fff5c0;}
-table.list .hover {background-color:#e4f5ff;}
-table.list .selected {border-color:#b8d0d6; }
 table.list a {color:#3C7FB1; font-size:11px; line-height:20px;}
 table.list a:hover {text-decoration:underline; line-height:20px;}
 table.list td span.error {z-index:-1}

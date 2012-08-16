@@ -19,10 +19,12 @@
     .layoutBox2{
         display: none;
     }
-
+    #carsinfo{
+        width:98%;
+    }
+   
     .autocomplete-w1 { background:url("__PUBLIC__/Images/shadow.png") no-repeat bottom right; position:absolute; top:0px; left:0px; margin:8px 0 0 6px; /* IE6 fix: */ _background:none; _margin:0; }
     .autocomplete { border:1px solid #999; background:#FFF; cursor:default; text-align:left; max-height:350px; overflow:auto; margin:-6px 6px 6px -6px; /* IE6 specific: */ _height:350px;  _margin:0; _overflow-x:hidden; }
-.autocomplete .selected { background:#F0F0F0; }
 .autocomplete div { padding:2px 5px; white-space:nowrap; }
 .autocomplete strong { font-weight:normal; color:#3399FF; }
     
@@ -185,7 +187,7 @@ PICKUP_DATE = PICKUP_DATE.replace(":","");
     $.getJSON('__URL__/findDJCars',{'RETURN_DATE':RETURN_DATE,'DISTRICT_CODE':$("#DISTRICT_CODE").val(),'CITY_CODE':$("#CITY_CODE").val(),'CAR_TYPE_CODE':$("#CAR_TYPE_CODE").val(),'PICKUP_DATE':PICKUP_DATE,'RATE_CODE':$("#ratecode").val()},function(data){
         $.each(data.psResponse.cars.car,function(i,item){
             //console.log(item.vehicle.atmt);
-            $("<tr></tr>").html('<td><img src="'+item.vehicle.carTypeImgUrl+'"></td><td><table><tr><td colspan="4">'+item.vehicle.carModelName+'</td></tr><tr><td>人数:'+item.vehicle.persons+'</td><td>大行李:'+item.vehicle.bigPackage+'</td><td>小行李:'+item.vehicle.smallPackage+'</td><td>租金:'+item.avgDayRates+'</td></tr><tr><td>超时费:'+item.extraHourRate+'</td><td><input type="radio" id="CAR_MODEL_CODE" value="'+item.vehicle.carModelCode+'" name="CAR_MODEL_CODE" onclick="getRateinfo();"/></td></tr></table></td>').appendTo("#carsinfo");
+            $("<table width='100%'></table>").html('<tr><td width="20%" rowspan="3"><img src="'+item.vehicle.carTypeImgUrl+'" /></td><td colspan="3">'+item.vehicle.carModelName+'</td><td width="20%" rowspan="3" align="center"><input type="radio" onclick="getRateinfo('+item.extraHourRate+');" name="CAR_MODEL_CODE" value="'+item.vehicle.carModelCode+'" id="CAR_MODEL_CODE" /></td></tr><tr><td width="20%">人数:5</td><td width="20%">大行李:'+item.vehicle.bigPackage+'1</td><td width="20%">小行李:'+item.vehicle.smallPackage+'</td></tr><tr><td>超时费:'+item.extraHourRate+'</td> <td>租金:'+item.avgDayRates+'</td> <td>&nbsp;</td> </tr>').appendTo("#carsinfo");
         });
     });
 }
@@ -216,7 +218,8 @@ function changeFee(value,type)
 	//alert($("#DRIVER_VALUE").val());
 	 
 }
-function getRateinfo(){
+function getRateinfo(rate){
+        //console.log(rate);
         var ratecode = $("#ratecode").val();
         var iscity = $("#iscity").val();
         var perunit = '';
@@ -292,10 +295,10 @@ function getRateinfo(){
                                     }
 				
             });
-            $.getJSON('__URL__/djRate',{'CAR_MODEL_CODE':CAR_MODEL_CODE,'ratecode':ratecode,'PICKUP_DATE':PICKUP_DATE},function(data){
-                $.each(data,function(i,item){
-                    $("#rate").html(''+item.RATE+flag+'<input type="hidden" id="BASE_RATE_AMT" name="BASE_RATE_AMT" value="'+item.RATE+'">');
-                    RATE=parseInt(item.RATE);
+            //$.getJSON('__URL__/djRate',{'CAR_MODEL_CODE':CAR_MODEL_CODE,'ratecode':ratecode,'PICKUP_DATE':PICKUP_DATE},function(data){
+               // $.each(data,function(i,item){
+                    $("#rate").html(''+rate+flag+'<input type="hidden" id="BASE_RATE_AMT" name="BASE_RATE_AMT" value="'+rate+'">');
+                    RATE=parseInt(rate);
                     $("#OPTION_VALUE").val(MANDY);
                     $("#OPTIONCHARGES").html('<input type="hidden" value="'+OPTIONCHARGES+'" class="OPTIONCHARGES"/>'+OPTIONCHARGES+flag+'');
                     MANDATORY = parseInt($("#DRIVER_VALUE").val())+MANDY;
@@ -303,8 +306,8 @@ function getRateinfo(){
                     $("#MANDATORY").html('<input type="hidden" value="'+MANDATORY+'" name="MANDATORY" class="MANDATORY">'+MANDATORY+flag+'');
                     TOTAL_PRICE = OPTIONCHARGES+MANDATORY+RATE;
                     $("#TOTAL_PRICE").html('<input type="hidden" value="'+TOTAL_PRICE+'" name="TOTAL_PRICE"  class="TOTAL_PRICE">'+TOTAL_PRICE+flag+'');
-                });  
-            });
+                //});  
+            //});
 
             				 
 
@@ -323,8 +326,25 @@ function getRateinfo(){
     <div layoutH="80">
 <table  class="list" height="98%" width="98%">
     <tr>
-        <td>
-            <table >
+<table width="100%" border="1">
+      <tr>
+        <td width="20%" rowspan="3"><img src="http://placehold.it/74x30" /></td>
+        <td colspan="3">宝马(进口)-宝马3系(进口)-三厢-2.0-手自一体</td>
+        <td width="20%" rowspan="3" align="center"><input type="radio" onclick="getRateinfo();" name="CAR_MODEL_CODE" value="BAOMAM(JINKOU)-BAOMA3XI(JINKOU)-3-2.5-AMT" id="CAR_MODEL_CODE2" /></td>
+      </tr>
+      <tr>
+        <td width="20%">人数:5</td>
+        <td width="20%">大行李:1</td>
+        <td width="20%">小行李:2</td>
+        </tr>
+      <tr>
+        <td>超时费:200</td>
+        <td>租金:200</td>
+        <td>&nbsp;</td>
+        </tr>
+    </table>
+        <td width="50%">
+            <table width="100%">
                 <tr>
                     <td>客户名称</td>
                     <td colspan="3"><input id="REAL_NAME" name="REAL_NAME" type="text" /></td>
@@ -423,10 +443,10 @@ function getRateinfo(){
 
 <div class="layoutBox" style="display:none">
     <div layoutH="80">
-<table  class="list" height="98%" width="98%">
+<table  class="list"  width="98%">
     <tr>
-        <td>
-            <table >
+        <td width="35%" style=" vertical-align: top;" >
+            <table width="100%" >
                 <tr>
                     <td>客户名称</td>
                     <td ><input id="REAL_NAME" name="REAL_NAME" type="text" /></td>
@@ -496,29 +516,31 @@ function getRateinfo(){
                 </tr>
             </table>
         </td>
-        <td rowspan="2" class="bdl">
-                <table id="carsinfo" class="list">
+        <td rowspan="2" width="50%" class="bdl" style=" vertical-align: top;" >
+                <table id="carsinfo" width="100%" >
                     
                 </table>
         </td>
     </tr>
     <tr >
-        <td class="bdt">
-            <table width="98%">
+        <td class="bdt" width="35%" >
+            <table width="100%">
                 <tr>
 
-                    <td　colspan="2">政策规则</td>
+                    <td　colspan="3">政策规则</td>
                 </tr>
                 <tr>
                     <td>超时费用</td>
-                    <td class="cr">超公里费0元</td>
-                </tr>
-                <tr>
+                    <td>超公里费0元</td>
                     <td>司机过夜食宿费</td>
-                    <td class="cr">司机加班费</td>
                 </tr>
                 <tr>
                     <td>超4小时算一天</td>
+                    <td >司机加班费</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td id="ruletext"　colspan="3"></td>
                 </tr>
             </table>
         </td>
