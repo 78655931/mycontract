@@ -169,10 +169,56 @@ $(function(){
         params: { country: 'Yes' },//参数
         noCache: false //是否启用缓存 默认是开启缓存的
     };
-    $("#CAR_MODEL_CODE").click(function(){
-        var stat = $("#ratecode").val();
+   
+    
+});
+function findCars(){
+    var RETURN_DATE = $("#RETURN_DATE").val()+$("#_hour").val()+$("#_minute").val();
+RETURN_DATE = RETURN_DATE.replaceAll("-","");
+RETURN_DATE = RETURN_DATE.replace(" ","");
+RETURN_DATE = RETURN_DATE.replace(":","");
+var PICKUP_DATE =$("#PICKUP_DATE").val();
+PICKUP_DATE = PICKUP_DATE.replaceAll("-","");
+PICKUP_DATE = PICKUP_DATE.replace(" ","");
+PICKUP_DATE = PICKUP_DATE.replace(":","");
+    $("#carsinfo").html('');
+    $.getJSON('__URL__/findDJCars',{'RETURN_DATE':RETURN_DATE,'DISTRICT_CODE':$("#DISTRICT_CODE").val(),'CITY_CODE':$("#CITY_CODE").val(),'CAR_TYPE_CODE':$("#CAR_TYPE_CODE").val(),'PICKUP_DATE':PICKUP_DATE,'RATE_CODE':$("#ratecode").val()},function(data){
+        $.each(data.psResponse.cars.car,function(i,item){
+            //console.log(item.vehicle.atmt);
+            $("<tr></tr>").html('<td><img src="'+item.vehicle.carTypeImgUrl+'"></td><td><table><tr><td colspan="4">'+item.vehicle.carModelName+'</td></tr><tr><td>人数:'+item.vehicle.persons+'</td><td>大行李:'+item.vehicle.bigPackage+'</td><td>小行李:'+item.vehicle.smallPackage+'</td><td>租金:'+item.avgDayRates+'</td></tr><tr><td>超时费:'+item.extraHourRate+'</td><td><input type="radio" id="CAR_MODEL_CODE" value="'+item.vehicle.carModelCode+'" name="CAR_MODEL_CODE" onclick="getRateinfo();"/></td></tr></table></td>').appendTo("#carsinfo");
+        });
+    });
+}
+function changeFee(value,type)
+{		
+		var fee = $(".OPTIONCHARGES").val(),MANDATORY=$('.MANDATORY').val();
+		if(type==0)
+        {	
+            $("#DRIVER_VALUE").val(value);
+             MANDATORY = parseInt($("#DRIVER_VALUE").val())+parseInt($("#OPTION_VALUE").val());
+            //$("#MANDATORY").html(MANDATORY);
+            $("#MANDATORY").html('<input type="hidden" class="MANDATORY" value="'+MANDATORY+'" name="MANDATORY" >'+MANDATORY+'');
+		}else if(type==3)
+		{
+			fee=0;
+            if( $("#optionfee :checkbox").filter(':checked').length==0){
+                $("#OPTIONCHARGES").html('<input type="hidden" value="'+fee+'" class="OPTIONCHARGES"/>'+fee+'');
+            }
+            $("#optionfee :checkbox").filter(':checked').each(function(){
+                fee += parseInt(this.value);
+                $("#OPTIONCHARGES").html('<input type="hidden" value="'+fee+'" class="OPTIONCHARGES"/>'+fee+'');
+            });
+            
+			
+        }
+        $("#TOTAL_PRICE").text(parseInt($("#BASE_RATE_AMT").val())+parseInt(MANDATORY)+parseInt(fee));
+	//alert($("#OPTION_VALUE").val());
+	//alert($("#DRIVER_VALUE").val());
+	 
+}
+function getRateinfo(){
+        var ratecode = $("#ratecode").val();
         var iscity = $("#iscity").val();
-        var ratecode = '';
         var perunit = '';
         var flag='';
         var CAR_MODEL_CODE = $("#CAR_MODEL_CODE").val();
@@ -183,11 +229,7 @@ $(function(){
         var TOTAL_PRICE =0,RATE=0;
         var OPTIONCHARGES =0;
         var MANDY = 0;
-        if(stat=='DSR'&&iscity=='1'){
-            ratecode = "DSR";
-        }else if(stat=='DSJ'&&iscity=='1'){
-            ratecode = "DSJ";
-        }
+        
         $.getJSON('__URL__/djOption',{'CAR_MODEL_CODE':CAR_MODEL_CODE,'ratecode':ratecode,'PICKUP_DATE':PICKUP_DATE},function(data){
             $("#option").html('');
             $("#optionfee").html('');
@@ -267,53 +309,7 @@ $(function(){
             				 
 
         });
-       
-    }); 
-
-    
-});
-function findCars(){
-    var RETURN_DATE = $("#RETURN_DATE").val()+$("#_hour").val()+$("#_minute").val();
-RETURN_DATE = RETURN_DATE.replaceAll("-","");
-RETURN_DATE = RETURN_DATE.replace(" ","");
-RETURN_DATE = RETURN_DATE.replace(":","");
-var PICKUP_DATE =$("#PICKUP_DATE").val();
-PICKUP_DATE = PICKUP_DATE.replaceAll("-","");
-PICKUP_DATE = PICKUP_DATE.replace(" ","");
-PICKUP_DATE = PICKUP_DATE.replace(":","");
-
-    $.getJSON('__URL__/findDJCars',{'RETURN_DATE':RETURN_DATE,'DISTRICT_CODE':$("#DISTRICT_CODE").val(),'CITY_CODE':$("#CITY_CODE").val(),'CAR_TYPE_CODE':$("#CAR_TYPE_CODE").val(),'PICKUP_DATE':PICKUP_DATE,'RATE_CODE':$("#ratecode").val()},function(data){
-    
-    });
 }
-function changeFee(value,type)
-{		
-		var fee = $(".OPTIONCHARGES").val(),MANDATORY=$('.MANDATORY').val();
-		if(type==0)
-        {	
-            $("#DRIVER_VALUE").val(value);
-             MANDATORY = parseInt($("#DRIVER_VALUE").val())+parseInt($("#OPTION_VALUE").val());
-            //$("#MANDATORY").html(MANDATORY);
-            $("#MANDATORY").html('<input type="hidden" class="MANDATORY" value="'+MANDATORY+'" name="MANDATORY" >'+MANDATORY+'');
-		}else if(type==3)
-		{
-			fee=0;
-            if( $("#optionfee :checkbox").filter(':checked').length==0){
-                $("#OPTIONCHARGES").html('<input type="hidden" value="'+fee+'" class="OPTIONCHARGES"/>'+fee+'');
-            }
-            $("#optionfee :checkbox").filter(':checked').each(function(){
-                fee += parseInt(this.value);
-                $("#OPTIONCHARGES").html('<input type="hidden" value="'+fee+'" class="OPTIONCHARGES"/>'+fee+'');
-            });
-            
-			
-        }
-        $("#TOTAL_PRICE").text(parseInt($("#BASE_RATE_AMT").val())+parseInt(MANDATORY)+parseInt(fee));
-	//alert($("#OPTION_VALUE").val());
-	//alert($("#DRIVER_VALUE").val());
-	 
-}
-
 </script>
 带驾类型
 <select id="ratecode" name="ratecode">
@@ -501,12 +497,8 @@ function changeFee(value,type)
             </table>
         </td>
         <td rowspan="2" class="bdl">
-                <table>
-                    <tr>
-                        <td><img src="" alt="" /></td>
-                        <td>奥迪(进口)-奥迪TTS-4座-2.0-自动</td>
-                        <td><input id="CAR_MODEL_CODE" value="WOERWO(JINKOU)-WOERWOS60-3-1.6-AT" name="CAR_MODEL_CODE" type="radio" /></td>
-                    </tr>
+                <table id="carsinfo" class="list">
+                    
                 </table>
         </td>
     </tr>
