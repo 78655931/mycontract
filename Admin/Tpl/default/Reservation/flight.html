@@ -1,4 +1,5 @@
 <script src="__PUBLIC__/js/jquery.autocomplete-min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/js/mustache.js" type="text/javascript"></script>
 <style type="text/css">
     .bdt{
         border-top: 1px solid #000;
@@ -87,7 +88,7 @@
                 l += '<li>'+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+str+'</li><input type="hidden" name="RETURN_DATE" id="RETURN_DATE" value="'+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+'"><li><textarea id="" name="PLAN" rows="10" cols="30" style="width: 496px; height: 54px;"></textarea></li>';
             }else{
 
-                l += '<li>'+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+'<input id="" name="ISOVERNIGHT" type="checkbox" />过夜</li><li><textarea id="" name="PLAN" rows="10" cols="30" style="width: 496px; height: 54px;"></textarea></li>';
+                l += '<li>'+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+'<input class="ISOVERNIGHT" name="ISOVERNIGHT" type="checkbox" onclick="driver_fee(0);" />过夜</li><li><textarea id="" name="PLAN" rows="10" cols="30" style="width: 496px; height: 54px;"></textarea></li>';
             }
         }
 
@@ -186,8 +187,13 @@ PICKUP_DATE = PICKUP_DATE.replace(":","");
     $("#carsinfo").html('');
     $.getJSON('__URL__/findDJCars',{'RETURN_DATE':RETURN_DATE,'DISTRICT_CODE':$("#DISTRICT_CODE").val(),'CITY_CODE':$("#CITY_CODE").val(),'CAR_TYPE_CODE':$("#CAR_TYPE_CODE").val(),'PICKUP_DATE':PICKUP_DATE,'RATE_CODE':$("#ratecode").val()},function(data){
         $.each(data.psResponse.cars.car,function(i,item){
-            //console.log(item.vehicle.atmt);
-            $("<table width='100%'></table>").html('<tr><td width="20%" rowspan="3"><img src="'+item.vehicle.carTypeImgUrl+'" /></td><td colspan="3">'+item.vehicle.carModelName+'</td><td width="20%" rowspan="3" align="center"><input type="radio" onclick="getRateinfo('+item.extraHourRate+');" name="CAR_MODEL_CODE" value="'+item.vehicle.carModelCode+'" id="CAR_MODEL_CODE" /></td></tr><tr><td width="20%">人数:5</td><td width="20%">大行李:'+item.vehicle.bigPackage+'1</td><td width="20%">小行李:'+item.vehicle.smallPackage+'</td></tr><tr><td>超时费:'+item.extraHourRate+'</td> <td>租金:'+item.avgDayRates+'</td> <td>&nbsp;</td> </tr>').appendTo("#carsinfo");
+           // console.log(item.ruleCode);
+           //$("<table width='100%'></table>").html('<tr><td width="20%" rowspan="3"><img src="'+item.vehicle.carTypeImgUrl+'" /></td><td colspan="3">'+item.vehicle.carModelName+'</td><td width="20%" rowspan="3" align="center"><input type="radio" onclick="getRateinfo('+item.baseRateAmt/item.baseRateQty+');" name="CAR_MODEL_CODE" value="'+item.vehicle.carModelCode+'" id="CAR_MODEL_CODE" /></td></tr><tr><td width="20%">人数:5</td><td width="20%">大行李:'+item.vehicle.bigPackage+'1</td><td width="20%">小行李:'+item.vehicle.smallPackage+'</td></tr><tr><td>超时费:'+item.extraHourRate+'</td> <td>租金:'+item.avgDayRates+'</td> <td>&nbsp;</td> </tr>').appendTo("#carsinfo");
+           var uc = {rulecode:item.ruleCode,hourate:item.extraHourRate,img:item.vehicle.carTypeImgUrl,carModelName:item.vehicle.carModelName,rate:item.baseRateAmt/item.baseRateQty,carModelCode:item.vehicle.carModelCode,bigPackage:item.vehicle.bigPackage,smallPackage:item.vehicle.smallPackage};
+           // var tpl = "{{hourate}}<input type='hidden' id='rulecode' name='rulecode' value='{{rulecode}}'/>";
+           var tpl = '<tr><td width="20%" rowspan="3"><img src="{{img}}" /></td><td colspan="3">{{carModelName}}</td><td width="20%" rowspan="3" align="center"><input type="radio" onclick="getRateinfo({{rate}},\'{{rulecode}}\',{{hourate}});" name="CAR_MODEL_CODE" value="{{carModelCode}}" id="CAR_MODEL_CODE" /></td></tr><tr><td width="20%">人数:5</td><td width="20%">大行李:{{bigPackage}}</td><td width="20%">小行李:{{smallPackage}}</td></tr><tr><td>超时费:{{hourate}}</td> <td>租金:{{rate}}</td> <td>&nbsp;</td> </tr>';
+           var html = Mustache.to_html(tpl,uc);
+           $("<table width='100%'></table>").html(html).appendTo("#carsinfo");
         });
     });
 }
@@ -218,7 +224,7 @@ function changeFee(value,type)
 	//alert($("#DRIVER_VALUE").val());
 	 
 }
-function getRateinfo(rate){
+function getRateinfo(rate,rulecode,hourate){
         //console.log(rate);
         var ratecode = $("#ratecode").val();
         var iscity = $("#iscity").val();
@@ -270,7 +276,8 @@ function getRateinfo(rate){
                     //$("#option").html('<tr><td>'+item.OPTION_NAME+'</td><td></td></tr>');
                     if(i%2==0)
 					{
-						$('<tr></tr>').html('<td><input type="radio" value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.value,0);" name="optionname" checked/>'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
+                        $('<tr></tr>').html('<td><input type="radio" value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.value,0);driver_fee(\'item.OPTION_NAME\');" name="optionname" checked/>'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
+                        driver_fee(item.OPTION_NAME);
 						$("#DRIVER_VALUE").val(BASE_RATE_QTY*item.RATE);
 					}else
 					{
@@ -306,12 +313,26 @@ function getRateinfo(rate){
                     $("#MANDATORY").html('<input type="hidden" value="'+MANDATORY+'" name="MANDATORY" class="MANDATORY">'+MANDATORY+flag+'');
                     TOTAL_PRICE = OPTIONCHARGES+MANDATORY+RATE;
                     $("#TOTAL_PRICE").html('<input type="hidden" value="'+TOTAL_PRICE+'" name="TOTAL_PRICE"  class="TOTAL_PRICE">'+TOTAL_PRICE+flag+'');
+                    $("#hourate").html('<input type="hidden" value="'+hourate+'" name="XHOUR"  class="XHOUR">'+hourate+'');
                 //});  
             //});
 
-            				 
+            			//hourate	 
 
         });
+        $.getJSON('__URL__/djRule',{'RULE_CODE':rulecode},function(data){
+              $("#XHOUR_NEXT_DAY").text(data.XHOUR_NEXT_DAY)  ;
+        });
+}
+function driver_fee(driverstat){
+    $.getJSON('__URL__/driverInfo',{TECHTITLE:driverstat},function(data){
+        if( $(".ISOVERNIGHT :checkbox").filter(':checked').length==0){
+            // $("#OPTIONCHARGES").html('<input type="hidden" value="'+fee+'" class="OPTIONCHARGES"/>'+fee+'');
+            console.log(111);
+        }
+        $(".OVERTIME").text(data.OVERTIME);
+        $(".BOARD_AND_LODGING").text(data.BOARD_AND_LODGING);
+    });
 }
 </script>
 带驾类型
@@ -322,6 +343,7 @@ function getRateinfo(rate){
 </select>
 <input name="DISTRICT_CODE" type="hidden" id="DISTRICT_CODE" value="{$vo.DISTRICT_CODE}" />
 <input name="CITY_CODE" type="hidden"  id="CITY_CODE" value="{$vo.CITY_CODE}" />
+<div class="rulecode"></div>
 <div class="layoutBox2">
     <div layoutH="80">
 <table  class="list" height="98%" width="98%">
@@ -462,7 +484,7 @@ function getRateinfo(rate){
                 <tr>
 
                     <td>带驾日期</td>
-                    <td ><input id="PICKUP_DATE" name="PICKUP_DATE" type="text"  value="2012-08-14 09:15"/></td>
+                    <td ><input id="PICKUP_DATE" name="PICKUP_DATE" type="text"  value="2012-08-20 09:15"/></td>
                     <td>带驾范围</td>
                     <td><select id="" name=""><option value="">市内</option></select></td>
                 </tr>
@@ -530,13 +552,13 @@ function getRateinfo(rate){
                     <td　colspan="3">政策规则</td>
                 </tr>
                 <tr>
-                    <td>超时费用</td>
-                    <td>超公里费0元</td>
-                    <td>司机过夜食宿费</td>
+                    <td>超时费用<span id="hourate"></span>元</td>
+                    <td>超公里费元</td>
+                    <td>司机过夜食宿费 <span class="BOARD_AND_LODGING"></span>元</td>
                 </tr>
                 <tr>
-                    <td>超4小时算一天</td>
-                    <td >司机加班费</td>
+                    <td>超<span id="XHOUR_NEXT_DAY"></span>小时算一天</td>
+                    <td >司机加班费 <span class="OVERTIME"></span>元</td>
                     <td>&nbsp;</td>
                 </tr>
                 <tr>

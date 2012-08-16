@@ -676,5 +676,26 @@ class ReservationAction extends CommonAction {
 
         }
     }
+    public function djRule()
+    {
+        $model = M ( "Location","AdvModel" );
+        $model->addConnect ( C ( "DB_CRS" ), 1 );
+        $model->switchConnect(1,'uni_rule');
+        $map['RULE_CODE'] = $_GET['RULE_CODE'];
+        $list = $model->where($map)->find();
+        header ( "Content-Type:text/html; charset=utf-8" );
+        exit ( json_encode ( $list ) );
+    }
+    public function driverInfo()
+    {
+        // code...
+        $model = M ( "Location","AdvModel" );
+        $model->addConnect ( C ( "DB_CRS" ), 1 );
+        $model->switchConnect(1,'driver_info');
+        $map['TECHTITLE'] = $_GET['TECHTITLE'];
+        $vo = $model->where($map)->find();
+        header ( "Content-Type:text/html; charset=utf-8" );
+        exit ( json_encode ( $vo ) );
+    }
 }
 ?>
