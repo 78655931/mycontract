@@ -625,10 +625,10 @@ class ReservationAction extends CommonAction {
         $map['RATE_CODE'] = $_GET['ratecode'];
         $map['OPTION_CLASS'] = array('neq','Z');
         //$map['CAR_TYPE_CODE']= array(array('exp','is NULL'),array('eq',$_GET['car_type_code']),'or');
-        $map['START_DATE'] = array('like',"%".substr($_GET['BOOKING_DATE'],0,10)."%");
-        $result = $model->where($map)->findAll();
+        $map['START_DATE'] = array('like',"%".substr($_GET['PICKUP_DATE'],0,10)."%");
+        $result = $model->where($map)->group('OPTION_ID')->findAll();
         $map['CAR_MODEL_CODE'] = $_GET['CAR_MODEL_CODE'];
-        echo $model->getLastSql();
+        //echo $model->getLastSql();
         header ( "Content-Type:text/html; charset=utf-8" );
         exit ( json_encode ( $result ) );
 
@@ -640,12 +640,63 @@ class ReservationAction extends CommonAction {
         $model->switchConnect(1,'uni_rate');
         $map['LOCATION_CODE'] = $_SESSION['location_code'];
         $map['RATE_CODE'] = $_GET['ratecode'];
-        $map['START_DATE'] = array('like',"%".substr($_GET['BOOKING_DATE'],0,10)."%");
+        $map['START_DATE'] = array('like',"%".substr($_GET['PICKUP_DATE'],0,10)."%");
         $map['CAR_MODEL_CODE'] = $_GET['CAR_MODEL_CODE'];
         $result = $model->where($map)->findAll();
+       // echo $model->getLastSql();
         header ( "Content-Type:text/html; charset=utf-8" );
         exit ( json_encode ( $result ) );
 
+    }
+    public function flight()
+    {
+        $map['LOCATION_CODE'] = $_SESSION['location_code'];
+        $model = M ( "Location","AdvModel" );
+        $model->addConnect ( C ( "DB_CRS" ), 1 );
+        $model->switchConnect(1,'location');
+        $list = $model->where($map)->find();
+        $model->switchConnect(1,'car_type');
+        $option = $model->findAll();
+        $this->assign("option",$option);
+        $this->assign("vo",$list);
+        $this->display();
+    }
+    public function findDJCars()
+    {
+        //echo $_GET['RETURN_DATE'];exit;
+        $selcars = C('SELCAR');
+        $url = $selcars."&psRequest.rateCode=".$_GET['RATE_CODE']."&psRequest.pickupCityCode=".$_GET['CITY_CODE']."&psRequest.pickupDistrictCode=".$_GET['DISTRICT_CODE']."&psRequest.pickupLocationCode=".$_SESSION['location_code']."&psRequest.pickupDate=".$_GET['PICKUP_DATE']."&psRequest.returnCityCode=".$_GET['CITY_CODE']."&psRequest.returnDistrictCode=".$_GET['DISTRICT_CODE']."&psRequest.returnLocationCode=".$_SESSION['location_code']."&psRequest.returnDate=".$_GET['RETURN_DATE']."&psRequest.ipaddress=".$_SERVER["REMOTE_ADDR"]."&psRequest.carTypeCode=".$_GET['CAR_TYPE_CODE']."&psRequest.optionClass=D&psRequest.discountCode=";
+        
+        $result = $this->curl($url);
+		 	$result = json_decode($result);
+			print_r($result);exit;
+        //exit($result);
+		
+		$result = $result->dsResponse->discounts->discount;
+		foreach($result as $k=>$v){
+			$vs[]=(array)$v;
+        }
+    }
+    public function djRule()
+    {
+        $model = M ( "Location","AdvModel" );
+        $model->addConnect ( C ( "DB_CRS" ), 1 );
+        $model->switchConnect(1,'uni_rule');
+        $map['RULE_CODE'] = $_GET['RULE_CODE'];
+        $list = $model->where($map)->find();
+        header ( "Content-Type:text/html; charset=utf-8" );
+        exit ( json_encode ( $list ) );
+    }
+    public function driverInfo()
+    {
+        // code...
+        $model = M ( "Location","AdvModel" );
+        $model->addConnect ( C ( "DB_CRS" ), 1 );
+        $model->switchConnect(1,'driver_info');
+        $map['TECHTITLE'] = $_GET['TECHTITLE'];
+        $vo = $model->where($map)->find();
+        header ( "Content-Type:text/html; charset=utf-8" );
+        exit ( json_encode ( $vo ) );
     }
 }
 ?>

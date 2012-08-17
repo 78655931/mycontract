@@ -179,7 +179,10 @@ beforeSubmit : showRequest, // pre-submit callback
 };
 $('#myform').submit(function() {
         // 提交表单
-        
+           
+            var optionid = $('input:radio[name="rdioption"]:checked').attr('id');
+
+            $('<input type="hidden" name="OPTION_ID"').val(optionid).appendTo('#myform');
         $(this).ajaxSubmit(options);
         // 为了防止普通浏览器进行表单提交和产生页面导航（防止页面刷新？）返回false
         return false;
@@ -218,9 +221,9 @@ function findCars(){
         $.each(data.psResponse.cars.car,function(i,item){
            // console.log(item.ruleCode);
            //$("<table width='100%'></table>").html('<tr><td width="20%" rowspan="3"><img src="'+item.vehicle.carTypeImgUrl+'" /></td><td colspan="3">'+item.vehicle.carModelName+'</td><td width="20%" rowspan="3" align="center"><input type="radio" onclick="getRateinfo('+item.baseRateAmt/item.baseRateQty+');" name="CAR_MODEL_CODE" value="'+item.vehicle.carModelCode+'" id="CAR_MODEL_CODE" /></td></tr><tr><td width="20%">人数:5</td><td width="20%">大行李:'+item.vehicle.bigPackage+'1</td><td width="20%">小行李:'+item.vehicle.smallPackage+'</td></tr><tr><td>超时费:'+item.extraHourRate+'</td> <td>租金:'+item.avgDayRates+'</td> <td>&nbsp;</td> </tr>').appendTo("#carsinfo");
-           var uc = {rulecode:item.ruleCode,hourate:item.extraHourRate,img:item.vehicle.carTypeImgUrl,carModelName:item.vehicle.carModelName,rate:item.baseRateAmt/item.baseRateQty,carModelCode:item.vehicle.carModelCode,bigPackage:item.vehicle.bigPackage,smallPackage:item.vehicle.smallPackage};
+           var uc = {rulecode:item.ruleCode,hourate:item.extraHourRate,img:item.vehicle.carTypeImgUrl,carModelName:item.vehicle.carModelName,rate:item.baseRateAmt/item.baseRateQty,carModelCode:item.vehicle.carModelCode,bigPackage:item.vehicle.bigPackage,smallPackage:item.vehicle.smallPackage,rateitem:item};
            // var tpl = "{{hourate}}<input type='hidden' id='rulecode' name='rulecode' value='{{rulecode}}'/>";
-           var tpl = '<tr><td width="20%" rowspan="3"><img src="{{img}}" /></td><td colspan="3">{{carModelName}}</td><td width="20%" rowspan="3" align="center"><input type="radio" onclick="getRateinfo({{rate}},\'{{rulecode}}\',{{hourate}});" name="CAR_MODEL_CODE" value="{{carModelCode}}" id="CAR_MODEL_CODE" /></td></tr><tr><td width="20%">人数:5</td><td width="20%">大行李:{{bigPackage}}</td><td width="20%">小行李:{{smallPackage}}</td></tr><tr><td>超时费:{{hourate}}</td> <td>租金:{{rate}}</td> <td>&nbsp;</td> </tr>';
+           var tpl = '<tr><td width="20%" rowspan="3"><img src="{{img}}" /></td><td colspan="3">{{carModelName}}</td><td width="20%" rowspan="3" align="center"><input type="radio" onclick="getRateinfo({{rate}},\'{{rulecode}}\',{{hourate}},\'{{rateitem}}\');" name="CAR_MODEL_CODE" value="{{carModelCode}}" id="CAR_MODEL_CODE" /></td></tr><tr><td width="20%">人数:5</td><td width="20%">大行李:{{bigPackage}}</td><td width="20%">小行李:{{smallPackage}}</td></tr><tr><td>超时费:{{hourate}}</td> <td>租金:{{rate}}</td> <td>&nbsp;</td> </tr>';
            var html = Mustache.to_html(tpl,uc);
            $("<table width='100%'></table>").html(html).appendTo("#carsinfo");
         });
@@ -228,6 +231,7 @@ function findCars(){
 }
 function changeFee(value,type)
 {		
+        var flag = "元";
 		var fee = $(".OPTIONCHARGES").val(),MANDATORY=$('.MANDATORY').val();
 		if(type==0)
         {	
@@ -255,7 +259,7 @@ function changeFee(value,type)
 	//alert($("#DRIVER_VALUE").val());
 	 
 }
-function getRateinfo(rate,rulecode,hourate){
+function getRateinfo(rate,rulecode,hourate,rateitem){
         //console.log(rate);
         var ratecode = $("#ratecode").val();
         var iscity = $("#iscity").val();
@@ -269,7 +273,11 @@ function getRateinfo(rate,rulecode,hourate){
         var TOTAL_PRICE =0,RATE=0;
         var OPTIONCHARGES =0;
         var MANDY = 0;
-        
+      //  console.log(rateitem.toSource().toSource());
+        /**$.each(rateitem,function(i,item){
+            console.log(item.toSource());
+            });
+            **/
         $.getJSON('__URL__/djOption',{'CAR_MODEL_CODE':CAR_MODEL_CODE,'ratecode':ratecode,'PICKUP_DATE':PICKUP_DATE},function(data){
             $("#option").html('');
             $("#optionfee").html('');
@@ -306,12 +314,12 @@ function getRateinfo(rate,rulecode,hourate){
 				if(item.OPTION_NAME.indexOf('司机')>0){
                     if(i%2==0)
 					{
-                        $('<tr></tr>').html('<td><input type="radio" value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.value,0);driver_fee(\'item.OPTION_NAME\');" name="rdioption" checked/>'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
+                        $('<tr></tr>').html('<td><input  id="'+item.OPTION_ID+'" type="radio" value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.value,0);driver_fee(\'item.OPTION_NAME\');" name="rdioption" checked/>'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
                         driver_fee(item.OPTION_NAME);
 						$("#DRIVER_VALUE").val(BASE_RATE_QTY*item.RATE);
 					}else
 					{
-						 $('<tr></tr>').html('<td><input type="radio" value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.value,0); "name="rdioption"/>'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
+						 $('<tr></tr>').html('<td><input type="radio" id="'+item.OPTION_ID+'" value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.value,0);" name="rdioption"/>'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
 					}
 					
                 }else{
@@ -319,12 +327,12 @@ function getRateinfo(rate,rulecode,hourate){
 				    if(item.MANDATORY=='Y'){
                          checkValue ="CHECKED";
                          MANDY +=BASE_RATE_QTY*item.RATE;
-                         $('<tr></tr>').html('<td><input DISABLED id="'+i+'" type="checkbox"  value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.id,1);" name="optionname" CHECKED="'+checkValue+'" />'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
+                         $('<tr></tr>').html('<td><input DISABLED id="'+item.OPTION_ID+'" type="checkbox"  value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.id,1);" class="optionname" name="optionname['+item.OPTION_ID+']" CHECKED="'+checkValue+'" />'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
 
 						 //$("#OPTION_VALUE").val(MANDY);
                     }else{
                         OPTIONCHARGES += BASE_RATE_QTY*item.RATE;
-                        $('<tr></tr>').html('<td><input  id="'+i+'" type="checkbox"  value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.id,3);" name="optionname" CHECKED="'+checkValue+'" />'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#optionfee');
+                        $('<tr></tr>').html('<td><input  id="'+item.OPTION_ID+'" type="checkbox"  value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.id,3);" class="optionname" name="optionname['+item.OPTION_ID+']" CHECKED="'+checkValue+'" />'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#optionfee');
                         
                     }
                                     }
@@ -343,7 +351,7 @@ function getRateinfo(rate,rulecode,hourate){
 
         });
         $.getJSON('__URL__/djRule',{'RULE_CODE':rulecode},function(data){
-            $("#XHOUR_NEXT_DAY").html('<input type="hidden" name="XHOUR_NEXT_DAY" value="'+data.XHOUR_NEXT_DAY+'">'+data.XHOUR_NEXT_DAY+'')  ;
+            $("#XHOUR_NEXT_DAY").html('<input type="hidrdioptionden" name="XHOUR_NEXT_DAY" value="'+data.XHOUR_NEXT_DAY+'">'+data.XHOUR_NEXT_DAY+'')  ;
         });
 }
 function driver_fee(driverstat){
@@ -359,7 +367,7 @@ function driver_fee(driverstat){
         $(".ISOVERNIGHT").filter(":checked").each(function(){
                 boards+=board;
         });
-        $('input:checkbox[name="optionname"]:checked').each(function(){
+        $('input:checkbox[class="optionname"]:checked').each(function(){
             OPTIONCHARGES += parseInt($(this).val());
             //console.log($(this).val());
         });
