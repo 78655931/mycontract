@@ -758,13 +758,11 @@ class Model extends Think
         }
         // 状态
         $type = $type?$type:(!empty($data[$this->getPk()])?self::MODEL_UPDATE:self::MODEL_INSERT);
-
         // 表单令牌验证
         if(C('TOKEN_ON') && !$this->autoCheckToken($data)) {
             $this->error = L('_TOKEN_ERROR_');
             return false;
         }
-
         // 检查字段映射
         if(!empty($this->_map)) {
             foreach ($this->_map as $key=>$val){
@@ -774,7 +772,6 @@ class Model extends Think
                 }
             }
         }
-
         // 数据自动验证
         if(!$this->autoValidation($data,$type)) return false;
 
@@ -790,6 +787,7 @@ class Model extends Think
         }
         // 创建完成对数据进行自动处理
         $this->autoOperation($vo,$type);
+
         // 赋值当前数据对象
         $this->data =   $vo;
         // 返回创建的数据以供其他调用

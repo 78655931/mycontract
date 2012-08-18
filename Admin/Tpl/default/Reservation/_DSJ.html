@@ -1,0 +1,65 @@
+            <table width="100%">
+                <tr>
+                    <td>客户名称</td>
+                    <td ><input id="REAL_NAME" name="REAL_NAME" type="text" /></td>
+                    <td>选择车型</td>
+                    <td> 
+                        <select id="CAR_TYPE_CODE" name="CAR_TYPE_CODE">
+                            <volist name="option" id="vo">
+                            <option value="{$vo.CAR_TYPE_CODE}">{$vo.CAR_TYPE_NAME}</option>
+                            </volist>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>城市机场</td>
+                    <td ><select id="" name="AIRPORT_NAME"><option value="">宝安机场</option></select></td>
+                    <td>接送范围</td>
+                    <td><select id="iscity" name="iscity"><option value="1">市内</option></select></td>
+                </tr>
+                <tr>
+                    <td>接送类型</td>
+                    <td>
+                        <select  name="PICKUP_RETURN_TYPE">
+                            <option value="0">送</option>
+                            <option value="1" selected>接</option>
+                        </select>
+                    </td>
+                    <td>过桥费
+                        <select id="" name="ROAD_BRIDGE_CHARGE_STATUS">
+                            <option value="1">含</option>
+                            <option value="0" selected>不含</option>
+                        </select>
+                    </td>
+                    <td>
+                        停车费
+                        <select id="" name="PARKING_CHARGE_STATUS">
+                            <option value="0" selected>不含</option>
+                            <option value="1">含</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>接送时间</td>
+                    <td><input id="PICKUP_DATE" name="PICKUP_DATE" type="text"  value="2012-08-20 09:15"/></td>
+                    <td>航班号</td>
+                    <td><input id="" name="AIRLINE" type="text" /></td>
+                </tr>
+                <tr>
+                    <td >上下车地点</td>
+                    <td colspan="3"><input id="" name="UP_DOWN_ADDRESS" type="text" size="80"/></td>
+                </tr>
+                <tr>
+                    <td>联系人</td>
+                    <td><input id="" name="LINKMAN" type="text" /></td>
+                    <td>联系人电话</td>
+                    <td><input id="" name="LINKMAN_PHONE" type="text" /></td>
+                </tr>
+                <tr>
+                    <td>备注</td>
+                    <td colspan="3"><textarea id="" name="DRIVER_REQUEST" rows="10" cols="30" style="width: 492px; height: 59px;"></textarea></td>
+                </tr>
+                <tr>
+                    <td colspan="4"><input type="button" onclick="findCars();"  value="查询" /></td>
+                </tr>
+            </table>

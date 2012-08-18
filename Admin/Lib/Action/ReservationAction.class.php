@@ -697,5 +697,82 @@ class ReservationAction extends CommonAction {
         header ( "Content-Type:text/html; charset=utf-8" );
         exit ( json_encode ( $vo ) );
     }
+    public function  DSB_create()
+    {
+        $location_code = $_SESSION['location_code'];
+        $map['location_code'] = $location_code;
+        $model = M ( "Location","AdvModel" );
+        $model->addConnect ( C ( "DB_CRS" ), 1 );
+        $model->switchConnect(1,'location');
+        $location = $model->where($map)->find();
+        $model->switchConnect(1,'brand');
+        $brand = $model->getByCompanyCode($location['COMPANY_CODE']);
+        $model->switchConnect(1,'reservation');
+        $jsoncarinfo= "[".$_POST['jsoncarinfo']."]";
+        $jsoncarinfo = str_replace('\\','',$jsoncarinfo);
+        //echo $jsoncarinfo;
+        $jsoncarinfo = json_decode((string)$jsoncarinfo);
+        $data = array_merge($location,$_POST);
+        $data = array_merge($data,$brand);
+        $confirmation = $_SESSION['location_code'].'-'.date('Ymdhm'.floor(microtime()*1000));
+        $data['CONFIRMATION'] = $confirmation;
+        $optionidarr = $data['optionname'];
+        $carinfo = (array)$jsoncarinfo[0];
+        $cars = (array)$carinfo['vehicle'];
+        $data['atmt'] = $cars['atmt'];
+        $data['BIG_PACKAGE'] = $cars['bigPackage'];
+        $data['car_model_code'] = $cars['carModelCode'];
+        $data['CAR_MODEL_IMG_URL'] = $cars['carModelImgUrl'];
+        $data['CAR_MODEL_NAME'] = $cars['carModelName'];
+        $data['CAR_TYPE_CODE'] = $cars['carTypeCode'];
+        $data['CAR_TYPE_IMG_URL'] = $cars['carTypeImgUrl'];
+        $data['CAR_TYPE_NAME'] = $cars['carTypeName'] ;
+        $data['persons'] = $cars['persons'];
+        $data['SMALL_PACKAGE'] = $cars['smallPackage'];
+        $data['RATE_CODE'] = $data['ratecode'];
+        $data['deposit'] = $carinfo['deposit'];
+        $data['EXT_HOUR'] = $carinfo['extHour'];
+        $data['XHOUR'] = $carinfo['extHour'];
+        $data['XDAY'] = $carinfo['extraDayRate'];
+        $data['RULE_CODE'] = $carinfo['ruleCode'];
+        $data['SOURCE_CODE'] = C('SOURCE_CODE');
+        $data['MANDATORY_CHARGES'] = $data['MANDATORY'];
+        $data['text'] = $carinfo['text'];
+        $data['status'] = 'NOPREPAY';
+        if (false === $model->create ( $data )) {
+			echo $model->getError ();
+			exit ();
+        }
+        $list = $model->add($data);
+        //行程安排
+        $model->switchConnect(1,'reservation_plan');
+        foreach($_POST['PLAN'] as $k=>$v){
+            foreach($_POST['ISOVERNIGHT'] as $x=>$y){
+                if($x==$k){
+                    $plan['ISOVERNIGHT'] = 1;
+                }else{
+                    
+                    $plan['ISOVERNIGHT'] = 0;
+                }
+            }
+            $plan['PLAN'] = $v;
+            $plan['START_DATE'] = $k;
+            $plan['END_DATE'] = $data['RETURN_DATE'];
+            $plan['CONFIRMATION'] = $confirmation;
+            if (false === $model->create ( $plan )) {
+                echo $model->getError ();
+                exit ();
+            }
+            $list = $model->add($plan);
+   
+        Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
+        }
+        exit;
+        foreach($optionidarr as $k=>$v){
+            $optionid = $k;
+            dump($optionid);
+        }   
+        exit;
+    }
 }
 ?>

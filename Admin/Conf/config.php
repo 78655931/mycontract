@@ -56,6 +56,7 @@ $config	= array(
     'MEMURL'=>'http://172.16.100.121:8080/crsCarRental/regUser?',
     'SELCAR'=>'http://172.16.100.51:8099/crsCarRental/selectCarD?psRequest.transId=ry_mengen_1&psRequest.sourceCode=W&psRequest.vendorCode=W-GDS&psRequest.vendorPass=123456&psRequest.companyCode=GONGSI&psRequest.brandCode=GONGSI',
     'DEFAULT_AJAX_RETURN'=>'JSON',
+    'SOURCE_CODE'=>'W',
 );
 
 return array_merge($config,$siteconfig);
