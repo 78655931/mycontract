@@ -767,6 +767,36 @@ class ReservationAction extends CommonAction {
    
         Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
         }
+        unset($data);
+        foreach($_POST['optionname'] as $k=>$v){
+            $model->switchConnect(1,'uni_option');
+            $OPTION_ID = $k;
+            $option = $model->where('option_id='.$k.' and left(start_date,10)="'.substr($_POST['PICKUP_DATE'],0,10).'" and status="Y"')->find();
+            $data['OPTION_ID'] = $k;
+            $data['OPTION_NAME'] = $option['OPTION_NAME'];
+            $data['MANDATORY'] = $option['MANDATORY'];
+            $data['RATE'] = $option['RATE'];
+            $data['PER_UNIT'] = $option['PER_UNIT'];
+            if($option['PER_UNIT']=='D'){
+                    $data['QTY'] = $_POST['BASE_RATE_QTY'];
+            }else{
+                    $data['QTY'] =1;
+            }
+            $data['FLAG'] = $option['FLAG'];
+            $data['OPTION_TYPE'] = $option['OPTION_TYPE'];
+            $data['AMT'] = $v;
+            $data['CONFIRMATION'] = $confirmation;
+            $model->switchConnect(1,'reservation_option');
+             if (false === $model->create ( $data )) {
+                echo $model->getError ();
+                exit ();
+            }
+            $list = $model->add($data);
+   
+        Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
+           
+
+        }
         exit;
         foreach($optionidarr as $k=>$v){
             $optionid = $k;
