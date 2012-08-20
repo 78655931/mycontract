@@ -833,7 +833,7 @@ class ReservationAction extends CommonAction {
             }
             $data['FLAG'] = $option['FLAG'];
             $data['OPTION_TYPE'] = $option['OPTION_TYPE'];
-            $data['AMT'] = $v;
+            $data['AMT'] = $option['RATE'];
             $data['CONFIRMATION'] = $confirmation;
             $model->switchConnect(1,'reservation_option');
              if (false === $model->create ( $data )) {

@@ -1,4 +1,3 @@
-<script type="text/javascript" charset="utf-8" src="__PUBLIC__/js/card.js"></script>
 <script type="text/javascript" charset="utf-8">
     $.ajaxSettings.global=false;
     var totalPrice =0;
@@ -88,54 +87,15 @@ function optionprice(days){
 
                     $("<div></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display: block;"><span class="item">'+item.OPTION_NAME+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#tailmandy");
 
-                $("#Soption").append('<label class="checkbox inline"><input type="checkbox" name="options" disabled class="checkbox-option" checked="true"  value="' +item['OPTION_ID'] + '" /><input type="hidden" name="option[]"    value="' +item['OPTION_ID'] + '" />' + item ["OPTION_NAME"] + '</label>');
+                //$("#Soption").append('<label class="checkbox inline"><input type="checkbox" name="options" disabled class="checkbox-option" checked="true"  value="' +item['OPTION_ID'] + '" /><input type="hidden" name="option[]"    value="' +item['OPTION_ID'] + '" />' + item ["OPTION_NAME"] + '</label>');
 
                 }else{
-
-                    $("#Soption").append('<label class="checkbox inline"><input type="checkbox" name="option[]" onclick="doclick(this);"  class="checkbox-option" checked="true"  value="' +item['OPTION_ID'] + '" />' + item ["OPTION_NAME"] + '</label>');
+                   // $("#Soption").append('<label class="checkbox inline"><input type="checkbox" name="option[]" onclick="doclick(this);"  class="checkbox-option" checked="true"  value="' +item['OPTION_ID'] + '" />' + item ["OPTION_NAME"] + '</label>');
                     $("<div></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display:block;"><span class="item">'+item.OPTION_NAME+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#optionprice");
                 }
-                });
-            $.each(data['uni'],function(i,item){
-                    perunit = item.PER_UNIT;
-                    switch(perunit){
-                    case "1":
-                    unit="次";
-                    flats = parseInt(perunit);
-                    break;
-                    case "D":
-                    unit = "天";
-                    flats = days;
-                    break;
-                    case "H":
-                    unit = "每小时";
-                    break;
-                    case "W":
-                    unit = "每周";
-                    break;
-                    case "M":
-                    unit="每月";
-                    break;
-                    }
-                    if(item.QTY==null){
-                        item.QTY=1;
-                        item.AMT=parseInt(item.RATE)*item.QTY*flats;
-
-                    }
-
-                    $("<div></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display:none;"><span class="item">'+item.OPTION_NAME+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#optionprice");
-                    $("#Soption").append('<label class="checkbox inline"><input type="checkbox" name="option[]"  onclick="doclick(this);" class="checkbox-option" value="' +item['OPTION_ID'] + '" />'+item["OPTION_NAME"]+'</label> ');
-                    
-
             });
-            /**$('.checkbox-option').click(function() {
-                // console.log("Click");
-                        alert(111);
-                       // var costElem = $('#cost-option-' + $(this).val());
-                       // $(this).is(':checked') ? showCost(costElem) : hideCost(costElem);
-                });
-                **/
-                 
+                    
+               
             
 
     });
@@ -146,90 +106,7 @@ function doclick(obj){
    obj.checked ? showCost(costElem) : hideCost(costElem);
 
 }
-//
-function showCost(costElem) {
 
-                costElem.addClass('cost-highlight').fadeIn('fast', function() {
-                    $(this).removeClass('cost-highlight');
-                    //$("#feeoption").show();
-                    calcChargeAmount();
-
-                        //calcMandyAmount();
-                        //console.log(charge);
-                        calcTotalAmount();
-                        });
-            }
-
-            function hideCost(costElem, removeCost) {
-                costElem.addClass('cost-highlight').fadeOut('fast', function() {
-                        $(this).removeClass('cost-highlight');
-                        //	$("#feeoption").hide();
-                        calcTotalAmount();
-
-                        //calcMandyAmount();
-                        calcChargeAmount();
-                        removeCost && $(this).remove();
-                        });
-            }
-            function calcMandyAmount(){
-
-                var mandy =0;
-                $('#tailsmandy .cost .option-amt:visible').each(function() {
-
-                        var otail = $(this).html();
-
-                        if(otail){
-
-                        var ot = parseFloat(otail);
-                        //console.log(option2);
-                        mandy+=ot;
-                        }
-
-                        });
-
-                $('#mandy').html(mandy.toFixed(2));
-                //$('#charge').text(charge);
-            }
-            function calcChargeAmount(){
-
-                var charge =0;
-                $('#optionprice .cost .option-amt:visible').each(function() {
-
-                        var option1 = $(this).html();
-
-                        if(option1){
-
-                        var option2 = parseFloat(option1);
-                        //console.log(option2);
-                        charge+=option2;
-                        }
-
-                        });
-
-                $('#charge').html(charge.toFixed(2));
-                //$('#charge').text(charge);
-            }
-
-            /**
-             * 重新计算订单总价
-             */
-            function calcTotalAmount() {
-                var totalAmt = 0;
-                $('.cost .option-amt:visible').each(function() {
-
-                        var optionAmt = $(this).html();
-                        if(optionAmt){
-
-                        var optionAmt = parseFloat(optionAmt);
-                        totalAmt += optionAmt;
-                        }
-
-                        });
-                //alert(totalAmt);
-                $('#total-amt').html(totalAmt.toFixed(2));
-                //  $('#rate-amt').html(totalAmt.toFixed(2));
-            }
-//
 function openDialog(){
     window.open(PRINTURL);
 }
@@ -429,11 +306,11 @@ function openDialog(){
                         <table class="list" width="100%"  >
 							<thead>
 								<tr>
-									<th width="60">车牌号</th>
-									<th width="80">车辆类型</th>
-									<th width="200">车辆型号</th>
-									<th width="100">当前里程</th>
-									<th width="100">当前油量</th>
+									<th width="15%">车牌号</th>
+									<th width="15%">车辆类型</th>
+									<th width="40%">品牌型号</th>
+									<th width="15%">当前里程</th>
+									<th width="15%">当前油量</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -443,7 +320,7 @@ function openDialog(){
 										<input class="readonly" name="master.dwz_devLookup.CAR_MODEL" value=""  readonly="readonly" type="text"/>
 									</td>
 									<td>
-										<input class="readonly" name="master.dwz_devLookup.CAR_MODEL_NAME" value="" size="40" readonly="readonly" type="text" />
+										<input class="readonly"  name="master.dwz_devLookup.CAR_MODEL_NAME" value="" size="45" readonly="readonly" type="text" />
 										<input type="hidden" name="master.dwz_devLookup.CAR_MODEL_CODE" value=""  />
 										<input type="hidden" name="master.dwz_devLookup.CAR_TYPE_CODE" value=""  />
 									</td>
@@ -466,25 +343,30 @@ function openDialog(){
                         <table class="list" width="100%" style="height:80px">
 							<thead>
 								<tr>
-									<th width="60">司机名称</th>
-                                    <th width="80">联系电话</th>
-                                    <th width="80">驾照类型</th>
-									<th width="80">司机星级</th>
+                                    <th width="15%">司机名称</th>
+                                    <th width="20%">性别</th>
+                                    <th width="15%">手机</th>
+                                    <th width="15%">固定电话</th>
+                                    <th width="15%">驾照类型</th>
+                                    <th width="20%">司机星级</th>
+                                    
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-                                    <td><input class="readonly" name="master.dwz_devLookup.DRIVER_NAME" value="" readonly="readonly" type="text"/></td>
-
-                                    <td><input class="readonly" name="master.dwz_devLookup.PHONE" value="" readonly="readonly" type="text"/></td>
+                                    <td><input class="readonly" name="master.dwz_devLookup.DRIVER_NAME" value="" readonly="readonly" type="text" size="20"/></td>
+                                    <td><input class="readonly" name="master.dwz_devLookup.DRIVER_SEX" value="" readonly="readonly" type="text" size="20"/></td>
+                                    <td><input class="readonly" name="master.dwz_devLookup.PHONE" value="" readonly="readonly" type="text" size="20"/></td>
                                     
-                                    <td><input class="readonly" name="master.dwz_devLookup.DRIVER_CARD_TYPE" value="" readonly="readonly" type="text"/></td>
+                                    <td><input class="readonly" name="master.dwz_devLookup.FAMILY_PHONE" value="" readonly="readonly" type="text" size="20"/></td>
 
-									<td><input class="readonly" name="master.dwz_devLookup.TECHTITLE" value="" readonly="readonly" type="text"/></td>
+									<td><input class="readonly" name="master.dwz_devLookup.DRIVER_CARD_TYPE" value="" readonly="readonly" type="text" size="20"/></td>
+
+                                    <td><input class="readonly" name="master.dwz_devLookup.TECHTITLE" value="" readonly="readonly" type="text" size="20"/></td>
 								</tr>
 								<tr>
-									<td colspan="5" style="padding-left: 300px;">
-                                        <a class="btnLook" target="dialog" ref="reser2" href="__APP__/Reservation/selectDriver/TECHTITLE/{$TECHTITLE}" lookupGroup="master" lookupName="devLookup" width="840" height="380">选司机</a>	
+									<td colspan="6" style="padding-left: 300px;">
+                                        <a class="btnLook" target="dialog" ref="reser2" href="__APP__/Reservation/selectDriver/TECHTITLE/{$TECHTITLE|urlencode}" lookupGroup="master" lookupName="devLookup" width="840" height="380">选司机</a>	
 										<span class="info">选司机</span>
 
 									</td>
