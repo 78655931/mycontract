@@ -54,7 +54,9 @@ $config	= array(
 	'DISCOUNT'=>'http://172.16.100.47:8099/crsCarRental/findDiscount?',
 	'CARTYPE'=>'http://172.16.100.52:8099/crsCarRental/SelectCarType?paraRequest.sourceCode=W&paraRequest.vendorCode=W-GONGSI&paraRequest.vendorPass=123456&paraRequest.companyCode=GONGSI&paraRequest.brandCode=GONGSI&paraRequest.carTypeCode=',
     'MEMURL'=>'http://172.16.100.121:8080/crsCarRental/regUser?',
-    'SELCAR'=>'http://172.16.100.51:8099/crsCarRental/selectCarD?psRequest.transId=ry_mengen_1&psRequest.sourceCode=W&psRequest.vendorCode=W-GDS&psRequest.vendorPass=123456&psRequest.companyCode=GONGSI&psRequest.brandCode=GONGSI',
+    //'SELCAR'=>'http://172.16.100.51:8099/crsCarRental/selectCarD?psRequest.transId=ry_mengen_1&psRequest.sourceCode=W&psRequest.vendorCode=W-GDS&psRequest.vendorPass=123456&psRequest.companyCode=GONGSI&psRequest.brandCode=GONGSI',
+
+    'SELCAR'=>'http://117.34.70.20:1125/crsCarRental/selectCarD?psRequest.transId=ry_mengen_1&psRequest.sourceCode=W&psRequest.vendorCode=W-GDS&psRequest.vendorPass=123456&psRequest.companyCode=GONGSI&psRequest.brandCode=GONGSI',
     'DEFAULT_AJAX_RETURN'=>'JSON',
     'SOURCE_CODE'=>'W',
 );

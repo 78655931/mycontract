@@ -66,7 +66,7 @@ class ReservationAction extends CommonAction {
 			//dump($p);
 			// 分页查询数据
 			//dump($map);exit;
-			$voList = $Model->where ( $map )->field ( 'reservation_id,right(CONFIRMATION,15) as confirmation,real_name,identity_code,home_phone,left(pickup_date,16) as pickup_date,left(return_date,16) as return_date,car_type_name,CAR_MODEL_NAME,status' )->order ( "`" . $order . "` " . $sort )->limit ( $p->firstRow . ',' . $p->listRows )->findAll ();
+			$voList = $Model->where ( $map )->field ( 'reservation_id,right(CONFIRMATION,15) as confirmation,real_name,identity_code,home_phone,left(pickup_date,16) as pickup_date,left(return_date,16) as return_date,car_type_name,CAR_MODEL_NAME,status,rate_code' )->order ( "`" . $order . "` " . $sort )->limit ( $p->firstRow . ',' . $p->listRows )->findAll ();
 			// 分页跳转的时候保证查询条件
 			foreach ( $map as $key => $val ) {
 				if ( is_array ( $val )) {
@@ -187,7 +187,20 @@ class ReservationAction extends CommonAction {
         $this->assign ( 'vo', $vo );
         Debug::mark('end');
         Log::write('Edit运行时间：'.Debug::useTime('start','end'), Log::DEBUG);
-		$this->display ();
+        if (isset($_REQUEST['rate_code'])&&$_REQUEST['rate_code']!='WEB') {
+            // code...
+            
+            $Model->switchConnect ( 1, "reservation_plan" );
+            $plan = $Model->field('left(start_date,10) as START_DATE,left(end_date,10) as END_DATE,PLAN,ISOVERNIGHT')->where('CONFIRMATION="'.$vo['CONFIRMATION'].'"')->select();
+            $this->assign('plan',$plan);
+            $Model->switchConnect ( 1, "reservation_option" );
+            $driverinfo = $Model->where('option_name like "%司机%"')->find();
+            $this->assign('TECHTITLE',$driverinfo['OPTION_NAME']);
+            $this->display ("Reservation:djedit");
+        }else{
+               
+            $this->display ();
+        }
 	}
 	public function selectCar(){
 		$Model = M( "Car","AdvModel" );
@@ -222,39 +235,72 @@ class ReservationAction extends CommonAction {
 		}
 		$this->display();
 	}
-	public function selectDriver(){
-		$Model = M("Driver");
-		$map['status'] = 1;
-		$this->_lists($Model,$map,'id');
+    public function selectDriver(){
+        $Model = M( "Car","AdvModel" );
+		$Model->addConnect ( C ( "DB_CRS" ), 1 );
+		$Model->switchConnect ( 1, "driver_info" );
+        $map['status'] = 9;
+        $map['TECHTITLE'] = $_REQUEST['TECHTITLE'];
+		$this->_lists($Model,$map,'DRIVER_ID',false,'DRIVER_ID');
 		$this->display();
 	}
-	public function createdj(){
-		$model = D("reservationby");
-		$data=$_POST;
-		$data['driverCarType'] = $_POST['master_dwz_devLookup_CAR_MODEL'];
-		$data['carTag'] = $_POST['master_dwz_devLookup_CAR_TAG'];
-		$data['carModelName'] = $_POST['master_dwz_devLookup_CAR_MODEL_NAME'];
-		$data['currentkm'] = $_POST['master_dwz_devLookup_CURRENT_KM'];
-		$data['currentoil']=$_POST['master_dwz_devLookup_CURRENT_OIL'];
-		$data['drivername']=$_POST['master_dwz_devLookup_drivername'];
-		$data['driverphone'] = $_POST['master_dwz_devLookup_phonenumber'];
-		$data['status']='contract';
+	public function createagreement_dj(){
+		$model = M ( "Location","AdvModel" );
+		$model->addConnect ( C ( "DB_CRS" ), 1 );
+		$model->switchConnect ( 1, "agreement" );
+		$optionidList = $_POST['option'];
+		$_POST ['agreement_id'] = 'HT' . $_REQUEST ['confirmation'];
+		$_POST ['createdate'] = date('Y-m-d h:m:s');
+        $_POST ['status'] = "CONTRACT";
+        foreach($_POST as $k=>$v){
+            $k = str_ireplace('master_dwz_devLookup_','',$k);
+            $data[$k] = $v;
+        }
+	
+		$validate = array (array ('CAR_TAG', 'require', '车牌必须!' ),array('work_phone','/^(1(([35][0-9])|(47)|[8][01236789]))\d{8}$/','租车人手机格式不正确!'),
+					array('contactperson','require','紧急联系人必须!'),array('contactphone','/^(1(([35][0-9])|(47)|[8][01236789]))\d{8}$/','手机格式不正确!'),array('MEMBER_TYPE_NAME','require','会员类型必须'),array('REAL_NAME','require','客户名称必须'),array('sex','require','性别必须'),array('age','require','出生日期必须'),array('IDENTITY_CODE','require','身份证号码必须'),array('address','require','身份证地址必须'),array('driver_code','require','驾驶证号码必须')
+		);
+		$model->setProperty ( "_validate", $validate );
 		if (false === $model->create ( $data )) {
 			echo $model->getError ();
 			exit ();
 		}
-		$list = $model->save($data);
-		//echo $model->getLastSql();
-		if($list>0){
-			header ( "Content-Type:text/html; charset=utf-8" );
+				// 保存当前数据对象
+        $list = $model->add ( $data );
+        if ($list!==false) {
+            // code...
+            $model->switchConnect ( 1, "reservation_option" );
+            $options = $model->where('CONFIRMATION="'.$_REQUEST['CFM'].'"')->select();
+
+            $model->switchConnect ( 1, "agreement_option" );
+            foreach($options as $k=>$v){
+                if (false === $model->create ( $v )) {
+                    echo $model->getError ();
+                    exit ();
+                }
+                // 保存当前数据对象
+                $return = $model->add ( $v );                      
+
+				Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
+            }
+            $model->switchConnect ( 1, "reservation_plan" );
+            $plans = $model->where('CONFIRMATION="'.$_REQUEST['CFM'].'"')->select();
+
+            $model->switchConnect ( 1, "agreement_plan" );
+            foreach($plans as $k=>$v){
+                if (false === $model->create ( $v )) {
+                    echo $model->getError ();
+                    exit ();
+                }
+                // 保存当前数据对象
+                $return = $model->add ( $v );                      
+
+				Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
+            }
+        }
+        	header ( "Content-Type:text/html; charset=utf-8" );
 			exit ( json_encode ( 1 ) );
-
-		}else{
-			header ( "Content-Type:text/html; charset=utf-8" );
-			echo "-1";
-			exit ();
-
-		}
+		
 	}
 	public function createagreement() {
 		$model = M ( "Location","AdvModel" );
@@ -497,7 +543,6 @@ class ReservationAction extends CommonAction {
 	
 	protected function _lists($model, $map, $sortBy = '', $asc = false, $id = 'id') {
 		// 排序字段 默认为主键名
-		echo $model;
 		if (isset ( $_REQUEST ['_order'] )) {
 			$order = $_REQUEST ['_order'];
 		} else {
@@ -511,7 +556,8 @@ class ReservationAction extends CommonAction {
 			$sort = $asc ? 'asc' : 'desc';
 		}
 		// 取得满足条件的记录数
-		$count = $model->where ( $map )->count ( $id );
+        $count = $model->where ( $map )->count ( $id );
+        //echo $model->getLastSql();exit;
 		if ($count > 0) {
 			import ( "ORG.Util.Page" );
 			// 创建分页对象
@@ -714,31 +760,31 @@ class ReservationAction extends CommonAction {
         $jsoncarinfo = json_decode((string)$jsoncarinfo);
         $data = array_merge($location,$_POST);
         $data = array_merge($data,$brand);
-        $confirmation = $_SESSION['location_code'].'-'.date('Ymdhm'.floor(microtime()*1000));
+        $confirmation = $_SESSION['location_code'].'-'.date('Ymdhi'.floor(microtime()*1000));
         $data['CONFIRMATION'] = $confirmation;
         $optionidarr = $data['optionname'];
         $carinfo = (array)$jsoncarinfo[0];
         $cars = (array)$carinfo['vehicle'];
-        $data['atmt'] = $cars['atmt'];
+        $data['ATMT'] = $cars['atmt'];
         $data['BIG_PACKAGE'] = $cars['bigPackage'];
-        $data['car_model_code'] = $cars['carModelCode'];
+        $data['CAR_MODEL_CODE'] = $cars['carModelCode'];
         $data['CAR_MODEL_IMG_URL'] = $cars['carModelImgUrl'];
         $data['CAR_MODEL_NAME'] = $cars['carModelName'];
         $data['CAR_TYPE_CODE'] = $cars['carTypeCode'];
         $data['CAR_TYPE_IMG_URL'] = $cars['carTypeImgUrl'];
         $data['CAR_TYPE_NAME'] = $cars['carTypeName'] ;
-        $data['persons'] = $cars['persons'];
+        $data['PERSONS'] = $cars['persons'];
         $data['SMALL_PACKAGE'] = $cars['smallPackage'];
         $data['RATE_CODE'] = $data['ratecode'];
-        $data['deposit'] = $carinfo['deposit'];
+        $data['DEPOSIT'] = $carinfo['deposit'];
         $data['EXT_HOUR'] = $carinfo['extHour'];
         $data['XHOUR'] = $carinfo['extHour'];
         $data['XDAY'] = $carinfo['extraDayRate'];
         $data['RULE_CODE'] = $carinfo['ruleCode'];
         $data['SOURCE_CODE'] = C('SOURCE_CODE');
         $data['MANDATORY_CHARGES'] = $data['MANDATORY'];
-        $data['text'] = $carinfo['text'];
-        $data['status'] = 'NOPREPAY';
+        $data['TEXT'] = $carinfo['text'];
+        $data['STATUS'] = 'NOPREPAY';
         if (false === $model->create ( $data )) {
 			echo $model->getError ();
 			exit ();
@@ -757,7 +803,7 @@ class ReservationAction extends CommonAction {
             }
             $plan['PLAN'] = $v;
             $plan['START_DATE'] = $k;
-            $plan['END_DATE'] = $data['RETURN_DATE'];
+            $plan['END_DATE'] = $k;
             $plan['CONFIRMATION'] = $confirmation;
             if (false === $model->create ( $plan )) {
                 echo $model->getError ();
@@ -768,6 +814,9 @@ class ReservationAction extends CommonAction {
         Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
         }
         unset($data);
+        $_POST['optionname'][$_POST['OPTION_ID']] = $_POST['rdioption'];
+        //print_r($OPTION_ID);exit;
+       // $_POST['optionname'] = array_merge($_POST['OPTION'],$OPTION_ID);
         foreach($_POST['optionname'] as $k=>$v){
             $model->switchConnect(1,'uni_option');
             $OPTION_ID = $k;
@@ -792,11 +841,9 @@ class ReservationAction extends CommonAction {
                 exit ();
             }
             $list = $model->add($data);
-   
-        Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
-           
-
+            Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
         }
+        echo $list;
         exit;
         foreach($optionidarr as $k=>$v){
             $optionid = $k;

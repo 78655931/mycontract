@@ -168,6 +168,56 @@ class AgreementAction extends CommonAction {
 
 		$this->assign("vo",$vo);
 		$this->display();
+    }
+
+	public function gotoPrintDJ($agreementid = '') {
+				$agreementid = base64_decode($_REQUEST ['agreementid']);
+		if(empty($agreementid)){
+			$agreementid = base64_decode($_REQUEST['id']);
+		}
+		//$model = M( "Location","AdvModel" );
+		//$model->addConnect ( C ( "DB_CRS" ), 1 );
+		//$model->switchConnect ( 1, "agreement" );
+		//$list = $model->getByAgreementId ( $agreementid );
+		$Model = M ( "Location","AdvModel" );
+		// 新增新的数据库参数
+		$Model->addConnect ( C ( "DB_CRS" ), 1 );
+		$Model->switchConnect ( 1, "agreement" );
+
+		$vo = $Model->getByAgreementId($agreementid);
+		$BASE_RATE_QTY = $vo['BASE_RATE_QTY'];
+		//增值费用
+		$confirmation = $_SESSION['location_code'].'-'.str_replace('HT','',$vo['agreement_id']);
+		$Model->switchConnect(1,"agreement_option");
+		$mandy=$Model->where("CONFIRMATION='".$confirmation."' and MANDATORY='N'")->select();
+		$this->assign("confirmation",$confirmation);
+		foreach($mandy as $k=>$v){
+				$rate += $v['RATE']*$BASE_RATE_QTY;
+		}
+
+
+		$Model->switchConnect ( 1, "company" );
+		$company = $Model->find();
+		$Model->switchConnect ( 1, "brand" );
+		$brand = $Model->getByCompanyId($company['COMPANY_ID']);
+		$Model->switchConnect(1,"reservation");
+        $reservation = $Model->where("CONFIRMATION='".$confirmation."' and STATUS!='CANCEL'")->find();
+		$cartypecode = $reservation['CAR_TYPE_CODE'];
+		$Model->switchConnect(1,'car_type');
+		$cartype = $Model->getByCarTypeCode($cartypecode);
+		$Model->switchConnect(1,'car');
+		$this->assign('car',$Model->getByCarTag($vo['CAR_TAG']));
+		$Model->switchConnect(1,"uni_rule");
+		$this->assign('unirule',$Model->getByRuleCode($reservation['RULE_CODE']));
+		$this->assign('cartype',$cartype);
+		$this->assign('date',date('Y-m-d h:s:m'));
+		$this->assign('reservation',$reservation);
+		$this->assign('brand',$brand);
+		$this->assign('company',$company);
+		$this->assign ( 'rate', $rate );
+
+		$this->assign("vo",$vo);
+		$this->display();
 	}
 	/**
 	 * 个吖方法
@@ -234,8 +284,9 @@ class AgreementAction extends CommonAction {
 		$Model->addConnect ( C ( "DB_CRS" ), 1 );
 		if($_GET['table']){
 
-			$Model->switchConnect ( 1, "agreement_option" );
-			$map['CONFIRMATION'] =$_GET['CONFIRMATION'];
+            $Model->switchConnect ( 1, "agreement_option" );
+            
+			$map['CONFIRMATION'] =$_GET["CONFIRMATION"];
 			//$map['MANDATORY'] ='N';
 		}else{
 			$Model->switchConnect ( 1, "location_option" );
@@ -243,7 +294,7 @@ class AgreementAction extends CommonAction {
 		$map ['location_code'] = $_SESSION['location_code'];
 
 		}
-		$listOpt = $Model->where ( $map )->group ( 'option_id' )->select ();
+        $listOpt = $Model->where ( $map )->group ( 'option_id' )->select ();
 		if(empty($listOpt)){
 			exit(json_encode(-1));
 		}

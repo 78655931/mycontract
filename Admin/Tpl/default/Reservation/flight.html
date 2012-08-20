@@ -196,8 +196,8 @@ function showRequest(formData, jqForm, options) {
 }
 // post-submit callback
 function showResponse(responseText, statusText, xhr, $form) {
-    if (responseText == 1) {
-       
+    if (responseText >0) {
+        alertMsg.correct('预定单生成成功!');
     } else {
         alert(responseText);
     }

@@ -21,8 +21,10 @@
 	<table class="table" layoutH="118" targettype="dialog" width="100%">
 		<thead>
 			<tr>
-				<th orderfield="drivername" width="80">司机名称</th>
-				<th orderfield="driverphone" width="100">联系手机</th>
+				<th orderfield="DRIVER_NAME" width="80">司机名称</th>
+                <th orderfield="PHONE" width="100">联系手机</th>
+                <th orderfield="DRIVER_CARD_TYPE" width="100">驾照类型</th>
+				<th orderfield="TECHTITLE" width="100">司机星级</th>
 				<th width="80">查找带回</th>
 			</tr>
 		</thead>			
@@ -30,10 +32,12 @@
 		<tbody>
 			<volist id="vo" name="list">
 			<tr>
-				<td>{$vo.drivername}</td>
-				<td>{$vo.driverphone}</td>
+				<td>{$vo.DRIVER_NAME}</td>
+                <td>{$vo.PHONE}</td>
+                <td>{$vo.DRIVER_CARD_TYPE}</td>
+                <td>{$vo.TECHTITLE}</td>
 				<td>
-					<a class="btnSelect" href="javascript:$.bringBack({ drivername:'{$vo.drivername}', driverphone:'{$vo.driverphone}', status:'{$vo.status}'})" title="查找带回">选择</a>
+                    <a class="btnSelect" ref="reser2" href="javascript:$.bringBack({ DRIVER_NAME:'{$vo.DRIVER_NAME}', PHONE:'{$vo.PHONE}', DRIVER_CARD_TYPE:'{$vo.DRIVER_CARD_TYPE}',TECHTITLE:'{$vo.TECHTITLE}'},'dialog','seldialog')" title="查找带回">选择</a>
 				</td>
 			</tr>
 
