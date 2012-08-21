@@ -22,7 +22,10 @@
                     <td>租期</td>
                     <td>
                         <select id="BASE_RATE_QTY" name="BASE_RATE_QTY">
-                            <option value="1" selected >1</option>天
+
+                            <option value="0" selected>无</option>
+                            <option value="0.5">半日</option>
+                            <option value="1">1</option>天
                             <option value="2">2</option>天
                             <option value="3">3</option>天
                             <option value="4">4</option>天
@@ -63,6 +66,6 @@
                     <td colspan="3"><textarea id="" name="DRIVER_REQUEST" rows="10" cols="30" style="width: 492px; height: 59px;"></textarea></td>
                 </tr>
                 <tr>
-                    <td colspan="4"><input type="button" onclick="findCars();" value="查询" /></td>
+                    <td colspan="4"><input type="button" onclick="findCars();" id="searchDJ" value="查询" /></td>
                 </tr>
             </table>

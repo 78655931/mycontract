@@ -8,22 +8,24 @@ $config	= array(
 
 	'DB_NAME'=>'test',
 	'DB_USER'=>'root',
-	'DB_PWD'=>'',
+	'DB_PWD'=>'123.com',
 	'DB_PORT'=>'3306',
 	'DB_PREFIX'=>'',
 
-	//'APP_DEBUG'=>true,	//调试模式开�?
+	'APP_DEBUG'=>false,	//调试模式开�?
 
 	'VAR_PAGE'=>'pageNum',
 	'DB_CRS'=>array(
 		'dbms' => 'mysql',
 		'username' => 'root',
-		'password' => '123.com',
-		//'hostname' => 'localhost',
+        'password' => '123.com',
 
-		'hostname' => '172.16.100.51',
+
+		'hostname' => 'localhost',
+
+		//'hostname' => '172.16.100.51',
 		'hostport' => '3306',
-		'database' => 'ry_crsengine1x_db',
+		'database' => 'ry_crsengine11_db',
     ),
     'TMPL_ACTION_SUCCESS' =>'Public:success' ,
 	'HTML_CACHE_ON'	=> false,
@@ -54,9 +56,11 @@ $config	= array(
 	'DISCOUNT'=>'http://172.16.100.47:8099/crsCarRental/findDiscount?',
 	'CARTYPE'=>'http://172.16.100.52:8099/crsCarRental/SelectCarType?paraRequest.sourceCode=W&paraRequest.vendorCode=W-GONGSI&paraRequest.vendorPass=123456&paraRequest.companyCode=GONGSI&paraRequest.brandCode=GONGSI&paraRequest.carTypeCode=',
     'MEMURL'=>'http://172.16.100.121:8080/crsCarRental/regUser?',
-    'SELCAR'=>'http://172.16.100.51:8099/crsCarRental/selectCarD?psRequest.transId=ry_mengen_1&psRequest.sourceCode=W&psRequest.vendorCode=W-GDS&psRequest.vendorPass=123456&psRequest.companyCode=GONGSI&psRequest.brandCode=GONGSI',
+    //'SELCAR'=>'http://172.16.100.51:8099/crsCarRental/selectCarD?psRequest.transId=ry_mengen_1&psRequest.sourceCode=W&psRequest.vendorCode=W-GDS&psRequest.vendorPass=123456&psRequest.companyCode=GONGSI&psRequest.brandCode=GONGSI',
 
-    //'SELCAR'=>'http://117.34.70.20:1125/crsCarRental/selectCarD?psRequest.transId=ry_mengen_1&psRequest.sourceCode=W&psRequest.vendorCode=W-GDS&psRequest.vendorPass=123456&psRequest.companyCode=GONGSI&psRequest.brandCode=GONGSI',
+
+   // 'SELCAR'=>'http://localhost:8080/crsCarRental/selectCarD?psRequest.transId=ry_mengen_1&psRequest.sourceCode=W&psRequest.vendorCode=W-GDS&psRequest.vendorPass=123456&psRequest.companyCode=GONGSI&psRequest.brandCode=GONGSI',
+   'SELCAR'=>'http://10.100.100.150:8080/crsCarRental/selectCarD?psRequest.transId=ry_mengen_1&psRequest.sourceCode=W&psRequest.vendorCode=W-GDS&psRequest.vendorPass=123456&psRequest.companyCode=GONGSI&psRequest.brandCode=GONGSI',
     'DEFAULT_AJAX_RETURN'=>'JSON',
     'SOURCE_CODE'=>'W',
 );

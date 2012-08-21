@@ -1,0 +1,28 @@
+body{
+	color:#333;
+	margin:0px;
+	padding:0px;
+	font-size:12px;
+	font-family:"\5b8b\4f53";
+}
+ul,li{
+	list-style:none;
+	margin:0px;
+	padding:0px;
+}
+h3{
+	font-size:14px;
+}
+h4{
+	font-size:12px;
+}
+p{
+	margin:0px;
+}
+img{
+	vertical-align:middle;
+}
+.store-canvas{
+	border:1px solid red;
+	background:url(images/store-canvas.png) repeat-y right top;
+}
