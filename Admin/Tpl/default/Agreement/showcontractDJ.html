@@ -1,0 +1,351 @@
+<script type="text/javascript" charset="utf-8">
+    $.ajaxSettings.global=false;
+    var totalPrice =0;
+    $(document).ready(function() {
+            DAYS ='{$vo.BASE_RATE_QTY}';
+            optionprice(DAYS);
+
+
+        PRINTURL = '__APP__'+'/Agreement/gotoPrintDJ/id/DJ'+'{$vo.CONFIRMATION|substr=-15|base64_encode}';
+var options = {
+beforeSubmit : showRequest, // pre-submit callback
+               success : showResponse // post-submit callback
+};
+$('#myform').submit(function() {
+        // 提交表单
+        //alert("aaa");
+        $('<input type="hidden" name="TOTAL_PRICE">').val($("#total-amt").text()).appendTo("#myform");
+        //{$vo.OPTIONS_CHARGES}
+        
+        $('<input type="hidden" name="TOTAL_PRICE">').val($("#total-amt").text()).appendTo("#myform");
+        $('<input type="hidden" name="OPTIONS_CHARGES">').val($("#charge").text()).appendTo("#myform");
+        $('<input type="hidden" name="MANDATORY_CHARGES">').val($("#mandy").text()).appendTo("#myform");
+        $(this).ajaxSubmit(options);
+        // 为了防止普通浏览器进行表单提交和产生页面导航（防止页面刷新？）返回false
+        return false;
+        });
+
+function showRequest(formData, jqForm, options) {
+    var queryString = $.param(formData);
+    return true;
+}
+// post-submit callback
+function showResponse(responseText, statusText, xhr, $form) {
+    if (responseText == 1) {
+        alertMsg.correct('合同生成成功!');
+        $('#subbtn').hide();
+        $("#crtagreement").show().html('<input  type="button" onclick="openDialog();" value="打印合同"/>');
+    } else {
+        alert(responseText);
+    }
+
+}
+
+});
+
+
+function optionprice(days){
+    var opp =0;
+    var perunit;
+    var unit;
+    var flats;
+    var charge=0;
+    var mandy =0;
+    var disable;
+    var o;
+    var reservationid ='{$Think.get.confirmation}';
+    $.getJSON('__URL__/optionprice',{'reservationid':reservationid},function(data){
+            $.each(data['res'],function(i,item){
+                perunit = item.PER_UNIT;
+                switch(perunit){
+                case "1":
+                unit="次";
+                flats = parseInt(perunit);
+                break;
+                case "D":
+                unit = "天";
+                flats = days;
+                break;
+                case "H":
+                unit = "每小时";
+                break;
+                case "W":
+                unit = "每周";
+                break;
+                case "M":
+                unit="每月";
+                break;
+            case "R":
+                unit = "人";
+                flats = 1;
+                break;
+                }
+                if(item.QTY==null){
+                    item.QTY=1;
+                    item.AMT=parseInt(item.RATE)*item.QTY*flats;
+
+                }
+                // alert(item.OPTION_NAME);
+                if(item.MANDATORY=='Y'){
+
+
+                    $("<div></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display: block;"><span class="item">'+item.OPTION_NAME+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#tailmandy");
+
+                //$("#Soption").append('<label class="checkbox inline"><input type="checkbox" name="options" disabled class="checkbox-option" checked="true"  value="' +item['OPTION_ID'] + '" /><input type="hidden" name="option[]"    value="' +item['OPTION_ID'] + '" />' + item ["OPTION_NAME"] + '</label>');
+
+                }else{
+                   // $("#Soption").append('<label class="checkbox inline"><input type="checkbox" name="option[]" onclick="doclick(this);"  class="checkbox-option" checked="true"  value="' +item['OPTION_ID'] + '" />' + item ["OPTION_NAME"] + '</label>');
+                    $("<div></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display:block;"><span class="item">'+item.OPTION_NAME+'</span><span class="price"><span class="option-qty">'+flats+'</span><span class="option-unit">'+unit+'*</span><span class="option-rate">' +item ['RATE'] + '</span>元*'+item.QTY+'个 ＝<span class="option-amt">' +item.AMT + '</span> 元</span></div>').appendTo("#optionprice");
+                }
+            });
+                    
+               
+            
+
+    });
+}
+
+function doclick(obj){
+    var costElem = $('#cost-option-' + obj.value);
+   obj.checked ? showCost(costElem) : hideCost(costElem);
+
+}
+
+function openDialog(){
+    window.open(PRINTURL);
+}
+</script>
+<style>
+	.list tr {
+		margin-bottom: 10px;
+	}
+
+	.label-left{
+		float: left;
+		width:70px;
+	}
+
+	.label-right{
+		float: left;
+		width:100px;
+	}
+
+	.cost
+	{
+        margin-bottom: 8px;
+        margin-top:5px;
+    }
+     .bdt{
+        border-top: 1px solid #000;
+    }
+    .bdl{
+        border-left: 1px solid #000;
+    }
+    #optionfee,#option,#rate{
+        border-bottom:1px solid #000;
+    }
+    .cr{
+        text-align: right;
+        float: right;
+    }
+</style>
+<div id="seldialog">
+<div class="pageContent"  layoutH="30" >
+	<table width="98%" class="list">
+		<thead>
+            <tr>
+
+				<th width="80">合同编号</th>
+				<th width="80">客户名称</th>
+				<th width="200">取车时间</th>
+				<th width="200">还车时间</th>
+				<th width="200">联系人</th>
+				<th width="100">联系电话</th>
+				<th width="100">租期类型</th>
+				<th width="100">司机要求</th>
+			</tr>
+		</thead>
+		<tbody>
+            <tr>
+				<td>{$vo.agreement_id}</td>
+				<td>{$vo.REAL_NAME}</td>
+				<td>{$vo.PICKUP_DATE|substr=0,16}</td>
+				<td>{$vo.RETURN_DATE|substr=0,16}</td>
+				<td>代驾</td>
+				<td>{$vo.linkman}</td>
+				<td>{$vo.LINKMAN_PHONE}</td>
+				<td>{$vo.DRIVER_REQUEST}</td>
+			</tr>
+		</tbody>
+    </table>
+
+    <div layoutH="100">
+        		<table class="list" width="98%"  style=" margin-top: 10px;" >
+			<tbody>
+				<tr>
+                    <td style="width:40%;">
+
+						<h1 style="margin-bottom:20px;margin-top:20px;">车辆信息</h1>
+                        <ul>
+                            <li class="cost">
+                            <label for="">车型</label> 
+                            <span class="cr" id="option_fee">{$vo.CAR_MODEL_NAME}</span>
+                            </li>
+                            <li class="cost">
+                                <label for=""> 路桥费</label>
+                                <span class="cr" ><if condition="$vo.ROAD_BRIDGE_CHARGE_STATUS eq 0">不含<else/>含</if></span>
+                            </li>
+                            <li class="cost">
+                                <label for="">停车费</label>
+                                <span class="cr" ><if condition="$vo.PARKING_CHARGE_STATUS eq 0">不含<else/>含</if></span>
+                                </li>
+                                <notempty name="plan">
+                                行程安排:
+                                <div class="cr">
+                                <volist name="plan" id='plan'>
+                                    <if condition="($plan['ISOVERNIGHT'] eq '') or ($plan['ISOVERNIGHT'] eq 0)">
+                                    <li class="cost">
+
+                                <span >{$plan['START_DATE']}</span>
+                                <span  >{$plan['PLAN']}</span>
+                                </li>
+                                        <else/>
+                                        <li class="cost">
+                                        <span >{$plan['START_DATE']}</span>
+                                        <span >{$plan['PLAN']}</span>
+                                        <label for=""  >过夜</label>
+                                        </li>
+                                    </if>
+                                    </volist>
+                                    </div>
+                                </notempty>
+                        </ul>
+
+						<div id="delta-i"></div>
+
+                        <h1 style="margin-bottom:20px;margin-top:20px;">价格计算(租期<span id="delta-o" style="color: #fd6c02;">{$vo.BASE_RATE_QTY}</span>天)</h1>
+
+
+                        <table width="98%">
+                            <tr>
+
+                                <td>基本租金</td>
+                                <td class="cr" id="optionfee"><span class="option-amt" id="rate-amt">{$vo.BASE_RATE_AMT}元</span></td>
+                            </tr>
+                            <tr>
+                                <td>必须费用</td>
+                                <td class="cr" id="optionfee">
+                                    <span id="tailmandy"></span>
+                                    <table id="option">
+                                    </table>
+                                    <label>必须费用合计: </label><span id="mandy" >{$vo.MANDATORY_CHARGES}</span>元
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>增值服务</td>
+                                <td  > 
+                                    <table id="optionprice">
+                                    </table>
+                                    <div class="board"></div>
+                                    <label class="label-right" id="feeoption">增值服务费用合计: </label><span  id="charge">{$vo.OPTIONS_CHARGES}</span>元
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>总金额</td>
+                                <td  class="cr" ><label class="label-right">总金额: </label><span id="total-amt">{$vo['BASE_RATE_AMT']+$vo['MANDATORY_CHARGES']+$vo['OPTIONS_CHARGES']}</span> 元</td>
+                            </tr>
+                            <tr>
+                                <td>实际金额</td>
+                                <td class="cr" ><label class="label-right">实际金额: </label><input type="text" name="REALTOTAL" value="{$vo['BASE_RATE_AMT']+$vo['MANDATORY_CHARGES']+$vo['OPTIONS_CHARGES']}"> 元</td>
+                            </tr>
+                        </table>
+						
+					</td>
+                    <td style=" vertical-align: top;width=60%" >
+
+                        <table class="list" width="100%"  >
+							<thead>
+								<tr>
+									<th width="15%">车牌号</th>
+									<th width="15%">车辆类型</th>
+									<th width="40%">品牌型号</th>
+									<th width="15%">当前里程</th>
+									<th width="15%">当前油量</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+                                    <td><input class="readonly" name="master.dwz_devLookup.CAR_TAG" value="{$vo.CAR_TAG}" readonly="readonly" type="text"/></td>
+									<td>
+                                        <input class="readonly" name="master.dwz_devLookup.CAR_MODEL" value="{$vo.CAR_MODEL}"  readonly="readonly" type="text"/>
+									</td>
+									<td>
+                                        <input class="readonly"  name="master.dwz_devLookup.CAR_MODEL_NAME" value="{$vo.CAR_MODEL_NAME}" size="45" readonly="readonly" type="text" />
+										<input type="hidden" name="master.dwz_devLookup.CAR_MODEL_CODE" value=""  />
+									</td>
+									<td>
+                                        <input class="text" name="master.dwz_devLookup.CURRENT_KM" value="{$vo.CURRENT_KM}" readonly="readonly" type="text" />
+									</td>
+									<td>
+                                        <input class="text" name="master.dwz_devLookup.CURRENT_OIL" value="{$vo.CURRENT_OIL}" readonly="readonly" type="text" />
+									</td>
+								</tr>
+									
+							</tbody>
+                        </table>
+                        <table class="list" width="100%" style="height:80px">
+							<thead>
+								<tr>
+                                    <th width="15%">司机名称</th>
+                                    <th width="20%">性别</th>
+                                    <th width="15%">手机</th>
+                                    <th width="15%">固定电话</th>
+                                    <th width="15%">驾照类型</th>
+                                    <th width="20%">司机星级</th>
+                                    
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+                                    <td><input class="readonly" name="master.dwz_devLookup.DRIVER_NAME" value="{$vo.DRIVER_NAME}" readonly="readonly" type="text" size="20"/></td>
+                                    <td><input class="readonly" name="master.dwz_devLookup.DRIVER_SEX" value="{$vo.DRIVER_SEX}" readonly="readonly" type="text" size="20"/></td>
+                                    <td><input class="readonly" name="master.dwz_devLookup.PHONE" value="{$vo.PHONE}" readonly="readonly" type="text" size="20"/></td>
+                                    
+                                    <td><input class="readonly" name="master.dwz_devLookup.FAMILY_PHONE" value="{$vo.FAMILY_PHONE}" readonly="readonly" type="text" size="20"/></td>
+
+                                    <td><input class="readonly" name="master.dwz_devLookup.DRIVER_CARD_TYPE" value="{$vo.DRIVER_CARD_TYPE}" readonly="readonly" type="text" size="20"/></td>
+
+                                    <td><input class="readonly" name="master.dwz_devLookup.TECHTITLE" value="{$vo.TECHTITLE}" readonly="readonly" type="text" size="20"/></td>
+								</tr>
+								<tr>
+									<td colspan="6" style="padding-left: 300px;">
+                                        <a class="btnLook" target="dialog" ref="reser2" href="__APP__/Reservation/selectDriver/TECHTITLE/{$TECHTITLE|urlencode}" lookupGroup="master" lookupName="devLookup" width="840" height="380">选司机</a>	
+										<span class="info">选司机</span>
+
+									</td>
+								</tr>	
+							</tbody>
+                        </table>
+
+                </div>
+                        <!--
+						<h1>增值服务</h1>
+						<div style="width:220px" id="Soption">
+						</div>
+                        -->    
+					</td>
+				</tr>
+				<tr>
+                    <td colspan="2">
+<input  type="button" onclick="openDialog();" value="打印合同"/>
+							</td>
+						</tr>	
+					</tbody>
+				</table>
+			</form>
+		</div>
+    </div>
+    </div>
+

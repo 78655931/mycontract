@@ -1,9 +1,9 @@
 <table width="100%" >
                 <tr>
-                    <td>客户名称</td>
-                    <td ><input id="REAL_NAME" name="REAL_NAME" type="text" /></td>
-                    <td>选择车型</td>
-                    <td> 
+                    <td width="20%">客户名称</td>
+                    <td width="30%"><input id="REAL_NAME" name="REAL_NAME" type="text" /></td>
+                    <td width="15%">选择车型</td>
+                    <td width="35%"> 
                         <select id="CAR_TYPE_CODE" name="CAR_TYPE_CODE">
                             <volist name="option" id="vo">
                             <option value="{$vo.CAR_TYPE_CODE}">{$vo.CAR_TYPE_NAME}</option>
@@ -13,14 +13,26 @@
                 </tr>
                 <tr>
 
-                    <td>带驾日期</td>
-                    <td ><input id="PICKUP_DATE" name="PICKUP_DATE" type="text"  value="2012-08-20 09:15"/></td>
-                    <td>带驾范围</td>
+                    <td><span class="dsb">带驾日期</span><span class="dsj">接送时间</span></td>
+                    <td ><input id="PICKUP_DATE" name="PICKUP_DATE" type="text"  value=""/></td>
+                    <td><span class="dsb">带驾范围</span><span class="dsj">接送范围</span></td>
                     <td><select id="" name=""><option value="">市内</option></select></td>
                 </tr>
+                <tr class="dsj">
+                    <td>城市机场</td>
+                    <td ><select id="" name="AIRPORT_NAME">
+                            <volist name="airport" id="air">
+                            <option value="{$air.AIRPORT_CODE}" <if condition="$air['CITY_CODE'] eq $vo['CITY_CODE']">selected</if>>{$air.AIRPORT_NAME}</option>
+                            </volist>
+                         </select>
+                     </td>
+                    <td>航班号</td>
+                    <td><input id="" name="AIRLINE" type="text" /></td>
+                </tr>
+                
                 <tr>
-                    <td>租期</td>
-                    <td>
+                    <td class="dsb">租期</td>
+                    <td class="dsb">
                         <select id="BASE_RATE_QTY" name="BASE_RATE_QTY">
 
                             <option value="0" selected>无</option>
@@ -34,19 +46,31 @@
                             <option value="7">7</option>天
                         </select>
                     </td>
+                    <td class="dsj" >接送类型</td>
+                    <td class="dsj">
+                        <select  name="PICKUP_RETURN_TYPE">
+                            <option value="0">送</option>
+                            <option value="1" selected>接</option>
+                        </select>
+                    </td>
                     <td>过桥费
                         <select id="" name="ROAD_BRIDGE_CHARGE_STATUS">
-                            <option value="0">自理</option>
-                            <option value="">包含</option>
+                            <option value="0">不含</option>
+                            <option value="1">含</option>
                         </select>
                     </td>
                     <td>
                         停车费
                         <select id="" name="PARKING_CHARGE_STATUS">
-                            <option value="0">自理</option>
-                            <option value="">包含</option>
+                            <option value="0">不含</option>
+                            <option value="1">含</option>
                         </select>
                     </td>
+                </tr>
+                
+                <tr class="dsj">
+                    <td >上下车地点</td>
+                    <td colspan="3"><input id="" name="UP_DOWN_ADDRESS" type="text" size="80"/></td>
                 </tr>
                 <tr>
                     <td>联系人</td>
@@ -54,7 +78,7 @@
                     <td>联系电话</td>
                     <td><input id="" name="LINKMAN_PHONE" type="text" /></td>
                 </tr>
-                <tr>
+                <tr class="dsb">
                     <td >行程安排</td>
                     <td colspan="3" id="trip">
                         
@@ -63,7 +87,7 @@
                 
                 <tr>
                     <td>备注</td>
-                    <td colspan="3"><textarea id="" name="DRIVER_REQUEST" rows="10" cols="30" style="width: 492px; height: 59px;"></textarea></td>
+                    <td colspan="3"><textarea id="" name="DRIVER_REQUEST" rows="3" cols="63" ></textarea></td>
                 </tr>
                 <tr>
                     <td colspan="4"><input type="button" onclick="findCars();" id="searchDJ" value="查询" /></td>

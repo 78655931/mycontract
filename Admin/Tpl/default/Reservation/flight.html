@@ -30,13 +30,20 @@
     
 </style>
 <script type="text/javascript">
-    
+    $(".layoutBox").hide(); 
+
+    $(".dsj").hide();
+    $(".dsb").hide();
     $.ajaxSettings.global=false;
     doPlan();
     
     $('select[name="ratecode"]').change(function(){
         var o = $('select[name="ratecode"]').val();
-        if(o=='DSB'){
+
+       // $("form").resetForm();
+      //$("#carsinfo").html('');
+       // $("form").resetForm();
+        if(o=='DSR'){
 
         $(".layoutBox").show();           
             $(".dsj").hide();
@@ -86,16 +93,17 @@
         str+='<option value="30">30</opion>';
         str += "</select>";
         for(var j=1;j<=i;j++){
-            nowdate = DateAdd("d ",j, new Date($('#PICKUP_DATE').val().replace("-","/").replace("-","/")));
+
+        nowdate = DateAdd("d ",j, new Date($('#PICKUP_DATE').val().replace("-","/").replace("-","/")));
             var month=nowdate.getMonth()+1;
             var monthString = month<9?'0'+month:month;
             if(j==i){
                // times = DateAdd("h ",j, new Date($('#PICKUP_DATE').val().replace("-","/").replace("-","/")));
                 
-                l += '<li>'+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+str+'</li><input type="hidden" name="RETURN_DATE" id="RETURN_DATE" value="'+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+'"><li><textarea id="" name="PLAN['+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+']" rows="10" cols="30" style="width: 496px; height: 54px;"></textarea></li>';
+                l += '<li>'+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+str+'</li><input type="hidden" name="RETURN_DATE" id="RETURN_DATE" value="'+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+'"><li><textarea id="" name="PLAN['+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+']" rows="3" cols="55" ></textarea></li>';
             }else{
 
-                l += '<li>'+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+'<input class="ISOVERNIGHT" name="ISOVERNIGHT['+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+']" type="checkbox" onclick="driver_fee(0);" />过夜</li><li><textarea id="" name="PLAN['+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+']" rows="10" cols="30" style="width: 496px; height: 54px;"></textarea></li>';
+                l += '<li>'+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+'<input class="ISOVERNIGHT" name="ISOVERNIGHT['+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+']" type="checkbox" onclick="driver_fee(0);" />过夜</li><li><textarea id="" name="PLAN['+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+']" rows="3" cols="55" ></textarea></li>';
         }
             
     }
@@ -103,7 +111,13 @@
     //半日只显示时间安排
     if(i=='0.5'){
 
-        l += '<li>'+str+'</li><input type="hidden" name="RETURN_DATE" id="RETURN_DATE" value="'+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+'"><li><textarea id="" name="PLAN['+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+']" rows="10" cols="30" style="width: 496px; height: 54px;"></textarea></li>';
+        nowdate = DateAdd("d ",1, new Date($('#PICKUP_DATE').val().replace("-","/").replace("-","/")));
+        //$('#ratecode').val("DSB1");
+        //$('input:select[name="ratecode"]:checked').val("DSB2");
+        //alert($('#ratecode').val());
+        $('#ratecode').append('<option value="DSB" >半日租</opion>');
+        $("#ratecode").val("DSB");
+        l += '<li>'+str+'</li><input type="hidden" name="RETURN_DATE" id="RETURN_DATE" value="'+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+'"><li><textarea id="" name="PLAN['+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+']" rows="3" cols="55" ></textarea></li>';
     }
 
     $("<ul></ul>").html(l).appendTo("#trip");
@@ -117,7 +131,7 @@ function   DateAdd(interval,number,date)
                 case   "y "   :   {
                         date.setFullYear(date.getFullYear()+number);
                         return   date;
-                        break;
+                        break;//
                 }
                 case   "q "   :   {
                         date.setMonth(date.getMonth()+number*3);
@@ -167,6 +181,7 @@ $(function(){
     };
     a = $('#REAL_NAME').autocomplete(options);
     var a = {
+    minChars:1,
     serviceUrl: '__URL__/suggest',//获取数据的后台页面
     delimiter: /(,|;)\s*/,
     onSelect:  function(value, data){ 
@@ -218,8 +233,8 @@ function showResponse(responseText, statusText, xhr, $form) {
 			showon:'button', 
 			buttontext:'选择日期',
 			showbuttonpanel: false,
-			stepHour: 2,//设置步长
-			stepMinute: 10,
+			stepHour: 1,//设置步长
+			stepMinute: 15,
 			stepSecond: 10,
 			hourGrid: 4,
 			minuteGrid: 10	
@@ -251,16 +266,16 @@ function findCars(){
     $.getJSON('__URL__/findDJCars',{'RETURN_DATE':RETURN_DATE,'DISTRICT_CODE':$("#DISTRICT_CODE").val(),'CITY_CODE':$("#CITY_CODE").val(),'CAR_TYPE_CODE':$("#CAR_TYPE_CODE").val(),'PICKUP_DATE':PICKUP_DATE,'RATE_CODE':$("#ratecode").val()},function(data){
         
         if(data.psResponse.cars==null){
-            alert('车辆信息为空');
+            alert(data.psResponse.error.errorText);
         }else{
             $.each(data.psResponse.cars.car,function(i,item){
-                var uc = {rulecode:item.ruleCode,hourate:item.extraHourRate,img:item.vehicle.carTypeImgUrl,carModelName:item.vehicle.carModelName,rate:item.baseRateAmt/item.baseRateQty,carModelCode:item.vehicle.carModelCode,bigPackage:item.vehicle.bigPackage,smallPackage:item.vehicle.smallPackage};
+                var uc = {rulecode:item.ruleCode,hourate:item.extraHourRate,img:item.vehicle.carTypeImgUrl,carModelName:item.vehicle.carModelName,rate:item.baseRateAmt/item.baseRateQty,carModelCode:item.vehicle.carModelCode,bigPackage:item.vehicle.bigPackage,smallPackage:item.vehicle.smallPackage,rateitem:$.stringifyJSON(item)};
                 var tpl = '<tr>'+
                     '<td width="20%" rowspan="3">'+
                         '<img src="{{img}}" />'+
                     '</td>'+
                     '<td colspan="3">{{carModelName}}</td>'+
-                    '<td width="20%" rowspan="3" align="center"><input type="radio" onclick="getRateinfo({{rate}},\'{{rulecode}}\',{{hourate}});" name="CAR_MODEL_CODE" value="{{carModelCode}}" id="CAR_MODEL_CODE" />'+
+                    '<td width="20%" rowspan="3" align="center"><input type="radio" onclick="getRateinfo({{rate}},\'{{rulecode}}\',{{hourate}},\'{{rateitem}}\');" name="CAR_MODEL_CODE" value="{{carModelCode}}" id="CAR_MODEL_CODE" />'+
                     '</td>'+
                     '</tr>'+
                     '<tr><td width="20%">人数:5</td><td width="20%">大行李:{{bigPackage}}</td><td width="20%">小行李:{{smallPackage}}</td></tr><tr><td>超时费:{{hourate}}</td> <td>租金:{{rate}}</td> <td>&nbsp;</td> </tr>';
@@ -312,6 +327,12 @@ function getRateinfo(rate,rulecode,hourate,rateitem){
         var flag='';
         var CAR_MODEL_CODE = $("#CAR_MODEL_CODE").val();
         var BASE_RATE_QTY = $("#BASE_RATE_QTY").val();
+        console.log(BASE_RATE_QTY);
+        if(BASE_RATE_QTY==0){
+            BASE_RATE_QTY =1;
+            $("#BASE_RATE_QTY").val(1);
+        }
+        console.log(BASE_RATE_QTY);
         var PICKUP_DATE = $("#PICKUP_DATE").val();
         var  MANDATORY = 0;
         var DRIVER_CHARGES =0;
@@ -324,12 +345,14 @@ function getRateinfo(rate,rulecode,hourate,rateitem){
             var driver_flag = false;
             $("#option").html('');
             $("#optionfee").html('');
+            if(data==null){
 
+        }else{
             $.each(data,function(i,item){
                 if(item.FLAG=='S'){
                     flag= "元";   
-            }
-            
+                }
+
                 if(item.MANDATORY=='Y'){
                     MANDATORY+=item.MANDATORY;
                 }
@@ -356,67 +379,115 @@ function getRateinfo(rate,rulecode,hourate,rateitem){
                         perunit = "/人";
                         break;
                 }
-    
+
                 if(item.OPTION_NAME.indexOf('司机')>0){
                     driver_flag = true;
                     if(i%2==0)
-					{
+                    {
                         $('<tr></tr>').html('<td><input  id="'+item.OPTION_ID+'" type="radio" value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.value,0);driver_fee(\'item.OPTION_NAME\');" name="rdioption" checked/>'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
                         driver_fee(item.OPTION_NAME);
-						$("#DRIVER_VALUE").val(BASE_RATE_QTY*item.RATE);
-					}else
-					{
-						 $('<tr></tr>').html('<td><input type="radio" id="'+item.OPTION_ID+'" value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.value,0);" name="rdioption"/>'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
-					}
-					
+                        $("#DRIVER_VALUE").val(BASE_RATE_QTY*item.RATE);
+                    }else
+                    {
+                        $('<tr></tr>').html('<td><input type="radio" id="'+item.OPTION_ID+'" value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.value,0);" name="rdioption"/>'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
+                    }
+
                 }else{
                     var checkValue = "";
-				    if(item.MANDATORY=='Y'){
-                         checkValue ="CHECKED";
-                         MANDY +=BASE_RATE_QTY*item.RATE;
-                         $('<tr></tr>').html('<td><input DISABLED id="'+item.OPTION_ID+'" type="checkbox"  value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.id,1);" class="optionname" name="optionname['+item.OPTION_ID+']" CHECKED="'+checkValue+'" />'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
+                    if(item.MANDATORY=='Y'){
+                        checkValue ="CHECKED";
+                        MANDY +=BASE_RATE_QTY*item.RATE;
+                        $('<tr></tr>').html('<td><input DISABLED id="'+item.OPTION_ID+'" type="checkbox"  value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.id,1);" class="optionname" name="optionname['+item.OPTION_ID+']" CHECKED="'+checkValue+'" />'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
 
-						 //$("#OPTION_VALUE").val(MANDY);
+                        //$("#OPTION_VALUE").val(MANDY);
                     }else{
                         OPTIONCHARGES += BASE_RATE_QTY*item.RATE;
                         $('<tr></tr>').html('<td><input  id="'+item.OPTION_ID+'" type="checkbox"  value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.id,3);" class="optionname" name="optionname['+item.OPTION_ID+']"  />'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#optionfee');
-                        
+
                     }
-            }
-            if(!driver_flag){
-                alert("增值服务缺少带驾司机!");
-                MANDY=0;
-                return false;
-            }
-				
-        });
-            $("#rate").html(''+rate+flag+'<input type="hidden" id="BASE_RATE_AMT" name="BASE_RATE_AMT" value="'+rate+'">');
-            RATE=parseInt(rate);
-            $("#OPTION_VALUE").val(MANDY);
-            $("#OPTIONCHARGES").html('<input type="hidden" value="'+OPTIONCHARGES+'" name="OPTIONS_CHARGES" class="OPTIONCHARGES"/>'+OPTIONCHARGES+flag+'');
-            if(!driver_flag){
-                MANDATORY =0;
-        }else{
+                }
+                if(!driver_flag){
+                    alert("增值服务缺少带驾司机!");
+                    MANDY=0;
+                    return false;
+                }
+
+            });
+        }
+
         
+        $("#rate").html(''+rate+flag+'<input type="hidden" id="BASE_RATE_AMT" name="BASE_RATE_AMT" value="'+rate+'">');
+        RATE=parseInt(rate);
+        $("#OPTION_VALUE").val(MANDY);
+        $("#OPTIONCHARGES").html('<input type="hidden" value="'+OPTIONCHARGES+'" name="OPTIONS_CHARGES" class="OPTIONCHARGES"/>'+OPTIONCHARGES+flag+'');
+        if(!driver_flag){
+            MANDATORY =0;
+        }else{
+
             MANDATORY = parseInt($("#DRIVER_VALUE").val())+MANDY;
         }
-            $("#MANDATORY").html(MANDATORY);
-            $("#MANDATORY").html('<input type="hidden" value="'+MANDATORY+'" name="MANDATORY" class="MANDATORY">'+MANDATORY+flag+'');
-            TOTAL_PRICE = OPTIONCHARGES+MANDATORY+RATE;
-            $("#TOTAL_PRICE").html('<input type="hidden" value="'+TOTAL_PRICE+'" name="TOTAL_PRICE"  class="TOTAL_PRICE">'+TOTAL_PRICE+flag+'');
-            $("#hourate").html('<input type="hidden" value="'+hourate+'" name="XHOUR"  class="XHOUR">'+hourate+'');
+        $("#MANDATORY").html(MANDATORY);
+        $("#MANDATORY").html('<input type="hidden" value="'+MANDATORY+'" name="MANDATORY" class="MANDATORY">'+MANDATORY+flag+'');
+        TOTAL_PRICE = OPTIONCHARGES+MANDATORY+RATE;
+        $("#TOTAL_PRICE").html('<input type="hidden" value="'+TOTAL_PRICE+'" name="TOTAL_PRICE"  class="TOTAL_PRICE">'+TOTAL_PRICE+flag+'');
+        $("#hourate").html('<input type="hidden" value="'+hourate+'" name="XHOUR"  class="XHOUR">'+hourate+'');
 
         });
         $.getJSON('__URL__/djRule',{'RULE_CODE':rulecode},function(data){
             $("#XHOUR_NEXT_DAY").html('<input type="hidden" name="XHOUR_NEXT_DAY" value="'+data.XHOUR_NEXT_DAY+'">'+data.XHOUR_NEXT_DAY+'')  ;
         });
 }
+function driver_fee(driverstat){
+	
+     if(driverstat==0){
+         
+        var boards =0;
+        var flag = "元";
+        var board = parseInt($(".BOARD").val());
+        var qty = $(".ISOVERNIGHT:checkbox").filter(':checked').length;
+        //var OPTIONCHARGES=parseInt($(".OPTIONCHARGES").val());
+        var OPTIONCHARGES =0;
+        $(".ISOVERNIGHT").filter(":checked").each(function(){
+                boards+=board;
+        });
+        $('input:checkbox[class="optionname"]:checked').each(function(){
+            OPTIONCHARGES += parseInt($(this).val());
+        });
+        
+        OPTIONCHARGES+=boards;
+        var hee = {qty:qty,BOARD_AND_LODGING:boards,BOARD:board};
+        var tpl = '<span>司机过夜食宿费:{{BOARD_AND_LODGING}}</span>元<input type="hidden" value="{{BOARD_AND_LODGING}}" name="BOARD_AND_LODGING" id="BOARD_AND_LODGING" /><input type="hidden" value="{{BOARD}}"  class="BOARD"/>';
+        var html = Mustache.to_html(tpl,hee);
+        $(".board").html(html);
+        
+        $("#OPTIONCHARGES").html('<input type="hidden" value="'+OPTIONCHARGES+'" name="OPTIONS_CHARGES" class="OPTIONCHARGES"/>'+OPTIONCHARGES+flag+'');
+        var TOTAL_PRICE = parseInt($(".TOTAL_PRICE").val());
+        TOTAL_PRICE=boards+TOTAL_PRICE;
+        $("#TOTAL_PRICE").html('<input type="hidden" value="'+TOTAL_PRICE+'" name="TOTAL_PRICE"  class="TOTAL_PRICE">'+TOTAL_PRICE+flag+'');
+    }
+    $.getJSON('__URL__/driverInfo',{TECHTITLE:driverstat},function(data){
+
+
+        var qty = $(".ISOVERNIGHT:checkbox").filter(':checked').length;
+        $(".ISOVERNIGHT:checkbox").val(data.BOARD_AND_LODGING);
+        $(".OVERTIME").text(data.OVERTIME);
+        $(".BOARD_AND_LODGING").text(data.BOARD_AND_LODGING);
+        if(qty>0){
+            var boards = qty*data.BOARD_AND_LODGING;
+        }
+        var hee = {qty:qty,BOARD_AND_LODGING:boards,BOARD:data.BOARD_AND_LODGING};
+        var tpl = '<span>司机过夜食宿费:{{BOARD_AND_LODGING}}</span>元<input type="hidden" value="{{BOARD_AND_LODGING}}" name="BOARD_AND_LODGING" id="BOARD_AND_LODGING" /><input type="hidden" value="{{BOARD}}"  class="BOARD"/>';
+        var html = Mustache.to_html(tpl,hee);
+        $(".board").html(html);
+
+    });
+}
 </script>
 	<form id="myform" action="__URL__/DSB_create" method="post" >
 带驾类型
 <select id="ratecode" name="ratecode">
     <option value="0" selected>无</option>
-    <option value="DSB">日租</option>
+    <option value="DSR">日租</option>
     <option value="DSJ">接送机</option>
 </select>
 <input type="hidden" name="jsoncarinfo" id="jsoncarinfo" value="aaa"/>
@@ -429,18 +500,17 @@ function getRateinfo(rate,rulecode,hourate,rateitem){
     <div layoutH="80">
 <table  class="list"  width="98%">
     <tr>
-        <td width="35%" style=" vertical-align: top;" >
-            <div class="dsj"> <!--<include file="Reservation:_DSJ"/>--></div>
-            <div class="dsb"><include file="Reservation:_DSB"/></div>
+        <td width="45%" style=" vertical-align: top;" >
+           <include file="Reservation:_DSB"/>
         </td>
-        <td rowspan="2" width="50%" class="bdl" style=" vertical-align: top;" >
+        <td rowspan="2" width="55%" class="bdl" style=" vertical-align: top;" >
                 <div id="carsinfo" >
                     
                 </div>
         </td>
     </tr>
     <tr >
-        <td class="bdt" width="35%" >
+        <td class="bdt"  >
             <table width="100%">
                 <tr>
 
@@ -463,7 +533,7 @@ function getRateinfo(rate,rulecode,hourate,rateitem){
         </td>
     </tr>
     <tr >
-        <td class="bdt">
+        <td class="bdt" >
             <include file="Reservation:_tblPrice"/>
         </td>
     </tr>

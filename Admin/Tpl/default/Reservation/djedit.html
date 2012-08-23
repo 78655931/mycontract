@@ -15,7 +15,7 @@ $('#myform').submit(function() {
         //alert("aaa");
         $('<input type="hidden" name="TOTAL_PRICE">').val($("#total-amt").text()).appendTo("#myform");
         //{$vo.OPTIONS_CHARGES}
-
+        
         $('<input type="hidden" name="TOTAL_PRICE">').val($("#total-amt").text()).appendTo("#myform");
         $('<input type="hidden" name="OPTIONS_CHARGES">').val($("#charge").text()).appendTo("#myform");
         $('<input type="hidden" name="MANDATORY_CHARGES">').val($("#mandy").text()).appendTo("#myform");
@@ -74,6 +74,10 @@ function optionprice(days){
                 break;
                 case "M":
                 unit="每月";
+                break;
+            case "R":
+                unit = "人";
+                flats = 1;
                 break;
                 }
                 if(item.QTY==null){
@@ -176,7 +180,9 @@ function openDialog(){
     </table>
 
     <div layoutH="100">
-	<form id="myform" action="__URL__/createagreement_dj" method="post" >
+        <form id="myform" action="__URL__/createagreement_dj" method="post" >
+
+		<input type="hidden" name="RATE_CODE" value="{$vo.RATE_CODE}" />
 		<input type="hidden" name="REAL_NAME" value="{$vo.REAL_NAME}" />
 		<input type="hidden" name="CAR_MODEL_NAME" value="{$vo.CAR_MODEL_NAME}"/>
 		<input type="hidden" name="XDAY" value="{$vo.XDAY}"/>

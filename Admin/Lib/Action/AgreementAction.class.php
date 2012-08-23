@@ -60,7 +60,7 @@ class AgreementAction extends CommonAction {
 			$p = new Page ( $count, $listRows );
 			// 分页查询数据
 
-            $voList = $Model->where ( $map )->order ( "`" . $order . "` " . $sort )->limit ( $p->firstRow . ',' . $p->listRows )->findAll ();
+            $voList = $Model->field('agreement_id,REAL_NAME,substr(agreement_id,1,2) as flag,IDENTITY_CODE,status,CAR_MODEL_NAME,HOME_PHONE,PICKUP_DATE,RETURN_DATE')->where ( $map )->order ( "`" . $order . "` " . $sort )->limit ( $p->firstRow . ',' . $p->listRows )->findAll ();
 
             //echo $Model->getLastSql();
 			// 分页跳转的时候保证查询条件
@@ -119,7 +119,30 @@ class AgreementAction extends CommonAction {
 		$this->assign ( 'location_code', $vo ['PICKUP_LOCATION_CODE'] );
 		$this->assign ( 'vo', $vo );
 		$this->display();
-	}
+    }
+    public function showcontractDJ(){
+        $Model = M ( "Location","AdvModel" );
+        $Model->addConnect ( C ( "DB_CRS" ), 1 );
+        $Model->switchConnect ( 1, "agreement" );
+        $id = $_REQUEST ['id'];
+        $vo = $Model->where ( "agreement_id='".$id."'"  )->find ();
+        //echo $Model->getLastSql();exit;
+        $Model->switchConnect ( 1, "agreement" );
+        $vo ['newcfm'] = $vo['location_code'].'-'.substr($vo['agreement_id'],2);
+        $BASE_RATE_QTY = $vo['BASE_RATE_QTY'];
+        //增值费用
+        $confirmation = $vo['location_code'].'-'.str_replace('HT','',$vo['agreement_id']);
+        $Model->switchConnect(1,"agreement_option");
+        $mandy=$Model->where("CONFIRMATION='".$confirmation."' and MANDATORY='N'")->select();
+        $this->assign("confirmation",$confirmation);
+        foreach($mandy as $k=>$v){
+            $rate += $v['RATE']*$BASE_RATE_QTY;
+        }
+        $this->assign ( 'rate', $rate );
+        $this->assign ( 'location_code', $vo ['PICKUP_LOCATION_CODE'] );
+        $this->assign ( 'vo', $vo );
+        $this->display();
+    }
 	public function gotoPrint($agreementid = '') {
 				$agreementid = base64_decode($_REQUEST ['agreementid']);
 		if(empty($agreementid)){
@@ -184,7 +207,7 @@ class AgreementAction extends CommonAction {
 		$Model->addConnect ( C ( "DB_CRS" ), 1 );
 		$Model->switchConnect ( 1, "agreement" );
 
-		$vo = $Model->getByAgreementId($agreementid);
+        $vo = $Model->getByAgreementId($agreementid);
 		$BASE_RATE_QTY = $vo['BASE_RATE_QTY'];
 		//增值费用
 		$confirmation = $_SESSION['location_code'].'-'.str_replace('HT','',$vo['agreement_id']);
@@ -503,8 +526,95 @@ class AgreementAction extends CommonAction {
 		if($_GET['agreement_id']){
 			//合同列表还车链接的隐藏
 			$vo = $Model->where('agreement_id="'.$_GET['agreement_id'].'"')->find();
-			$this->assign("vo",$vo);
-			$this->display("Agreement:returncar");
+            $this->assign("vo",$vo);
+            if($_GET['flag']=='DJ'){
+            
+			$this->display("Agreement:returncarDJ");
+            }else{
+
+                $this->display("Agreement:returncar");
+            }
+			exit;
+		}
+		//取合同信息
+		$agreement = $Model->where('agreement_id="'.$_POST['agreement_id'].'"')->find();
+		$map['RETURN_KM'] = $_POST['return_km'];
+		$map['RETURN_OIL'] = $_POST['return_oil'];
+		$map['REAL_RETURN_DATE'] = $_POST['REAL_RETURN_DATE'];
+		$map['status'] = 'RETURN';
+		if (false === $Model->create ($map)) {
+			$this->error ( $Model->getError () );
+		}
+		// 更新数据
+		$list=$Model->where('agreement_id="'.$_POST['agreement_id'].'"')->save ($map);
+		if($list){
+			//修改预定单状态
+
+			$vo = $Model->where('agreement_id="'.$_POST['agreement_id'].'"')->find();
+			unset($map);
+			$confirmation = $vo['location_code'].'-'.str_replace('HT','',$_POST['agreement_id']);
+			$map['STATUS'] = 'RETURN';
+			$Model->switchConnect(1,"reservation");
+			$cons = $Model->where('CONFIRMATION="'.$confirmation.'"')->find();
+			if (count($cons)) {
+				// code...
+
+			if (false === $Model->create ($map)) {
+
+					$this->error ( $Model->getError () );
+				}
+
+				$Model->where('CONFIRMATION="'.$confirmation.'"')->save($map);
+			}
+			
+			
+			//修改车状态
+			unset($map);
+			$Model->switchConnect(1,"car_model");
+			$carmodel=$Model->where('CAR_MODEL_NAME="'.$agreement['CAR_MODEL_NAME'].'"')->find();
+			
+			Log::write('车癿SQL：'.$Model->getLastSql(), Log::SQL); 
+			$Model->switchConnect(1,"car");
+			$map['STATUS'] = 2;
+			if (false === $Model->create ($map)) {
+				$this->error ( $Model->getError () );
+			}
+			$Model->where('CAR_TAG="'.$vo['CAR_TAG'].'"')->save($map);
+			$Model->switchConnect(1,'uni_inventory');
+			//查询还车日期区间
+			//$returndateList = $Model->execute("select END_DATE from `uni_inventory` where  left(END_DATE,10)>= '".substr($_POST['REAL_RETURN_DATE'],0,10)."' and left(END_DATE,10)<= '".substr($agreement['RETURN_DATE'],0,10)."' ");
+			$returndateList = $Model->where("left(END_DATE,10)>= '".substr($_POST['REAL_RETURN_DATE'],0,10)."' and left(END_DATE,10)<= '".substr($agreement['RETURN_DATE'],0,10)."'")->select();
+		
+			
+			Log::write('Retrun癿SQL：'.$Model->getLastSql(), Log::SQL); 
+			//更新还车库存
+			foreach($returndateList as $key=>$val){
+
+			$Model->execute("UPDATE `uni_inventory` SET `REAL_INT`=REAL_INT+1  where LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$carmodel['CAR_MODEL_CODE']."' and  left(END_DATE,10) ='".substr($val[END_DATE],0,10)."'  ");
+
+			Log::write('还车癿SQL：'.$Model->getLastSql(), Log::SQL); 
+			}
+
+			//真实库存
+			echo $vo['status'];exit;
+		}
+
+    }
+
+	public function returnedCarDJ()
+	{
+		// code...
+		
+		$Model = M ( "Location","AdvModel" );
+		$Model->addConnect ( C ( "DB_CRS" ), 1 );
+		$Model->switchConnect ( 1, "agreement" );
+		if($_GET['agreement_id']){
+			//合同列表还车链接的隐藏
+			$vo = $Model->where('agreement_id="'.$_GET['agreement_id'].'"')->find();
+            $this->assign("vo",$vo);
+            
+			$this->display("Agreement:returncarDJ");
+
 			exit;
 		}
 		//取合同信息

@@ -149,33 +149,10 @@ class ReservationAction extends CommonAction {
 			$vo['agreement_id'] = $agreeList['id'];
 
         }
-        /**
-		//折扣信息
-		$ipaddress="172.16.100.173";
-		$discount_url = C('DISCOUNT');
-		//dump($POST);exit;
-		//拼接
-
-		$companycode = "GONGSI";
-		$pickupLocationCode = str_replace('MENGEN','GONGSI',$vo['PICKUP_LOCATION_CODE']);
-		$disurl = $discount_url."dsRequest.ver=".urlencode('eng 1.0  ryxml 1.0')."&dsRequest.function=ds&dsRequest.transId=ry_GONGSI_1&dsRequest.companyCode=". str_replace('MENGEN','GONGSI',$vo['COMPANY_CODE'])."&dsRequest.brandCode=GONGSI&dsRequest.sourceCode=".$vo['SOURCE_CODE']."&dsRequest.vendorCode=W-GONGSI&dsRequest.vendorPass=".$vo['VENDOR_PASS']."&dsRequest.pickupCityCode=".$vo['PICKUP_CITY_CODE']."&dsRequest.pickupDistrictCode=".$vo['PICKUP_DISTRICT_CODE']."&dsRequest.pickupLocationCode=". str_replace('MENGEN','GONGSI',$vo['PICKUP_LOCATION_CODE'])."&dsRequest.pickupDate=".urlencode($vo['PICKUP_DATE'])."&dsRequest.returnDate=".urlencode($vo['RETURN_DATE'])."&dsRequest.returnCityCode=".$vo['RETURN_CITY_CODE']."&dsRequest.returnDistrictCode=".$vo['RETURN_DISTRICT_CODE']."&dsRequest.returnLocationCode=". str_replace('MENGEN','GONGSI',$vo['RETURN_LOCATION_CODE'])."&dsRequest.carTypeCode=".$carTypeCode."&dsRequest.carModelCode=".$carmodelcode."&dsRequest.rateCode=WEB&dsRequest.ipaddress=".$ipaddress."&dsRequest.langCode=zh_cn&dsRequest.loginName=ZOUCHANGLIANG&dsRequest.totalPrice=".$vo['TOTAL_PRICE'];
-		//echo $disurl;
-		$result = $this->curl($disurl);
-		$result = json_decode($result);
-		$result = $result->dsResponse->discounts->discount;
-		foreach($result as $k=>$v){
-			$vs[]=(array)$v;
-
-		}
-		//折扣选择
-		$Model->switchConnect ( 1, "reservation_disc" );
-		$discountck = $Model->where("CONFIRMATION='".$vo['CONFIRMATION']."'")->find();
-		$vo['discountck'] = $discountck['UNI_DISC_ID'];
-        $this->assign("discount",$vs);
-        **/
+        
 		//均价
 		$average = round($vo['BASE_RATE_AMT'] /$vo['BASE_RATE_QTY']);
-		$vo ['agreementid'] = 'HT' . substr ( $vo ['CONFIRMATION'], - 15 );
+		$vo ['agreementid'] = 'ZJ' . substr ( $vo ['CONFIRMATION'], - 15 );
 		$Model->switchConnect ( 1, "uni_rate" );
 		$unirate = $Model->getByLocationCode(substr ( $vo ['CONFIRMATION'], 0,15 ));
 		$this->assign('unirate',$unirate);
@@ -184,21 +161,24 @@ class ReservationAction extends CommonAction {
 		$this->assign('datenow',date('Y-m-d h:m'));
 		$this->assign ( 'confirmation', $_REQUEST ['confirmation'] );
 		$this->assign ( 'location_code', $vo ['PICKUP_LOCATION_CODE'] );
-        $this->assign ( 'vo', $vo );
         Debug::mark('end');
         Log::write('Edit运行时间：'.Debug::useTime('start','end'), Log::DEBUG);
         if (isset($_REQUEST['rate_code'])&&$_REQUEST['rate_code']!='WEB') {
             // code...
             
+		$vo ['agreementid'] = 'DJ' . substr ( $vo ['CONFIRMATION'], - 15 );
             $Model->switchConnect ( 1, "reservation_plan" );
             $plan = $Model->field('left(start_date,10) as START_DATE,left(end_date,10) as END_DATE,PLAN,ISOVERNIGHT')->where('CONFIRMATION="'.$vo['CONFIRMATION'].'"')->select();
             $this->assign('plan',$plan);
             $Model->switchConnect ( 1, "reservation_option" );
             $driverinfo = $Model->where('option_name like "%司机%"')->find();
             $this->assign('TECHTITLE',$driverinfo['OPTION_NAME']);
+
+            $this->assign ( 'vo', $vo );
             $this->display ("Reservation:djedit");
         }else{
                
+            $this->assign ( 'vo', $vo );
             $this->display ();
         }
 	}
@@ -249,7 +229,7 @@ class ReservationAction extends CommonAction {
 		$model->addConnect ( C ( "DB_CRS" ), 1 );
 		$model->switchConnect ( 1, "agreement" );
 		$optionidList = $_POST['option'];
-		$_POST ['agreement_id'] = 'HT' . $_REQUEST ['confirmation'];
+		$_POST ['agreement_id'] = 'DJ' . $_REQUEST ['confirmation'];
 		$_POST ['createdate'] = date('Y-m-d h:m:s');
         $_POST ['status'] = "CONTRACT";
         foreach($_POST as $k=>$v){
@@ -307,7 +287,7 @@ class ReservationAction extends CommonAction {
 		$model->addConnect ( C ( "DB_CRS" ), 1 );
 		$model->switchConnect ( 1, "agreement" );
 		$optionidList = $_POST['option'];
-		$_POST ['agreement_id'] = 'HT' . $_REQUEST ['confirmation'];
+		$_POST ['agreement_id'] = 'ZJ' . $_REQUEST ['confirmation'];
 	//	$_POST ['createdate'] = time ();
 
 		$_POST ['createdate'] = date('Y-m-d h:m:s');
@@ -657,9 +637,30 @@ class ReservationAction extends CommonAction {
     }
     public function suggest()
     {
-        $return['suggestions'] = array('test1','test2');
-        $return['data'] = array('a1','b1');
-        $return['query'] = array('aa');
+        $model = M ( "Location","AdvModel" );
+        $model->addConnect ( C ( "DB_CRS" ), 1 );
+        $model->switchConnect ( 1, "customers" );
+        $customers =  $model->where('MEMORY_CODE like "%'.$_GET['query'].'%"')->findAll();
+        // echo $model->getLastSql();
+        foreach($customers as $k=>$v){
+
+            $customername[] = $v['CUSTOMER_NAME'];
+
+            // $return['suggestions'] = $v['CUSTOMER_NAME'];
+
+            // json_encode($return);
+            $memory[] = $v['MEMORY_CODE'];
+        }
+        //dump($customername);
+        // $return['suggestions'] = array('test1','test2');
+
+        $return['suggestions'] = $customername;
+        // $return['data'] = array('a1','b1');
+        //$return['query'] = array('aa');
+
+        $return['data'] = $memory;
+
+        $return['query'] = array($_GET['query']);
         exit(json_encode($return));
     }
     public function djOption()
@@ -703,6 +704,11 @@ class ReservationAction extends CommonAction {
         $list = $model->where($map)->find();
         $model->switchConnect(1,'car_type');
         $option = $model->findAll();
+        
+        $model->switchConnect(1,'airport');
+
+        $airport = $model->findAll();
+        $this->assign("airport",$airport);
         $this->assign("option",$option);
         $this->assign("vo",$list);
         $this->display();
@@ -790,6 +796,8 @@ class ReservationAction extends CommonAction {
 			exit ();
         }
         $list = $model->add($data);
+
+        Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
         //行程安排
         $model->switchConnect(1,'reservation_plan');
         foreach($_POST['PLAN'] as $k=>$v){

@@ -120,6 +120,10 @@ function optionprice(days){
 				break;
 				case "M":
 					unit="每月";
+                    break;
+                case "R":
+				unit = "人";
+				flats = 1;
 				break;
                 }
 				if(item.MANDATORY=='N'){
@@ -148,7 +152,7 @@ function optionprice(days){
 <body>
 <!--startprint1-->
 <div style="text-align:center">
-<font size="12px" >带驾租车合同</font>
+<font size="12px" >带驾租车单</font>
 <div id="er" style="float:right">{$vo.agreement_id|generateQRfromGoogle}</div>
 </div>
 <table border="0" width="100%" cellpadding="0" cellspacing="0">
@@ -192,7 +196,7 @@ function optionprice(days){
 </tr>
 <tr>
   <td class="t1">租期</td>
-  <td>{$vo.BASE_RATE_QTY}天</td>
+  <td>{$reservation.BASE_RATE_QTY}天</td>
   <td class="t1">品牌型号</td>
   <td>{$vo.CAR_MODEL_NAME}</td>
   <td class="t1">车辆牌照</td>
@@ -208,7 +212,7 @@ function optionprice(days){
   <td class="t1">司机姓名</td>
   <td>{$vo.DRIVER_NAME}</td>
   <td><span class="t1">航班号</span></td>
-  <td>&nbsp;</td>
+  <td>{$vo.AIRLINE}</td>
   </tr>
 <tr>
   <td colspan="8" class="t">行程信息</td>
@@ -221,11 +225,11 @@ function optionprice(days){
 </tr>
 <tr>
   <td class="t1">路桥费</td>
-  <td>不含</td>
+  <td><if condition="$vo.ROAD_BRIDGE_CHARGE_STATUS eq 0">含<else/>不含</if></td>
   <td class="t1">停车费</td>
-  <td>不含</td>
+  <td><if condition="$vo.PARKING_CHARGE_STATUS eq 0">含<else/>不含</if></td>
   <td  class="t1">超多少小时算一天</td>
-  <td>小时</td>
+  <td>{$vo.XHOUR_NEXT_DAY}小时</td>
   <td>付款方式</td>
   <td>&nbsp;</td>
 </tr>
@@ -233,11 +237,11 @@ function optionprice(days){
   <td class="t1">每天公里</td>
   <td>&nbsp;</td>
   <td class="t1">超公里费</td>
-  <td>&nbsp;</td>
+  <td>{$vo.XDIS_RATE}</td>
   <td class="t1">超天价格</td>
-  <td>元/天</td>
+  <td>{$vo.XDAY}元/天</td>
   <td class="t1">超小时价格</td>
-  <td>元/小时</td>
+  <td>{$vo.XHOUR}元/小时</td>
 </tr>
 
 <tr>
@@ -268,7 +272,7 @@ function optionprice(days){
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>小计</td>
-<td>元</td>
+<td>{$vo.MANDATORY_CHARGES}元</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td><span class="c2">小计</span></td>
@@ -280,9 +284,9 @@ function optionprice(days){
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>应付金额</td>
-<td><span style="float:right">元</span></td>
+<td><span style="float:right">{$vo.TOTAL_PRICE}元</span></td>
 <td>实付金额</td>
-<td><span >元</span></td>
+<td><span >{$vo.REALTOTAL}元</span></td>
 </tr>
 
 <tr>
