@@ -34,12 +34,17 @@
 
     $(".dsj").hide();
     $(".dsb").hide();
+    
     $.ajaxSettings.global=false;
     doPlan();
     
     $('select[name="ratecode"]').change(function(){
         var o = $('select[name="ratecode"]').val();
-
+        $('#REAL_NAME').val('');
+        $('#PICKUP_DATE').val('');
+        $('input[name="LINKMAN"]').val('');
+        $('input[name="LINKMAN_PHONE"]').val('');
+        $('input[name="DRIVER_REQUEST"]').val('');
        // $("form").resetForm();
         $("#carsinfo").html('');
        // $("form").resetForm();

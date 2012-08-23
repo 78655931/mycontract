@@ -171,7 +171,7 @@ class ReservationAction extends CommonAction {
             $plan = $Model->field('left(start_date,10) as START_DATE,left(end_date,10) as END_DATE,PLAN,ISOVERNIGHT')->where('CONFIRMATION="'.$vo['CONFIRMATION'].'"')->select();
             $this->assign('plan',$plan);
             $Model->switchConnect ( 1, "reservation_option" );
-            $driverinfo = $Model->where('option_name like "%司机%"')->find();
+            $driverinfo = $Model->where('option_name like "%司机%" and CONFIRMATION="'.$vo["CONFIRMATION"].'"')->find();
             $this->assign('TECHTITLE',$driverinfo['OPTION_NAME']);
 
             $this->assign ( 'vo', $vo );
@@ -643,7 +643,7 @@ class ReservationAction extends CommonAction {
         $model = M ( "Location","AdvModel" );
         $model->addConnect ( C ( "DB_CRS" ), 1 );
         $model->switchConnect ( 1, "customers" );
-        $customers =  $model->where('MEMORY_CODE like "%'.$_GET['query'].'%"')->findAll();
+        $customers =  $model->findAll();
         // echo $model->getLastSql();
         foreach($customers as $k=>$v){
 
