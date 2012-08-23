@@ -235,6 +235,8 @@ class ReservationAction extends CommonAction {
         foreach($_POST as $k=>$v){
             $k = str_ireplace('master_dwz_devLookup_','',$k);
             $data[$k] = $v;
+
+        Log::write('调试癿SQL：'.$k."--".$v, Log::DEBUG); 
         }
 	
 		$validate = array (array ('CAR_TAG', 'require', '车牌必须!' ),array('work_phone','/^(1(([35][0-9])|(47)|[8][01236789]))\d{8}$/','租车人手机格式不正确!'),
@@ -247,6 +249,10 @@ class ReservationAction extends CommonAction {
 		}
 				// 保存当前数据对象
         $list = $model->add ( $data );
+        $model->switchConnect ( 1, "driver_info" );
+        
+        $driver= $model->execute ( "update driver_info set  STATUS=0 where DRIVE_NAME='".$data['DRIVER_NAME']."' and PHONE='".trim($data['PHONE'])."'" );
+        Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
         $model->switchConnect ( 1, "reservation" );
         $resup = $model->execute ( "update reservation set  STATUS='CONTRACT' where CONFIRMATION='" . $_SESSION['location_code'].'-'.$_REQUEST['confirmation']. "'" );
 
@@ -640,31 +646,19 @@ class ReservationAction extends CommonAction {
     }
     public function suggest()
     {
+        $q = strtolower($_GET["q"]);
+        if (!$q) return;
         $model = M ( "Location","AdvModel" );
         $model->addConnect ( C ( "DB_CRS" ), 1 );
         $model->switchConnect ( 1, "customers" );
-        $customers =  $model->findAll();
-        // echo $model->getLastSql();
-        foreach($customers as $k=>$v){
-
-            $customername[] = $v['CUSTOMER_NAME'];
-
-            // $return['suggestions'] = $v['CUSTOMER_NAME'];
-
-            // json_encode($return);
-            $memory[] = $v['MEMORY_CODE'];
+        $customers =  $model->getField('MEMORY_CODE,CUSTOMER_NAME');
+        $result = array();
+        foreach($customers as $key=>$value){
+            if (strpos(strtolower($key), $q) !== false) {
+                echo "$value\n";
+            }
         }
-        //dump($customername);
-        // $return['suggestions'] = array('test1','test2');
 
-        $return['suggestions'] = $customername;
-        // $return['data'] = array('a1','b1');
-        //$return['query'] = array('aa');
-
-        $return['data'] = $memory;
-
-        $return['query'] = array($_GET['query']);
-        exit(json_encode($return));
     }
     public function djOption()
     {

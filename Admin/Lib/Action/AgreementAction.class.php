@@ -197,7 +197,8 @@ class AgreementAction extends CommonAction {
 				$agreementid = base64_decode($_REQUEST ['agreementid']);
 		if(empty($agreementid)){
 			$agreementid = base64_decode($_REQUEST['id']);
-		}
+        }
+            echo $agreementid;
 		//$model = M( "Location","AdvModel" );
 		//$model->addConnect ( C ( "DB_CRS" ), 1 );
 		//$model->switchConnect ( 1, "agreement" );
@@ -552,7 +553,7 @@ class AgreementAction extends CommonAction {
 
 			$vo = $Model->where('agreement_id="'.$_POST['agreement_id'].'"')->find();
 			unset($map);
-			$confirmation = $vo['location_code'].'-'.str_replace('HT','',$_POST['agreement_id']);
+			$confirmation = $vo['location_code'].'-'.str_replace('ZJ','',$_POST['agreement_id']);
 			$map['STATUS'] = 'RETURN';
 			$Model->switchConnect(1,"reservation");
 			$cons = $Model->where('CONFIRMATION="'.$confirmation.'"')->find();
@@ -618,23 +619,28 @@ class AgreementAction extends CommonAction {
 			exit;
 		}
 		//取合同信息
-		$agreement = $Model->where('agreement_id="'.$_POST['agreement_id'].'"')->find();
-		$map['RETURN_KM'] = $_POST['return_km'];
-		$map['RETURN_OIL'] = $_POST['return_oil'];
-		$map['REAL_RETURN_DATE'] = $_POST['REAL_RETURN_DATE'];
-		$map['status'] = 'RETURN';
-		if (false === $Model->create ($map)) {
+        $agreement = $Model->where('agreement_id="'.$_POST['agreement_id'].'"')->find();
+
+		$data= $_POST;
+		$data['status'] = 'RETURN';
+		if (false === $Model->create ($data)) {
 			$this->error ( $Model->getError () );
 		}
 		// 更新数据
-		$list=$Model->where('agreement_id="'.$_POST['agreement_id'].'"')->save ($map);
+        $list=$Model->where('agreement_id="'.$_POST['agreement_id'].'"')->save ($data);
+        Log::write('更新SQL：'.$Model->getLastSql(), Log::SQL); 
 		if($list){
 			//修改预定单状态
 
 			$vo = $Model->where('agreement_id="'.$_POST['agreement_id'].'"')->find();
-			unset($map);
-			$confirmation = $vo['location_code'].'-'.str_replace('HT','',$_POST['agreement_id']);
-			$map['STATUS'] = 'RETURN';
+            unset($map);
+
+			$confirmation = $vo['location_code'].'-'.str_replace('DJ','',$_POST['agreement_id']);
+            $map['STATUS'] = 'RETURN';
+
+            $Model->switchConnect(1,"driver_info");
+            
+			$Model->execute("UPDATE `driver_info` SET `STATUS`=9  where PHONE='".$vo['PHONE']."' and DRIVER_NAME='".$vo['DRIVER_NAME']."' and  TECHTITLE ='".$vo['TECHTITLE']."'  ");
 			$Model->switchConnect(1,"reservation");
 			$cons = $Model->where('CONFIRMATION="'.$confirmation.'"')->find();
 			if (count($cons)) {

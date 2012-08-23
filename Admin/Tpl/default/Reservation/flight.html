@@ -1,8 +1,12 @@
-<script src="__PUBLIC__/js/jquery.autocomplete-min.js" type="text/javascript"></script>
 <script src="__PUBLIC__/js/mustache.js" type="text/javascript"></script>
 <script src="__PUBLIC__/js/jquery.stringifyjson.js" type="text/javascript"></script>
 <link href="__PUBLIC__/css/storeSelect.css" rel="stylesheet" type="text/css"/>
-
+<script type='text/javascript' src='__PUBLIC__/js/lib/jquery.bgiframe.min.js'></script>
+<script type='text/javascript' src='__PUBLIC__/js/lib/jquery.ajaxQueue.js'></script>
+<script type='text/javascript' src='__PUBLIC__/js/lib/thickbox-compressed.js'></script>
+<script type='text/javascript' src='__PUBLIC__/js/jquery.autocomplete.js'></script>
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/jquery.autocomplete.css" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/js/lib/thickbox.css" />
 <script src="__PUBLIC__/js/classes.js" type="text/javascript"></script>
 <style type="text/css">
     .bdt{
@@ -47,20 +51,27 @@
         $('input[name="DRIVER_REQUEST"]').val('');
        // $("form").resetForm();
         $("#carsinfo").html('');
-       // $("form").resetForm();
+        // $("form").resetForm();
         if(o=='DSR'){
-
-        $(".layoutBox").show();           
+            $(".dj").show();
+            $(".zj").hide();
+            $(".layoutBox").show();           
             $(".dsj").hide();
             $(".dsb").show();
         }else if(o=='DSJ'){
-
-        $(".layoutBox").show();           
+            $(".layoutBox").show();
+            $(".dj").show();
+            $(".zj").hide();
             $(".dsj").show();
             $(".dsb").hide();
+        }else if(o=='WEB'){
+            $(".dj").hide();
+            $(".dsb").hide();
+            $(".dsj").hide();
+            $(".zj").show();
+            $(".layoutBox").show();           
         }else{
             $(".layoutBox").hide(); 
-
             $(".dsj").hide();
             $(".dsb").hide();
         }
@@ -77,8 +88,7 @@
         
                     
     });
-    
-        
+       
     function doPlan(){
         var i = $('select[name="BASE_RATE_QTY"]').val();
         //var i =i;
@@ -180,22 +190,29 @@ function   DateAdd(interval,number,date)
                 }
         }
 }
+ 
 $(function(){
-    options = { 
+    
+        
+ /**   options = { 
     serviceUrl: '__URL__/suggest'//获取数据的后台页面
     };
     a = $('#REAL_NAME').autocomplete(options);
     var a = {
     minChars:1,
     serviceUrl: '__URL__/suggest',//获取数据的后台页面
-    delimiter: /(,|;)\s*/,
-    onSelect:  function(value, data){ 
-    },//选中之后的回调函数
+    delimiter: /(,|;)\s*/
+  //  onSelect:  function(value, data){ 
+   /** },//选中之后的回调函数
     deferRequestBy: 0, //单位微秒
     params: { country: 'Yes' },//参数
     noCache: false //是否启用缓存 默认是开启缓存的
     };
-
+    **/
+    $("#REAL_NAME").autocomplete("__URL__/suggest", {
+		width: 260,
+		selectFirst: false
+	});
     var options = {
         beforeSubmit : showRequest, // pre-submit callback
         success : showResponse // post-submit callback
@@ -488,12 +505,14 @@ function driver_fee(driverstat){
     });
 }
 </script>
-	<form id="myform" action="__URL__/DSB_create" method="post" >
+
+<form id="myform" action="__URL__/DSB_create" method="post" >
 带驾类型
 <select id="ratecode" name="ratecode">
     <option value="0" selected>无</option>
     <option value="DSR">日租</option>
     <option value="DSJ">接送机</option>
+    <option value="WEB">自驾</option>
 </select>
 <input type="hidden" name="jsoncarinfo" id="jsoncarinfo" value="aaa"/>
 <input name="DISTRICT_CODE" type="hidden" id="DISTRICT_CODE" value="{$vo.DISTRICT_CODE}" />

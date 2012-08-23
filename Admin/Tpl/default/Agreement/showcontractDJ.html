@@ -1,12 +1,13 @@
 <script type="text/javascript" charset="utf-8">
     $.ajaxSettings.global=false;
     var totalPrice =0;
+
+    PRINTURL = '__APP__'+'/Agreement/gotoPrintDJ/id/{$Think.get.id|base64_encode}';
     $(document).ready(function() {
             DAYS ='{$vo.BASE_RATE_QTY}';
             optionprice(DAYS);
 
 
-        PRINTURL = '__APP__'+'/Agreement/gotoPrintDJ/id/DJ'+'{$vo.CONFIRMATION|substr=-15|base64_encode}';
 var options = {
 beforeSubmit : showRequest, // pre-submit callback
                success : showResponse // post-submit callback
