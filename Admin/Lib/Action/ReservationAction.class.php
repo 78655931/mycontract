@@ -247,6 +247,9 @@ class ReservationAction extends CommonAction {
 		}
 				// 保存当前数据对象
         $list = $model->add ( $data );
+        $model->switchConnect ( 1, "reservation" );
+        $resup = $model->execute ( "update reservation set  STATUS='CONTRACT' where CONFIRMATION='" . $_SESSION['location_code'].'-'.$_REQUEST['confirmation']. "'" );
+
         if ($list!==false) {
             // code...
             $model->switchConnect ( 1, "reservation_option" );
