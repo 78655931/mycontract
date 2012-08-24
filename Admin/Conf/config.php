@@ -60,7 +60,7 @@ $config	= array(
 
 
    // 'SELCAR'=>'http://localhost:8080/crsCarRental/selectCarD?psRequest.transId=ry_mengen_1&psRequest.sourceCode=W&psRequest.vendorCode=W-GDS&psRequest.vendorPass=123456&psRequest.companyCode=GONGSI&psRequest.brandCode=GONGSI',
-   'SELCAR'=>'http://10.100.100.150:8080/crsCarRental/selectCarD?psRequest.transId=ry_mengen_1&psRequest.sourceCode=W&psRequest.vendorCode=W-GONGSI&psRequest.vendorPass=123456&psRequest.companyCode=GONGSI&psRequest.brandCode=GONGSI',
+   'SELCAR'=>'http://10.100.100.154:8080/crsCarRental/selectCarD?psRequest.transId=ry_mengen_1&psRequest.sourceCode=W&psRequest.vendorCode=W-GONGSI&psRequest.vendorPass=123456&psRequest.companyCode=GONGSI&psRequest.brandCode=GONGSI',
     'DEFAULT_AJAX_RETURN'=>'JSON',
     'SOURCE_CODE'=>'W',
 );

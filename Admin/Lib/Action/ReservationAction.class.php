@@ -788,6 +788,7 @@ class ReservationAction extends CommonAction {
         $data['XHOUR'] = $carinfo['extHour'];
         $data['XDAY'] = $carinfo['extraDayRate'];
         $data['RULE_CODE'] = $carinfo['ruleCode'];
+        $data['XDIS_RATE'] = $carinfo['xdisRate'];
         $data['SOURCE_CODE'] = C('SOURCE_CODE');
         $data['MANDATORY_CHARGES'] = $data['MANDATORY'];
         $data['TEXT'] = $carinfo['text'];
