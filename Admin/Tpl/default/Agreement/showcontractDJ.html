@@ -4,43 +4,10 @@
 
     PRINTURL = '__APP__'+'/Agreement/gotoPrintDJ/id/{$Think.get.id|base64_encode}';
     $(document).ready(function() {
-            DAYS ='{$vo.BASE_RATE_QTY}';
+        DAYS ='{$vo.BASE_RATE_QTY}';
             optionprice(DAYS);
 
 
-var options = {
-beforeSubmit : showRequest, // pre-submit callback
-               success : showResponse // post-submit callback
-};
-$('#myform').submit(function() {
-        // 提交表单
-        //alert("aaa");
-        $('<input type="hidden" name="TOTAL_PRICE">').val($("#total-amt").text()).appendTo("#myform");
-        //{$vo.OPTIONS_CHARGES}
-        
-        $('<input type="hidden" name="TOTAL_PRICE">').val($("#total-amt").text()).appendTo("#myform");
-        $('<input type="hidden" name="OPTIONS_CHARGES">').val($("#charge").text()).appendTo("#myform");
-        $('<input type="hidden" name="MANDATORY_CHARGES">').val($("#mandy").text()).appendTo("#myform");
-        $(this).ajaxSubmit(options);
-        // 为了防止普通浏览器进行表单提交和产生页面导航（防止页面刷新？）返回false
-        return false;
-        });
-
-function showRequest(formData, jqForm, options) {
-    var queryString = $.param(formData);
-    return true;
-}
-// post-submit callback
-function showResponse(responseText, statusText, xhr, $form) {
-    if (responseText == 1) {
-        alertMsg.correct('合同生成成功!');
-        $('#subbtn').hide();
-        $("#crtagreement").show().html('<input  type="button" onclick="openDialog();" value="打印合同"/>');
-    } else {
-        alert(responseText);
-    }
-
-}
 
 });
 
@@ -54,9 +21,9 @@ function optionprice(days){
     var mandy =0;
     var disable;
     var o;
-    var reservationid ='{$Think.get.confirmation}';
-    $.getJSON('__URL__/optionprice',{'reservationid':reservationid},function(data){
-            $.each(data['res'],function(i,item){
+    var reservationid ='{$vo.newcfm}';
+    $.getJSON('__URL__/optionprice',{'CONFIRMATION':reservationid,'table':'Agreement'},function(data){
+            $.each(data,function(i,item){
                 perunit = item.PER_UNIT;
                 switch(perunit){
                 case "1":
@@ -254,13 +221,19 @@ function openDialog(){
                             </tr>
                             
                             <tr>
-                                <td>总金额</td>
-                                <td  class="cr" ><label class="label-right">总金额: </label><span id="total-amt">{$vo['BASE_RATE_AMT']+$vo['MANDATORY_CHARGES']+$vo['OPTIONS_CHARGES']}</span> 元</td>
+                                <td>应付金额</td>
+                                <td  class="cr" ><span id="total-amt">{$vo['BASE_RATE_AMT']+$vo['MANDATORY_CHARGES']+$vo['OPTIONS_CHARGES']}</span> 元</td>
                             </tr>
                             <tr>
-                                <td>实际金额</td>
-                                <td class="cr" ><label class="label-right">实际金额: </label><input type="text" name="REALTOTAL" value="{$vo['BASE_RATE_AMT']+$vo['MANDATORY_CHARGES']+$vo['OPTIONS_CHARGES']}"> 元</td>
+                                <td>实付金额</td>
+                                <td class="cr" ><input type="text" name="REALTOTAL" value="{$vo['BASE_RATE_AMT']+$vo['MANDATORY_CHARGES']+$vo['OPTIONS_CHARGES']}"> 元</td>
                             </tr>
+                            <tr>
+                                <td>付款方式</td>
+                                <td class="cr">
+<if condition="$vo['PAYMENT' eq 1]">月结<elseif condition="$vo['PAYMENT' eq 2]"/>现金<elseif condition="$vo['PAYMENT'] eq 3"/>对私转帐<elseif condition="$vo['PAYMENT'] eq 4"/>对公转帐<else/>在线支付</if>
+                                </td>
+                            </tr>    
                         </table>
 						
 					</td>

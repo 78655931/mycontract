@@ -281,12 +281,23 @@ function openDialog(){
                             
                             <tr>
                                 <td>总金额</td>
-                                <td  class="cr" ><label class="label-right">总金额: </label><span id="total-amt">{$vo['BASE_RATE_AMT']+$vo['MANDATORY_CHARGES']+$vo['OPTIONS_CHARGES']}</span> 元</td>
+                                <td  class="cr" ><span id="total-amt">{$vo['BASE_RATE_AMT']+$vo['MANDATORY_CHARGES']+$vo['OPTIONS_CHARGES']}</span> 元</td>
                             </tr>
                             <tr>
                                 <td>实际金额</td>
-                                <td class="cr" ><label class="label-right">实际金额: </label><input type="text" name="REALTOTAL" value="{$vo['BASE_RATE_AMT']+$vo['MANDATORY_CHARGES']+$vo['OPTIONS_CHARGES']}"> 元</td>
+                                <td class="cr" ><input type="text" name="REALTOTAL" value="{$vo['BASE_RATE_AMT']+$vo['MANDATORY_CHARGES']+$vo['OPTIONS_CHARGES']}"> 元</td>
                             </tr>
+                            <tr>
+                                <td>付款方式</td>
+                                <td>
+                                    <SELECT class="cr" name="PAYMENT">
+                                        <OPTION value="1">月结</OPTION>
+                                            <OPTION value="2">现金</OPTION>
+                                            <OPTION value="3">对私转帐</OPTION>
+                                            <OPTION value="4">在线支付</OPTION>
+                                    </SELECT>
+                                </td>
+                             </tr>   
                         </table>
 						<!--<ul>
 							<li align="right" class="cost">

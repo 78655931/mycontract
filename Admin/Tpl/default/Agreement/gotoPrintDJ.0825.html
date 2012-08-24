@@ -157,11 +157,11 @@ function optionprice(days){
 </div>
 <table border="0" width="100%" cellpadding="0" cellspacing="0">
 <tr>
-<td colspan="2" rowspan="4"><img src="{$brand.BRAND_LOGO_URL}" width="120" height="70"></td>
+<td colspan="2" rowspan="3"><img src="{$brand.BRAND_LOGO_URL}" width="120" height="70"></td>
 <td width="10%">名称</td>
 <td width="15%">{$company.COMPANY_NAME}</td>
-<td width="10%">业务员</td>
-<td width="15%">&nbsp;</td>
+<td width="10%">电话</td>
+<td width="15%">{$company.PHONE}</td>
 <td width="10%"><span class="t1">客户名称</span></td>
 <td width="15%">{$vo.REAL_NAME}</td>
 </tr>
@@ -174,20 +174,12 @@ function optionprice(days){
 <td>{$vo.LINKMAN}</td>
 </tr>
 <tr>
-  <td>电话</td>
-  <td>{$company.PHONE}</td>
-  <td>打印日期</td>
-  <td>{$date}</td>
-  <td><span class="t1">联系电话</span></td>
-  <td>{$vo.work_phone}</td>
-  </tr>
-<tr>
 <td>合同编号</td>
 <td>{$vo.agreement_id}</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
+<td>打印日期</td>
+<td>{$date}</td>
+<td><span class="t1">联系电话</span></td>
+<td>{$vo.work_phone}</td>
 </tr>
 <tr>
   <td colspan="8" class="t">带驾信息</td>
@@ -237,28 +229,28 @@ function optionprice(days){
   <td class="t1">停车费</td>
   <td><if condition="$vo.PARKING_CHARGE_STATUS eq 0">含<else/>不含</if></td>
   <td  class="t1">超多少小时算一天</td>
-  <td>{$reservation.XHOUR_NEXT_DAY}小时</td>
+  <td>{$vo.XHOUR_NEXT_DAY}小时</td>
   <td>付款方式</td>
-  <td><if condition="$vo['PAYMENT' eq 1]">月结<elseif condition="$vo['PAYMENT' eq 2]"/>现金<elseif condition="$vo['PAYMENT'] eq 3"/>对私转帐<elseif condition="$vo['PAYMENT'] eq 4"/>对公转帐<else/>在线支付</if></td>
+  <td>&nbsp;</td>
 </tr>
 <tr>
   <td class="t1">每天公里</td>
-  <td>{$reservation.DIS_FREE}</td>
+  <td>&nbsp;</td>
   <td class="t1">超公里费</td>
-  <td>{$reservation.XDIS_RATE}</td>
-  <td class="t1">超天费</td>
-  <td>{$reservation.XDAY}元/天</td>
-  <td class="t1">超小时费</td>
-  <td>{$reservation.XHOUR}元/小时</td>
+  <td>{$vo.XDIS_RATE}</td>
+  <td class="t1">超天价格</td>
+  <td>{$vo.XDAY}元/天</td>
+  <td class="t1">超小时价格</td>
+  <td>{$vo.XHOUR}元/小时</td>
 </tr>
 
 <tr>
   <td class="t1">司机每天工作</td>
-  <td>{$driver.WORKTIME}</td>
+  <td>&nbsp;</td>
   <td class="t1">司机过夜食宿费</td>
-  <td>{$driver.BOARD_AND_LODGING}</td>
+  <td>&nbsp;</td>
   <td  class="t1">司机加班费</td>
-  <td>{$driver.OVERTIME}</td>
+  <td>&nbsp;</td>
   <td>基本租金</td>
   <td>{$vo.RATE_AMT}元</td>
 </tr>
@@ -301,41 +293,67 @@ function optionprice(days){
 <td colspan="8" class="t">结算信息【由出租方填写】</td>
 </tr>
 <tr>
+<td class="jstd">出车里程</td>
+<td class="jstd">{$vo.PICKUP_KM}</td>
+<td class="jstd">收车里程</td>
+<td class="jstd">{$vo.RETURN_KM}</td>
+<td class="jstd">行驶里程</td>
+<td class="jstd">{$vo.DRIVER_KM}</td>
+<td class="jstd">加油升数</td>
+<td class="jstd">{$vo.ADD_OIL}</td>
+</tr>
+<tr>
+<td class="jstd">上车里程</td>
+<td class="jstd">{$vo.GETON_KM}</td>
+<td class="jstd">下车里程</td>
+<td class="jstd">{$vo.DOWN_KM}</td>
+<td class="jstd">营运里程</td>
+<td class="jstd">{$vo.OPERATE_KM}</td>
+<td class="jstd">超天费</td>
+<td class="jstd">{$vo.XDAY}</td>
+</tr>
+<tr>
   <td class="jstd">出车时间</td>
   <td class="jstd">{$vo.REAL_PICKUP_DATE}</td>
   <td class="jstd">收车时间</td>
   <td class="jstd">{$vo.REAL_RETURN_DATE}</td>
-<td class="jstd">司机加班费</td>
-<td class="jstd">&nbsp;</td>
-<td class="jstd">油费</td>
-<td class="jstd">&nbsp;</td>
+  <td class="jstd">行驶小时</td>
+  <td class="jstd">{$vo.RUNNING_HOUR}</td>
+  <td class="jstd">超小时费</td>
+  <td class="jstd">{$vo.XHOUR}</td>
 </tr>
 <tr>
-  <td class="jstd">出车里程</td>
-  <td class="jstd">{$vo.PICKUP_KM}</td>
-  <td class="jstd">收车里程</td>
-  <td class="jstd">{$vo.RETURN_KM}</td>
-  <td class="jstd">路桥费</td>
-  <td class="jstd">&nbsp;</td>
+  <td class="jstd">上车时间</td>
+  <td class="jstd">{$vo.GETON_TIME}</td>
+  <td class="jstd">下车时间</td>
+  <td class="jstd">{$vo.DOWN_TIME}</td>
+  <td class="jstd">营运小时</td>
+  <td class="jstd">{$vo.OPERATE_HOUR}</td>
+  <td class="jstd">超公里费</td>
+  <td class="jstd">{$vo.XDIS_RATE}</td>
+</tr>
+<tr>
   <td class="jstd">其它费用</td>
   <td class="jstd">{$vo.OTHER_FEE}</td>
-</tr>
-<tr>
-  <td class="jstd">司机代垫费</td>
-  <td colspan="5" class="jstd">&nbsp;</td>
+  <td class="jstd">司机过夜食宿费</td>
+  <td class="jstd">{$vo.BOARD_AND_LODGING}</td>
+  <td class="jstd">收车签字</td>
+  <td class="jstd">{$vo.RECEIVE_CAR_SIGN}</td>
   <td class="jstd">总费用</td>
   <td class="jstd">{$vo.RETURN_FEE}</td>
-  </tr>
+</tr>
 <tr>
   <td colspan="8">&nbsp;
-    </td>
+  </td>
 </tr>
 <tr>
   <td class="t1">满意程度</td>
-  <td colspan="3">（&nbsp;&nbsp;&nbsp;&nbsp;）满意 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;（&nbsp;&nbsp;&nbsp;&nbsp;）一般&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;（&nbsp;&nbsp;&nbsp;&nbsp;）不满意</td>
-  <td>客户签字</td>
+  <td>满意</td>
+  <td>一般</td>
+  <td class="t1">不满意</td>
   <td>&nbsp;</td>
-  <td>签字日期</td>
+  <td>&nbsp;</td>
+  <td>客户签字</td>
   <td>&nbsp;</td>
 </tr>
 </table>
