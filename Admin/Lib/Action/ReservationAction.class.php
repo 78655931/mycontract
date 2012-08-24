@@ -766,6 +766,8 @@ class ReservationAction extends CommonAction {
         $data = array_merge($location,$_POST);
         $data = array_merge($data,$brand);
         $confirmation = $_SESSION['location_code'].'-'.date('YmdHis').rand(0,6);
+        
+        Log::write('CONFIRMATIONID：'.$confirmation, Log::DEBUG); 
         $data['CONFIRMATION'] = $confirmation;
         $optionidarr = $data['optionname'];
         $carinfo = (array)$jsoncarinfo[0];

@@ -60,7 +60,7 @@ class AgreementAction extends CommonAction {
 			$p = new Page ( $count, $listRows );
 			// 分页查询数据
 
-            $voList = $Model->field('agreement_id,REAL_NAME,substr(agreement_id,1,2) as flag,IDENTITY_CODE,status,CAR_MODEL_NAME,HOME_PHONE,PICKUP_DATE,RETURN_DATE')->where ( $map )->order ( "`" . $order . "` " . $sort )->limit ( $p->firstRow . ',' . $p->listRows )->findAll ();
+            $voList = $Model->field('agreement_id,REAL_NAME,substr(agreement_id,1,2) as flag,IDENTITY_CODE,status,CAR_MODEL_NAME,HOME_PHONE,PICKUP_DATE,RETURN_DATE')->where ( $map )->order ( "`" . $order . "` " . $sort.",id desc" )->limit ( $p->firstRow . ',' . $p->listRows )->findAll ();
 
             //echo $Model->getLastSql();
 			// 分页跳转的时候保证查询条件
@@ -178,10 +178,14 @@ class AgreementAction extends CommonAction {
 		$cartypecode = $reservation['CAR_TYPE_CODE'];
 		$Model->switchConnect(1,'car_type');
 		$cartype = $Model->getByCarTypeCode($cartypecode);
-		$Model->switchConnect(1,'car');
-		$this->assign('car',$Model->getByCarTag($vo['CAR_TAG']));
+        $Model->switchConnect(1,'car');
+        $cars = $Model->getByCarTag($vo['CAR_TAG']);
+        $this->assign('car',$cars);
+ $chl = "合同编号:".$vo['agreement_id']."%0A客户名称:".$vo['REAL_NAME']."%0A联系电话:".$vo['work_phone']."%0A车辆品牌:".str_replace('-','/',$vo['CAR_MODEL_NAME'])."%0A车牌号:".$vo['CAR_TAG']."%0A带驾日期:".$vo['PICKUP_DATE']."%0A还车日期:".$vo['RETURN_DATE']."%0A车辆颜色:".$cars['COLOR']."%0A租期:".$vo['BASE_RATE_QTY']."%0A司机信息;".$vo['DRIVER_NAME']."/".$vo['PHONE']."%0A航班号:".$vo['AIRPORT_CODE']."%0A带驾方式:".$rateway."%0A带驾范围:市内";
+        $this->assign("chl",$chl);
+
 		$Model->switchConnect(1,"uni_rule");
-		$this->assign('unirule',$Model->getByRuleCode($reservation['RULE_CODE']));
+        $this->assign('unirule',$Model->getByRuleCode($reservation['RULE_CODE']));
 		$this->assign('cartype',$cartype);
 		$this->assign('date',date('Y-m-d h:s:m'));
 		$this->assign('reservation',$reservation);
@@ -228,9 +232,20 @@ class AgreementAction extends CommonAction {
 		$cartypecode = $reservation['CAR_TYPE_CODE'];
 		$Model->switchConnect(1,'car_type');
 		$cartype = $Model->getByCarTypeCode($cartypecode);
-		$Model->switchConnect(1,'car');
-		$this->assign('car',$Model->getByCarTag($vo['CAR_TAG']));
-		$Model->switchConnect(1,"uni_rule");
+		$carsinfo = $Model->switchConnect(1,'car');
+		$this->assign('car',$carsinfo);
+        $Model->switchConnect(1,"uni_rule");
+        if($vo['RATE_CODE']=='DSR'){
+            $rateway = "日租";
+        }else if($vo['RATE_CODE']=='DSB'){
+            $rateway = "半日租";
+        }else if($vo['RATE_CODE']=="DSJ"){
+            $rateway = "接送机";
+        }else{
+            $rateway = "自驾";
+        }
+        $chl = "合同编号:".$vo['agreement_id']."%0A客户名称:".$vo['REAL_NAME']."%0A联系电话:".$vo['work_phone']."%0A车辆品牌:".str_replace('-','/',$vo['CAR_MODEL_NAME'])."%0A车牌号:".$vo['CAR_TAG']."%0A带驾日期:".$vo['PICKUP_DATE']."%0A还车日期:".$vo['RETURN_DATE']."%0A车辆颜色:".$cars['COLOR']."%0A租期:".$vo['BASE_RATE_QTY']."%0A司机信息;".$vo['DRIVER_NAME']."/".$vo['PHONE']."%0A航班号:".$vo['AIRPORT_CODE']."%0A带驾方式:".$rateway."%0A带驾范围:市内";
+        $this->assign("chl",$chl);
 		$this->assign('unirule',$Model->getByRuleCode($reservation['RULE_CODE']));
 		$this->assign('cartype',$cartype);
 		$this->assign('date',date('Y-m-d h:s:m'));
@@ -238,7 +253,6 @@ class AgreementAction extends CommonAction {
 		$this->assign('brand',$brand);
 		$this->assign('company',$company);
 		$this->assign ( 'rate', $rate );
-
 		$this->assign("vo",$vo);
 		$this->display();
 	}

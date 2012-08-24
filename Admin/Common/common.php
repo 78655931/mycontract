@@ -840,8 +840,10 @@ function options($optionid)
 	return $options[$optionid];
 }
 //二维码
-function generateQRfromGoogle($chl,$widhtHeight ='100',$EC_level='L',$margin='0')
+function generateQRfromGoogle($chl,$widhtHeight ='350',$EC_level='L',$margin='0')
 {
+    //$chl = $chl ."%0A".$real_name;
+   // echo $chl;exit;
  echo '<img src="http://chart.apis.google.com/chart?chs='.$widhtHeight.'x'.$widhtHeight.'&cht=qr&chld='.$EC_level.'|'.$margin.'&chl='.$chl.'" alt="QR code" widhtHeight="'.$size.'" widhtHeight="'.$size.'" />';
 }
 function getMemberName($membertypeid){
