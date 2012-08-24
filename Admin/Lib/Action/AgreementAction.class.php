@@ -198,7 +198,6 @@ class AgreementAction extends CommonAction {
 		if(empty($agreementid)){
 			$agreementid = base64_decode($_REQUEST['id']);
         }
-            echo $agreementid;
 		//$model = M( "Location","AdvModel" );
 		//$model->addConnect ( C ( "DB_CRS" ), 1 );
 		//$model->switchConnect ( 1, "agreement" );
@@ -640,7 +639,9 @@ class AgreementAction extends CommonAction {
 
             $Model->switchConnect(1,"driver_info");
             
-			$Model->execute("UPDATE `driver_info` SET `STATUS`=9  where PHONE='".$vo['PHONE']."' and DRIVER_NAME='".$vo['DRIVER_NAME']."' and  TECHTITLE ='".$vo['TECHTITLE']."'  ");
+            $Model->execute("UPDATE `driver_info` SET `STATUS`=9  where PHONE='".trim($vo['PHONE'])."' and DRIVER_NAME='".$vo['DRIVER_NAME']."' and  TECHTITLE ='".$vo['TECHTITLE']."'  ");
+            
+			Log::write('还司机癿SQL：'.$Model->getLastSql(), Log::SQL); 
 			$Model->switchConnect(1,"reservation");
 			$cons = $Model->where('CONFIRMATION="'.$confirmation.'"')->find();
 			if (count($cons)) {

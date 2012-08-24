@@ -251,7 +251,7 @@ class ReservationAction extends CommonAction {
         $list = $model->add ( $data );
         $model->switchConnect ( 1, "driver_info" );
         
-        $driver= $model->execute ( "update driver_info set  STATUS=0 where DRIVE_NAME='".$data['DRIVER_NAME']."' and PHONE='".trim($data['PHONE'])."'" );
+        $driver= $model->execute ( "update driver_info set  STATUS=0 where DRIVER_NAME='".$data['DRIVER_NAME']."' and PHONE='".trim($data['PHONE'])."'" );
         Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
         $model->switchConnect ( 1, "reservation" );
         $resup = $model->execute ( "update reservation set  STATUS='CONTRACT' where CONFIRMATION='" . $_SESSION['location_code'].'-'.$_REQUEST['confirmation']. "'" );
@@ -669,7 +669,7 @@ class ReservationAction extends CommonAction {
         $map['RATE_CODE'] = $_GET['ratecode'];
         $map['OPTION_CLASS'] = array('neq','Z');
         //$map['CAR_TYPE_CODE']= array(array('exp','is NULL'),array('eq',$_GET['car_type_code']),'or');
-        $map['START_DATE'] = array('like',"%".substr($_GET['PICKUP_DATE'],0,10)."%");
+        $map['START_DATE'] = array('eq',substr($_GET['PICKUP_DATE'],0,10));
         $result = $model->where($map)->group('OPTION_ID')->findAll();
         $map['CAR_MODEL_CODE'] = $_GET['CAR_MODEL_CODE'];
        // echo $model->getLastSql();
@@ -715,7 +715,7 @@ class ReservationAction extends CommonAction {
         //echo $_GET['RETURN_DATE'];exit;
         $selcars = C('SELCAR');
         $url = $selcars."&psRequest.rateCode=".$_GET['RATE_CODE']."&psRequest.pickupCityCode=".$_GET['CITY_CODE']."&psRequest.pickupDistrictCode=".$_GET['DISTRICT_CODE']."&psRequest.pickupLocationCode=".$_SESSION['location_code']."&psRequest.pickupDate=".$_GET['PICKUP_DATE']."&psRequest.returnCityCode=".$_GET['CITY_CODE']."&psRequest.returnDistrictCode=".$_GET['DISTRICT_CODE']."&psRequest.returnLocationCode=".$_SESSION['location_code']."&psRequest.returnDate=".$_GET['RETURN_DATE']."&psRequest.ipaddress=".$_SERVER["REMOTE_ADDR"]."&psRequest.carTypeCode=".$_GET['CAR_TYPE_CODE']."&psRequest.optionClass=D&psRequest.discountCode=";
-        
+       // echo $url;
         $result = $this->curl($url);
         exit($result);
 		$result = json_decode($result);
@@ -763,7 +763,7 @@ class ReservationAction extends CommonAction {
         $jsoncarinfo = json_decode((string)$jsoncarinfo);
         $data = array_merge($location,$_POST);
         $data = array_merge($data,$brand);
-        $confirmation = $_SESSION['location_code'].'-'.date('Ymdhi'.floor(microtime()*1000));
+        $confirmation = $_SESSION['location_code'].'-'.date('YmdHis').rand(0,6);
         $data['CONFIRMATION'] = $confirmation;
         $optionidarr = $data['optionname'];
         $carinfo = (array)$jsoncarinfo[0];
@@ -788,6 +788,7 @@ class ReservationAction extends CommonAction {
         $data['MANDATORY_CHARGES'] = $data['MANDATORY'];
         $data['TEXT'] = $carinfo['text'];
         $data['STATUS'] = 'NOPREPAY';
+        $data['RETURN_DATE'] = $_POST['RETURN_DATE']." ".$_POST['_hour']."-".$_POST["_minute"];
         if (false === $model->create ( $data )) {
 			echo $model->getError ();
 			exit ();

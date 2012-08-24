@@ -221,7 +221,8 @@ $('#myform').submit(function() {
         // 提交表单
            
             var optionid = $('input:radio[name="rdioption"]:checked').attr('id');
-
+                
+           // console.log(optionid);
             $('#OPTION_ID').val(optionid);
         $(this).ajaxSubmit(options);
         // 为了防止普通浏览器进行表单提交和产生页面导航（防止页面刷新？）返回false
@@ -230,6 +231,7 @@ $('#myform').submit(function() {
 
 function showRequest(formData, jqForm, options) {
     var queryString = $.param(formData);
+    
     return true;
 }
 // post-submit callback
@@ -264,7 +266,7 @@ function showResponse(responseText, statusText, xhr, $form) {
 
 });
 function findCars(){
-    var RETURN_DATE = $("#RETURN_DATE").val()+$("#_hour").val()+$("#_minute").val();
+    var RETURN_DATE = $("input[name='RETURN_DATE']").val()+$("#_hour").val()+$("#_minute").val();
     if(isNaN(RETURN_DATE)){
         RETURN_DATE = DateAdd("d ",1, new Date($('#PICKUP_DATE').val().replace("-","/").replace("-","/")));
         var month=RETURN_DATE.getMonth()+1;
@@ -349,19 +351,18 @@ function getRateinfo(rate,rulecode,hourate,rateitem){
         var flag='';
         var CAR_MODEL_CODE = $("#CAR_MODEL_CODE").val();
         var BASE_RATE_QTY = $("#BASE_RATE_QTY").val();
-        console.log(BASE_RATE_QTY);
         if(BASE_RATE_QTY==0){
             BASE_RATE_QTY =1;
             $("#BASE_RATE_QTY").val(1);
         }
-        console.log(BASE_RATE_QTY);
+       // console.log(BASE_RATE_QTY);
         var PICKUP_DATE = $("#PICKUP_DATE").val();
         var  MANDATORY = 0;
         var DRIVER_CHARGES =0;
         var TOTAL_PRICE =0,RATE=0;
         var OPTIONCHARGES =0;
         var MANDY = 0;
-        
+        var x=true;
         $.getJSON('__URL__/djOption',{'CAR_MODEL_CODE':CAR_MODEL_CODE,'ratecode':ratecode,'PICKUP_DATE':PICKUP_DATE},function(data){
             
             var driver_flag = false;
@@ -404,15 +405,16 @@ function getRateinfo(rate,rulecode,hourate,rateitem){
 
                 if(item.OPTION_NAME.indexOf('司机')>0){
                     driver_flag = true;
-                    if(i%2==0)
-                    {
+                    
+                    if(i%2==0&&x){
                         $('<tr></tr>').html('<td><input  id="'+item.OPTION_ID+'" type="radio" value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.value,0);driver_fee(\'item.OPTION_NAME\');" name="rdioption" checked/>'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
                         driver_fee(item.OPTION_NAME);
                         $("#DRIVER_VALUE").val(BASE_RATE_QTY*item.RATE);
-                    }else
-                    {
-                        $('<tr></tr>').html('<td><input type="radio" id="'+item.OPTION_ID+'" value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.value,0);" name="rdioption"/>'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
-                    }
+                        x=false;
+                }else{
+                    $('<tr></tr>').html('<td><input type="radio" id="'+item.OPTION_ID+'" value="'+BASE_RATE_QTY*item.RATE+'" onclick="changeFee(this.value,0);" name="rdioption"/>'+item.OPTION_NAME+'</td><td>'+item.RATE+flag+perunit+'</td><td>='+BASE_RATE_QTY*item.RATE+flag+'</td>').appendTo('#option');
+                }
+                    
 
                 }else{
                     var checkValue = "";
