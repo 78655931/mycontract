@@ -715,7 +715,9 @@ class ReservationAction extends CommonAction {
         //echo $_GET['RETURN_DATE'];exit;
         $selcars = C('SELCAR');
         $url = $selcars."&psRequest.rateCode=".$_GET['RATE_CODE']."&psRequest.pickupCityCode=".$_GET['CITY_CODE']."&psRequest.pickupDistrictCode=".$_GET['DISTRICT_CODE']."&psRequest.pickupLocationCode=".$_SESSION['location_code']."&psRequest.pickupDate=".$_GET['PICKUP_DATE']."&psRequest.returnCityCode=".$_GET['CITY_CODE']."&psRequest.returnDistrictCode=".$_GET['DISTRICT_CODE']."&psRequest.returnLocationCode=".$_SESSION['location_code']."&psRequest.returnDate=".$_GET['RETURN_DATE']."&psRequest.ipaddress=".$_SERVER["REMOTE_ADDR"]."&psRequest.carTypeCode=".$_GET['CAR_TYPE_CODE']."&psRequest.optionClass=D&psRequest.discountCode=";
-       // echo $url;
+        // echo $url;
+        
+        Log::write('调试findDJCars：'.$url, Log::DEBUG); 
         $result = $this->curl($url);
         exit($result);
 		$result = json_decode($result);
