@@ -181,7 +181,7 @@ class AgreementAction extends CommonAction {
         $Model->switchConnect(1,'car');
         $cars = $Model->getByCarTag($vo['CAR_TAG']);
         $this->assign('car',$cars);
- $chl = "合同编号:".$vo['agreement_id']."%0A客户名称:".$vo['REAL_NAME']."%0A联系电话:".$vo['work_phone']."%0A车辆品牌:".str_replace('-','/',$vo['CAR_MODEL_NAME'])."%0A车牌号:".$vo['CAR_TAG']."%0A带驾日期:".$vo['PICKUP_DATE']."%0A还车日期:".$vo['RETURN_DATE']."%0A车辆颜色:".$cars['COLOR']."%0A租期:".$vo['BASE_RATE_QTY']."%0A司机信息;".$vo['DRIVER_NAME']."/".$vo['PHONE']."%0A航班号:".$vo['AIRPORT_CODE']."%0A带驾方式:".$rateway."%0A带驾范围:市内";
+ $chl = "合同编号:".$vo['agreement_id']."%0A客户名称:".$vo['REAL_NAME']."%0A联系电话:".$vo['work_phone']."%0A车辆品牌:".str_replace('-','/',$vo['CAR_MODEL_NAME'])."%0A车牌号:".$vo['CAR_TAG']."%0A取车日期:".$vo['PICKUP_DATE']."%0A还车日期:".$vo['RETURN_DATE']."%0A车辆颜色:".$cars['COLOR']."%0A租期:".$vo['BASE_RATE_QTY'];
         $this->assign("chl",$chl);
 
 		$Model->switchConnect(1,"uni_rule");
@@ -705,6 +705,7 @@ class AgreementAction extends CommonAction {
 			echo $vo['status'];exit;
 		}
 
-	}
+    }
+    
 }
 ?>

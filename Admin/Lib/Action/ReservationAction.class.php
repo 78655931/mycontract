@@ -325,8 +325,10 @@ class ReservationAction extends CommonAction {
 		$list = $model->add ( $_POST );
 		if ($list !== false) { // 保存成功
 			$model->switchConnect ( 1, "reservation_option" );
-			$map['confirmation']	= $_REQUEST['location_code'].'-'.$_REQUEST['confirmation'];
-			$resOpt = $model->where($map)->group('option_id')->select();
+			$map['confirmation']	= $_SESSION['location_code'].'-'.$_REQUEST['confirmation'];
+            $resOpt = $model->where($map)->group('option_id')->select();
+
+                Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
 			unset($map);
 			$model->switchConnect ( 1, "agreement_option" );
 			//$reservationOption = $model->where('CONFIRMATION="'.$map['confirmation'].'"')->getField('OPTION_ID,QTY');
@@ -364,7 +366,9 @@ class ReservationAction extends CommonAction {
 				$data['MANDATORY'] = $val['MANDATORY'];	
 				$optionID[] = $val['OPTION_ID'];
 				$model->add($data);
-				}
+                }
+
+                Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
 				//echo $model->getLastSql();
 			}
 			unset($data);
@@ -636,7 +640,7 @@ class ReservationAction extends CommonAction {
         if(!empty($listOpt['res'])){
             $wh.=" and option_id not in (".implode(',',$optionID).")";
         }
-        $listOpt['uni'] = $Model->where ( "location_code='".$localcode."' and (rate_code='LOC' or rate_code is NULL) AND LEFT(NOW(),10)=START_DATE ".$wh )->select ();
+        $listOpt['uni'] = $Model->where ( "location_code='".$localcode."' and (rate_code='WEB' or rate_code is NULL) AND LEFT(NOW(),10)=START_DATE ".$wh )->select ();
 
         Log::write('增值服务SQL：'.$Model->getLastSql(), Log::SQL);
         header ( "Content-Type:text/html; charset=utf-8" );
@@ -667,7 +671,13 @@ class ReservationAction extends CommonAction {
         $model->switchConnect ( 1, "uni_option" );
         $map['LOCATION_CODE'] = $_SESSION['location_code'];
         $map['RATE_CODE'] = $_GET['ratecode'];
-        $map['OPTION_CLASS'] = array('neq','Z');
+        if($_GET['ratecode']=='WEB'){
+            
+            $map['OPTION_CLASS'] = array(array('eq','Z'),array('eq','ALL'),'or');
+        }else{
+        
+            $map['OPTION_CLASS'] = array('neq','Z');
+        }
         //$map['CAR_TYPE_CODE']= array(array('exp','is NULL'),array('eq',$_GET['car_type_code']),'or');
         $map['START_DATE'] = array('eq',substr($_GET['PICKUP_DATE'],0,10));
         $result = $model->where($map)->group('OPTION_ID')->findAll();
@@ -758,6 +768,9 @@ class ReservationAction extends CommonAction {
         $location = $model->where($map)->find();
         $model->switchConnect(1,'brand');
         $brand = $model->getByCompanyCode($location['COMPANY_CODE']);
+
+        $model->switchConnect(1,'member_type');
+        $member = $model->where('MEMBER_TYPE_ID='.$_POST['MEMBER_TYPE_ID'])->find();
         $model->switchConnect(1,'reservation');
         $jsoncarinfo= "[".$_POST['jsoncarinfo']."]";
         $jsoncarinfo = str_replace('\\','',$jsoncarinfo);
@@ -796,11 +809,16 @@ class ReservationAction extends CommonAction {
         $data['TEXT'] = $carinfo['text'];
         $data['STATUS'] = 'NOPREPAY';
         $data['RETURN_DATE'] = $_POST['RETURN_DATE']." ".$_POST['_hour']."-".$_POST["_minute"];
+        if($data['RATE_CODE']=='WEB'){
+            $data['REAL_NAME'] = $_POST['REAL_NAME_ZJ'];
+            $data['RETURN_DATE'] = $_POST['RETURN_DATE_ZJ'];
+            $data['MEMBER_TYPE_NAME'] = $member['MEMBER_TYPE_NAME'];  
+        }
         if (false === $model->create ( $data )) {
 			echo $model->getError ();
 			exit ();
         }
-        $list = $model->add($data);
+        $reservation_add = $model->add($data);
 
         Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
         //行程安排
@@ -856,13 +874,36 @@ class ReservationAction extends CommonAction {
             $list = $model->add($data);
             Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
         }
-        echo $list;
+        echo $reservation_add;
         exit;
         foreach($optionidarr as $k=>$v){
             $optionid = $k;
             dump($optionid);
         }   
         exit;
+    }
+    public function memberInfo(){
+        $q = strtolower($_GET["q"]);
+        if (!$q) return;
+        $model = M ( "Location","AdvModel" );
+        $model->addConnect ( C ( "DB_CRS" ), 1 );
+        $model->switchConnect ( 1, "member" );
+        $customers =  $model->field('HOME_PHONE,REAL_NAME,IDENTITY_CODE,EMAIL,HOME_PHONE,MEMBER_TYPE_ID')->where('HOME_PHONE like "'.$_GET[q].'%"')->findAll();
+        $result = array();
+        foreach($customers as $key=>$value){
+            if(strpos(strtolower($value['HOME_PHONE'], $q)) !== false) {
+                //echo "name:".$value['REAL_NAME'].",email:".$value['EMAIL'].",IDENTITY_CODE:".$value['IDENTITY_CODE']."\n";
+                array_push($result,array(
+                    'home_phone'=>$value['HOME_PHONE'],
+                    'name'=>$value['REAL_NAME'],
+                    'email'=>$value['EMAIL'],
+                    'IDENTITY_CODE'=>$value['IDENTITY_CODE'],
+                    'MEMBER_TYPE_ID'=>$value['MEMBER_TYPE_ID']
+                ));
+            }
+        } 
+     echo json_encode($result);   exit;
+
     }
 }
 ?>

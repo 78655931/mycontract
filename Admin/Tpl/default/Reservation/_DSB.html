@@ -16,13 +16,19 @@
                     <td><input type="TEXT" name="HOME_PHONE" value=""></td>
                     <td>会员名称</td>
                     <td><input type="TEXT" name="REAL_NAME_ZJ" value=""></td>
-                 </tr>   
+                </tr>   
+                <tr class="zj">
+                    <td>身份证号</td>
+                    <td><input type="TEXT" name="IDENTITY_CODE" value=""></td>
+                    <td>电子邮件</td>
+                    <td><input type="TEXT" name="EMAIL" value=""><input type="hidden" name="MEMBER_TYPE_ID" value=""/></td>
+                 </tr>
                 <tr>
                     
                     <td><span class="dsb">带驾日期</span><span class="dsj">接送时间</span><span class="zj">取车日期</span></td>
                     <td ><input id="PICKUP_DATE" name="PICKUP_DATE" type="text"  value=""/></td>
                     <td class="zj">还车日期</td>
-                    <td class="zj"><!--input id="RETURN_DATE" type="text" value=""/--></td>
+                    <td class="zj"><input id="RETURN_DATE_ZJ" name="RETURN_DATE_ZJ" type="text" value=""/></td>
                     <td class="dj"><span class="dsb">带驾范围</span><span class="dsj">接送范围</span></td>
                     <td class="dj"><select id="" name=""><option value="">市内</option></select></td>
                 </tr>
@@ -44,7 +50,6 @@
                         <select id="BASE_RATE_QTY" name="BASE_RATE_QTY">
 
                             <option value="0" selected>无</option>
-                            <option value="0.5">半日</option>
                             <option value="1">1</option>天
                             <option value="2">2</option>天
                             <option value="3">3</option>天
@@ -53,26 +58,25 @@
                             <option value="6">6</option>天
                             <option value="7">7</option>天
                         </select>
+                        <span class="dsbr">
+                                半日租
+                        </span>   
                     </td>
                     <td class="dsj" >接送类型</td>
                     <td class="dsj">
-                        <select  name="PICKUP_RETURN_TYPE">
-                            <option value="0">送</option>
-                            <option value="1" selected>接</option>
-                        </select>
+                        
+                        <input type="RADIO" name="PICKUP_RETURN_TYPE" value="0" checked/>送
+                        <input type="RADIO" name="PICKUP_RETURN_TYPE" value="1" />接
+                        
                     </td>
-                    <td>过桥费
-                        <select id="" name="ROAD_BRIDGE_CHARGE_STATUS">
-                            <option value="0">不含</option>
-                            <option value="1">含</option>
-                        </select>
-                    </td>
-                    <td>
+                    <td colspan="2">过桥费
+                        <input type="RADIO" name="ROAD_BRIDGE_CHARGE_STATUS" value="0" checked/>不含
+                        <input type="RADIO" name="ROAD_BRIDGE_CHARGE_STATUS" value="1"/>含
+                        
                         停车费
-                        <select id="" name="PARKING_CHARGE_STATUS">
-                            <option value="0">不含</option>
-                            <option value="1">含</option>
-                        </select>
+
+                        <input type="RADIO" name="PARKING_CHARGE_STATUS" value="0" checked/>不含
+                        <input type="RADIO" name="PARKING_CHARGE_STATUS" value="1"/>含
                     </td>
                 </tr>
                 

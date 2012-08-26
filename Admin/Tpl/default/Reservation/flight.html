@@ -42,8 +42,8 @@
     $.ajaxSettings.global=false;
     doPlan();
     
-    $('select[name="ratecode"]').change(function(){
-        var o = $('select[name="ratecode"]').val();
+    $(':radio[name="ratecode"]').change(function(){
+        var o = $(':radio[name="ratecode"]:checked').val();
         $('#REAL_NAME').val('');
         $('#PICKUP_DATE').val('');
         $('input[name="LINKMAN"]').val('');
@@ -53,6 +53,9 @@
         $("#carsinfo").html('');
         // $("form").resetForm();
         if(o=='DSR'){
+
+            $("#BASE_RATE_QTY").show();
+            $(".dsbr").hide();
             $(".dj").show();
             $(".zj").hide();
             $(".layoutBox").show();           
@@ -64,16 +67,53 @@
             $(".zj").hide();
             $(".dsj").show();
             $(".dsb").hide();
+            $(".dsbr").hide();
         }else if(o=='WEB'){
+
+            $(".dsbr").hide();
             $(".dj").hide();
             $(".dsb").hide();
             $(".dsj").hide();
             $(".zj").show();
             $(".layoutBox").show();           
-        }else{
-            $(".layoutBox").hide(); 
+        }else if(o=='DSB'){
+            $(".dsbr").show();
+            $(".dj").show();
+            $(".zj").hide();
+            $(".layoutBox").show();           
             $(".dsj").hide();
-            $(".dsb").hide();
+            $(".dsb").show();
+            $("#BASE_RATE_QTY").hide();
+            var l ='' ;
+            var str="";
+            str += "<select name=\"_hour\" id=\"_hour\">";
+
+            for (h = 0; h <= 9; h++) {
+                str += "<option value=\"0" + h + "\">0" + h + "</option>";
+            }
+            for (h = 10; h <= 23; h++) {
+                str += "<option value=\"" + h + "\">" + h + "</option>";
+        }
+
+            str += "</select>:<select name=\"_minute\" id=\"_minute\">";
+
+            str+='<option value="00">00</opion>';
+            str+='<option value="15">15</opion>';
+            str+='<option value="30">30</opion>';
+            str += "</select>";
+            nowdate = DateAdd("d ",1, new Date($('#PICKUP_DATE').val().replace("-","/").replace("-","/")));
+            var month=nowdate.getMonth()+1;
+            var monthString = month<9?'0'+month:month;
+
+
+                //$('#ratecode').val("DSB1");
+                //$('input:select[name="ratecode"]:checked').val("DSB2");
+                //alert($('#ratecode').val());
+                //$('#ratecode').append('<option value="DSB" >半日租</opion>');
+                //$("#ratecode").val("DSB");
+                l += '<li>'+str+'</li><input type="hidden" name="RETURN_DATE" id="RETURN_DATE" value="'+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+'"><li><textarea id="" name="PLAN['+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+']" rows="3" cols="55" ></textarea></li>';
+
+                $("<ul></ul>").html(l).appendTo("#trip");
         }
     });
 
@@ -105,6 +145,7 @@
         str += "</select>:<select name=\"_minute\" id=\"_minute\">";
         
         str+='<option value="00">00</opion>';
+        str+='<option value="15">15</opion>';
         str+='<option value="30">30</opion>';
         str += "</select>";
         for(var j=1;j<=i;j++){
@@ -124,16 +165,7 @@
     }
     // alert(str);
     //半日只显示时间安排
-    if(i=='0.5'){
-
-        nowdate = DateAdd("d ",1, new Date($('#PICKUP_DATE').val().replace("-","/").replace("-","/")));
-        //$('#ratecode').val("DSB1");
-        //$('input:select[name="ratecode"]:checked').val("DSB2");
-        //alert($('#ratecode').val());
-        $('#ratecode').append('<option value="DSB" >半日租</opion>');
-        $("#ratecode").val("DSB");
-        l += '<li>'+str+'</li><input type="hidden" name="RETURN_DATE" id="RETURN_DATE" value="'+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+'"><li><textarea id="" name="PLAN['+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+']" rows="3" cols="55" ></textarea></li>';
-    }
+    
 
     $("<ul></ul>").html(l).appendTo("#trip");
 
@@ -192,7 +224,9 @@ function   DateAdd(interval,number,date)
 }
  
 $(function(){
-    
+    function format(mail) {
+        return mail.name + "&lt;" + mail.email + "&gt";
+    }   
         
  /**   options = { 
     serviceUrl: '__URL__/suggest'//获取数据的后台页面
@@ -211,8 +245,32 @@ $(function(){
     **/
     $("#REAL_NAME").autocomplete("__URL__/suggest", {
 		width: 260,
-		selectFirst: false
-	});
+        selectFirst: false
+        
+});
+    
+    $("input[name='HOME_PHONE']").autocomplete("__URL__/memberInfo",{
+        multiple: true,
+        dataType: "json",
+        parse: function(data) {
+            return $.map(data, function(row) {
+                return {
+                    data: row,
+                    value: row.name
+                    //result: row.home_phone 
+                }
+            });
+        },
+        formatItem: function(item) {
+            return format(item);
+        }
+    }).result(function(e, item) {
+        $("input[name='EMAIL']").val(item.email);
+        $("input[name='HOME_PHONE']").val(item.home_phone);
+        $('input[name="REAL_NAME_ZJ"]').val(item.name);
+        $('input[name="IDENTITY_CODE"]').val(item.IDENTITY_CODE);
+        $('input[name="MEMBER_TYPE_ID"]').val(item.MEMBER_TYPE_ID);
+ });
     var options = {
         beforeSubmit : showRequest, // pre-submit callback
         success : showResponse // post-submit callback
@@ -244,7 +302,7 @@ function showResponse(responseText, statusText, xhr, $form) {
 
 }
     
-		$( "#PICKUP_DATE" ).datetimepicker({
+		$( "#PICKUP_DATE,#RETURN_DATE_ZJ" ).datetimepicker({
 			defaultdate: "+1w",
 			timeFormat: 'hh:mm',
 			showmonthafteryear: true,
@@ -267,7 +325,12 @@ function showResponse(responseText, statusText, xhr, $form) {
 });
 function findCars(){
     var RETURN_DATE = $("input[name='RETURN_DATE']").val()+$("#_hour").val()+$("#_minute").val();
-    if(isNaN(RETURN_DATE)){
+    if($(':radio[name="ratecode"]:checked').val()=='WEB'){
+        RETURN_DATE =  $("input[name='RETURN_DATE_ZJ']").val();
+    }
+
+if(RETURN_DATE==null||RETURN_DATE===undefined){
+
         RETURN_DATE = DateAdd("d ",1, new Date($('#PICKUP_DATE').val().replace("-","/").replace("-","/")));
         var month=RETURN_DATE.getMonth()+1;
         var monthString = month<9?'0'+month:month;
@@ -286,8 +349,9 @@ function findCars(){
     PICKUP_DATE = PICKUP_DATE.replace(":","");
     //$("#carsinfo").html('');
 
+
                 $("#carsinfo").html("");
-    $.getJSON('__URL__/findDJCars',{'RETURN_DATE':RETURN_DATE,'DISTRICT_CODE':$("#DISTRICT_CODE").val(),'CITY_CODE':$("#CITY_CODE").val(),'CAR_TYPE_CODE':$("#CAR_TYPE_CODE").val(),'PICKUP_DATE':PICKUP_DATE,'RATE_CODE':$("#ratecode").val()},function(data){
+    $.getJSON('__URL__/findDJCars',{'RETURN_DATE':RETURN_DATE,'DISTRICT_CODE':$("#DISTRICT_CODE").val(),'CITY_CODE':$("#CITY_CODE").val(),'CAR_TYPE_CODE':$("#CAR_TYPE_CODE").val(),'PICKUP_DATE':PICKUP_DATE,'RATE_CODE':$(':radio[name="ratecode"]:checked').val()},function(data){
         
         if(data.psResponse.cars==null){
             alert(data.psResponse.error.errorText);
@@ -345,7 +409,7 @@ function changeFee(value,type)
 }
 function getRateinfo(rate,rulecode,hourate,rateitem){
        $("#jsoncarinfo").val(rateitem);
-        var ratecode = $("#ratecode").val();
+        var ratecode = $(':radio[name="ratecode"]:checked').val();
         var iscity = $("#iscity").val();
         var perunit = '';
         var flag='';
@@ -431,7 +495,7 @@ function getRateinfo(rate,rulecode,hourate,rateitem){
                     }
                 }
                 if(!driver_flag){
-                    alert("增值服务缺少带驾司机!");
+                   // alert("增值服务缺少带驾司机!");
                     MANDY=0;
                     return false;
                 }
@@ -509,13 +573,18 @@ function driver_fee(driverstat){
 </script>
 
 <form id="myform" action="__URL__/DSB_create" method="post" >
-带驾类型
-<select id="ratecode" name="ratecode">
+    带驾类型
+    <input type="radio" name="ratecode"   value="DSR">日租</input>
+    <input type="radio" name="ratecode"  value="DSJ">接送机</input>
+    <input type="radio" name="ratecode"  value="WEB">自驾</input>
+    <input type="radio" name="ratecode"  value="DSB">半日租</input>
+<!--<select id="ratecode" name="ratecode">
     <option value="0" selected>无</option>
     <option value="DSR">日租</option>
     <option value="DSJ">接送机</option>
     <option value="WEB">自驾</option>
 </select>
+-->
 <input type="hidden" name="jsoncarinfo" id="jsoncarinfo" value="aaa"/>
 <input name="DISTRICT_CODE" type="hidden" id="DISTRICT_CODE" value="{$vo.DISTRICT_CODE}" />
 <input name="CITY_CODE" type="hidden"  id="CITY_CODE" value="{$vo.CITY_CODE}" />

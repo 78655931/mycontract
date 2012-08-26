@@ -1,6 +1,23 @@
 <link rel="stylesheet" href="__PUBLIC__/css/booking.css" type="text/css" media="screen" />
 <link rel="stylesheet" href="__PUBLIC__/css/jquery.ui.css" type="text/css" media="all" /> 
 <style>
+
+	
+
+	
+     .bdt{
+        border-top: 1px solid #000;
+    }
+    .bdl{
+        border-left: 1px solid #000;
+    }
+    #optionfee,#option,#rate{
+        border-bottom:1px solid #000;
+    }
+    .cr{
+        text-align: right;
+        float: right;
+    }
 	.list tr {
 		margin-bottom: 10px;
 	}
@@ -258,18 +275,53 @@
 						<input type="hidden" name="BASE_RATE_QTY" value="{$vo.BASE_RATE_QTY}"/>
 
 
-						<h1 style="margin-bottom:20px">价格计算(租期<span id="delta-o" style="color: #fd6c02;">{$vo.BASE_RATE_QTY}</span>天)</h1>
-						<ul>
-							<li align="right" class="cost">基本租金:<span class="option-amt">{$vo.RATE_AMT}</span></li>
-							<li align="right" class="cost">必须费用:<span class="option-amt">{$vo.MANDATORY_CHARGES}</span></li>
-							<li align="right" class="cost">必须费用明细:<span id="mandytail"></span></li>
-							<li align="right" class="cost">增值服务费用:<span class="option-amt">{$vo.OPTIONS_CHARGES}</span></li>
-							<li id="optionprice2"> {$location_code|optionPrice=$Think['get']['id'],$vo['BASE_RATE_QTY']} </li>
-							<li align="right">总金额: <span id="total-amt">{$vo.TOTAL_PRICE}</span> 元
+                        <h1 style="margin-bottom:20px">价格计算(租期<span id="delta-o" style="color: #fd6c02;">{$vo.BASE_RATE_QTY}</span>天)</h1>
 
-							<li align="right">实际金额: <span id="total-real">{$vo.REALTOTAL}</span> 元
+                        <table width="98%">
+                            <tr>
 
-						</ul>
+                                <td>基本租金</td>
+                                <td class="cr" id="optionfee">
+                                    <span class="option-amt">{$vo.RATE_AMT}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>必须费用</td>
+                                <td class="cr" id="optionfee">
+                                    <span id="mandytail"></span>
+                                    
+                                    <label>小计: </label><span class="option-amt">{$vo.MANDATORY_CHARGES}</span>元
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>增值服务</td>
+                                <td  id="optionfee" class="cr"> 
+                                    <table id="optionprice">
+                                    </table>
+                                    <div class="board"></div>
+                                    <span id="optionprice2"> {$location_code|optionPrice=$Think['get']['id'],$vo['BASE_RATE_QTY']} </span>
+
+                                    <label  id="feeoption">小计: </label><span class="option-amt" id="charge">{$vo.OPTIONS_CHARGES}</span>元
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td>应付金额</td>
+                                <td  class="cr" ><span id="total-amt">{$vo.TOTAL_PRICE}</span>  元</td>
+                            </tr>
+                            <tr>
+                                <td>实付金额</td>
+                                <td class="cr" ><span id="total-real">{$vo.REALTOTAL}</span> 元</td>
+                            </tr>
+                            <tr>
+                                <td>付款方式</td>
+                                <td class="cr">
+<if condition="$vo['PAYMENT' eq 1]">月结<elseif condition="$vo['PAYMENT' eq 2]"/>现金<elseif condition="$vo['PAYMENT'] eq 3"/>对私转帐<elseif condition="$vo['PAYMENT'] eq 4"/>对公转帐<else/>在线支付</if>
+                                </td>
+                            </tr>    
+                        </table>
+							
 					</td>
 					<td>	
 						<h1>增值服务</h1>
