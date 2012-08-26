@@ -222,10 +222,17 @@ function optionprice(days){
   <td><span class="t1">航班号</span></td>
   <td>{$vo.AIRLINE}</td>
   </tr>
-<tr>
-  <td colspan="8" class="t">行程信息</td>
-</tr>
-<tr>
+  <tr>
+      <td colspan="8" class="t">行程信息</td>
+  </tr>
+  <tr> 
+      <td colspan="8" >
+          <volist name="plan" id="vo">
+          {$vo.START_DATE}&nbsp;&nbsp;{$vo.PLAN}&nbsp;&nbsp;&nbsp;&nbsp;
+          </volist>
+      </td>
+  </tr>
+  <tr>
   <td  colspan="8" class="t1" style="vertical-align:top">&nbsp;</td>
 </tr>
 <tr>
@@ -239,7 +246,7 @@ function optionprice(days){
   <td  class="t1">超多少小时算一天</td>
   <td>{$reservation.XHOUR_NEXT_DAY}小时</td>
   <td>付款方式</td>
-  <td><if condition="$vo['PAYMENT' eq 1]">月结<elseif condition="$vo['PAYMENT' eq 2]"/>现金<elseif condition="$vo['PAYMENT'] eq 3"/>对私转帐<elseif condition="$vo['PAYMENT'] eq 4"/>对公转帐<else/>在线支付</if></td>
+  <td><if condition="$vo['PAYMENT' eq 1]">月结<elseif condition="$vo['PAYMENT' eq 2]"/>现金<elseif condition="$vo['PAYMENT'] eq 3"/>对私转帐<elseif condition="$vo['PAYMENT'] eq 4"/>对公转帐<elseif condition="$vo['PAYMENT'] eq 5"/>在线支付<else/>司机代收</if></td>
 </tr>
 <tr>
   <td class="t1">每天公里</td>

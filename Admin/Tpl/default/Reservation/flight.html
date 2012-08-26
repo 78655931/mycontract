@@ -55,12 +55,12 @@
         if(o=='DSR'){
 
             $("#BASE_RATE_QTY").show();
-            $(".dsbr").hide();
             $(".dj").show();
             $(".zj").hide();
             $(".layoutBox").show();           
             $(".dsj").hide();
             $(".dsb").show();
+            $(".dsbr").hide();
         }else if(o=='DSJ'){
             $(".layoutBox").show();
             $(".dj").show();
@@ -86,6 +86,7 @@
             $("#BASE_RATE_QTY").hide();
             var l ='' ;
             var str="";
+            $("#trip").html('');
             str += "<select name=\"_hour\" id=\"_hour\">";
 
             for (h = 0; h <= 9; h++) {

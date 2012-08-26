@@ -214,7 +214,11 @@ class AgreementAction extends CommonAction {
         $vo = $Model->getByAgreementId($agreementid);
 		$BASE_RATE_QTY = $vo['BASE_RATE_QTY'];
 		//增值费用
-		$confirmation = $_SESSION['location_code'].'-'.str_replace('DJ','',$vo['agreement_id']);
+        $confirmation = $_SESSION['location_code'].'-'.str_replace('DJ','',$vo['agreement_id']);
+        
+        $Model->switchConnect(1,"agreement_plan");
+        $plan=$Model->where("CONFIRMATION='".$confirmation."'")->select();
+        $this->assign('plan',$plan);
 		$Model->switchConnect(1,"agreement_option");
 		$mandy=$Model->where("CONFIRMATION='".$confirmation."' and MANDATORY='N'")->select();
 		$this->assign("confirmation",$confirmation);

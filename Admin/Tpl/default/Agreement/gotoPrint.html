@@ -266,7 +266,7 @@ function optionprice(days){
   <td class="t1">超公里费</td>
   <td>{$vo.XDIS_RATE}</td>
   <td>付款方式</td>
-  <td>&nbsp;</td>
+  <td><if condition="$vo['PAYMENT' eq 1]">月结<elseif condition="$vo['PAYMENT' eq 2]"/>现金<elseif condition="$vo['PAYMENT'] eq 3"/>对私转帐<elseif condition="$vo['PAYMENT'] eq 4"/>对公转帐<elseif condition="$vo['PAYMENT'] eq 5"/>在线支付<else/>司机代收</if></td>
 </tr>
 <tr>
   <td class="t1">超天费</td>
@@ -335,6 +335,7 @@ function optionprice(days){
   <td class="jstd">{$vo.OTHER_FEE}</td>
   <td class="jstd">总费用</td>
   <td class="jstd">{$vo.RETURN_FEE}</td>
+
 </tr>
 <tr>
   <td colspan="8">&nbsp;
