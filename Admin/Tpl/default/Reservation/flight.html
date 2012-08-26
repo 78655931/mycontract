@@ -328,9 +328,8 @@ function findCars(){
     var RETURN_DATE = $("input[name='RETURN_DATE']").val()+$("#_hour").val()+$("#_minute").val();
     if($(':radio[name="ratecode"]:checked').val()=='WEB'){
         RETURN_DATE =  $("input[name='RETURN_DATE_ZJ']").val();
-    }
-
-if(RETURN_DATE==null||RETURN_DATE===undefined){
+}
+if($(':radio[name="ratecode"]:checked').val()=='DSB'||$(':radio[name="ratecode"]:checked').val()=='DSJ'){
 
         RETURN_DATE = DateAdd("d ",1, new Date($('#PICKUP_DATE').val().replace("-","/").replace("-","/")));
         var month=RETURN_DATE.getMonth()+1;

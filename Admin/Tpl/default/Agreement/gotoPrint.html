@@ -262,17 +262,17 @@ function optionprice(days){
   <td  class="t1">超多少小时算一天</td>
   <td>{$reservation.XHOUR_NEXT_DAY}小时</td>
   <td class="t1">每天公里</td>
-  <td><if condition="$vo.PARKING_CHARGE_STATUS eq 0"></if></td>
+  <td>{$reservation.DIS_FREE}</td>
   <td class="t1">超公里费</td>
-  <td>{$vo.XDIS_RATE}</td>
+  <td>{$reservation.XDIS_RATE}</td>
   <td>付款方式</td>
   <td><if condition="$vo['PAYMENT' eq 1]">月结<elseif condition="$vo['PAYMENT' eq 2]"/>现金<elseif condition="$vo['PAYMENT'] eq 3"/>对私转帐<elseif condition="$vo['PAYMENT'] eq 4"/>对公转帐<elseif condition="$vo['PAYMENT'] eq 5"/>在线支付<else/>司机代收</if></td>
 </tr>
 <tr>
   <td class="t1">超天费</td>
-  <td>{$vo.XDAY}元/天</td>
+  <td>{$reservation.XDAY}元/天</td>
   <td class="t1">超小时费</td>
-  <td>{$vo.XHOUR}元/小时</td>
+  <td>{$reservation.XHOUR}元/小时</td>
   <td class="t1">&nbsp;</td>
   <td>&nbsp;</td>
   <td>基本租金</td>

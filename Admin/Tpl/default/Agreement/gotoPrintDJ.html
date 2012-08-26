@@ -136,9 +136,9 @@ function optionprice(days){
 				}
 
 				//	$("<div style='margin-bottom: 5px;'></div>").html('<div class="cost" id="cost-option-'+item['OPTION_ID']+ '" style="display: block;"><span class="item">'+item ['OPTION_NAME']+'</span><span class="price"><span class="option-qty">'+days+'</span><span class="option-unit">天*</span><span class="option-rate">' +item ['RATE'] + '</span> 元 ＝<span class="option-amt">' +days*item.RATE + '</span> 元</span></div>').appendTo("#optionprice2");
-				totalPrice +=days*item.RATE;
+				//totalPrice +=days*item.RATE;
 			});
-			$("#total-amt").val(totalPrice);
+		//	$("#total-amt").val(totalPrice);
 			$("#optionprices").text('{$vo.OPTIONS_CHARGES}');
 	});
 }
@@ -157,7 +157,7 @@ function optionprice(days){
 </div>
 <table border="0" width="100%" cellpadding="0" cellspacing="0">
 <tr>
-<td colspan="2" rowspan="4"><img src="{$brand.BRAND_LOGO_URL}" width="120" height="70"></td>
+<td colspan="2" rowspan="4"><img src="{$brand.BRAND_LOGO_URL}" width="120" height="70"><span  id="er">{$dr|generateQRfromGoogle}</span></td>
 <td width="10%">名称</td>
 <td width="15%">{$company.COMPANY_NAME}</td>
 <td width="10%">业务员</td>
@@ -220,7 +220,7 @@ function optionprice(days){
   <td class="t1">司机姓名</td>
   <td>{$vo.DRIVER_NAME}</td>
   <td><span class="t1">航班号</span></td>
-  <td>{$vo.AIRLINE}</td>
+  <td>{$reservation.AIRLINE}</td>
   </tr>
   <tr>
       <td colspan="8" class="t">行程信息</td>
@@ -287,7 +287,7 @@ function optionprice(days){
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>小计</td>
-<td>{$vo.MANDATORY_CHARGES}元</td>
+<td>{$reservation['MANDATORY_CHARGES']}元</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td><span class="c2">小计</span></td>
@@ -299,7 +299,7 @@ function optionprice(days){
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>应付金额</td>
-<td><span style="float:right">{$vo.TOTAL_PRICE}元</span></td>
+<td><span style="float:right">{$reservation.TOTAL_PRICE}元</span></td>
 <td>实付金额</td>
 <td><span >{$vo.REALTOTAL}元</span></td>
 </tr>

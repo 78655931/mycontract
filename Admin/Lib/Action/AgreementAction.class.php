@@ -160,7 +160,7 @@ class AgreementAction extends CommonAction {
 		$vo = $Model->getByAgreementId($agreementid);
 		$BASE_RATE_QTY = $vo['BASE_RATE_QTY'];
 		//增值费用
-		$confirmation = $vo['location_code'].'-'.str_replace('HT','',$vo['agreement_id']);
+		$confirmation = $_SESSION['location_code'].'-'.str_replace('ZJ','',$vo['agreement_id']);
 		$Model->switchConnect(1,"agreement_option");
 		$mandy=$Model->where("CONFIRMATION='".$confirmation."' and MANDATORY='N'")->select();
 		$this->assign("confirmation",$confirmation);
@@ -173,7 +173,7 @@ class AgreementAction extends CommonAction {
 		$company = $Model->find();
 		$Model->switchConnect ( 1, "brand" );
 		$brand = $Model->getByCompanyId($company['COMPANY_ID']);
-		$Model->switchConnect(1,"reservation");
+        $Model->switchConnect(1,"reservation");
 		$reservation = $Model->where("CONFIRMATION='".$confirmation."' and STATUS!='CANCEL'")->find();
 		$cartypecode = $reservation['CAR_TYPE_CODE'];
 		$Model->switchConnect(1,'car_type');
@@ -187,7 +187,7 @@ class AgreementAction extends CommonAction {
 		$Model->switchConnect(1,"uni_rule");
         $this->assign('unirule',$Model->getByRuleCode($reservation['RULE_CODE']));
 		$this->assign('cartype',$cartype);
-		$this->assign('date',date('Y-m-d h:s:m'));
+        $this->assign('date',date('Y-m-d h:s:m'));
 		$this->assign('reservation',$reservation);
 		$this->assign('brand',$brand);
 		$this->assign('company',$company);
@@ -249,8 +249,15 @@ class AgreementAction extends CommonAction {
         }else{
             $rateway = "自驾";
         }
-        $chl = "合同编号:".$vo['agreement_id']."%0A客户名称:".$vo['REAL_NAME']."%0A联系电话:".$vo['work_phone']."%0A车辆品牌:".str_replace('-','/',$vo['CAR_MODEL_NAME'])."%0A车牌号:".$vo['CAR_TAG']."%0A带驾日期:".$vo['PICKUP_DATE']."%0A还车日期:".$vo['RETURN_DATE']."%0A车辆颜色:".$cars['COLOR']."%0A租期:".$reservation['BASE_RATE_QTY']."天%0A司机信息:".$vo['DRIVER_NAME']."/".$vo['PHONE']."%0A航班号:".$vo['AIRPORT_CODE']."%0A带驾方式:".$rateway."%0A带驾范围:市内";
+        $chl = "合同编号:".$vo['agreement_id']."%0A客户名称:".$vo['REAL_NAME']."%0A联系电话:".$vo['work_phone']."%0A车辆品牌:".str_replace('-','/',$vo['CAR_MODEL_NAME'])."%0A车牌号:".$vo['CAR_TAG']."%0A带驾日期:".$vo['PICKUP_DATE']."%0A还车日期:".$vo['RETURN_DATE']."%0A车辆颜色:".$cars['COLOR']."%0A租期:".$reservation['BASE_RATE_QTY']."天%0A司机信息:".$reservation['DRIVER_NAME']."/".$vo['PHONE']."%0A航班号:".$reservation['AIRPORT_CODE']."%0A带驾方式:".$rateway."%0A带驾范围:市内";
+        $p = '';
+        foreach($plan as $k=>$v){
+            $p.= $v['START_DATE']."/".$v['PLAN']."%0A";      
+        }
+
+        $dr = "合同编号:".$vo['agreement_id']."%0A客户名称:".$vo['REAL_NAME']."%0A联系电话:".$vo['work_phone']."%0A车辆品牌:".str_replace('-','/',$vo['CAR_MODEL_NAME'])."%0A车牌号:".$vo['CAR_TAG']."%0A带驾日期:".$vo['PICKUP_DATE']."%0A还车日期:".$vo['RETURN_DATE']."%0A车辆颜色:".$cars['COLOR']."%0A租期:".$reservation['BASE_RATE_QTY']."天%0A行程安排:".$p."%0A航班号:".$vo['AIRPORT_CODE']."%0A带驾方式:".$rateway."%0A带驾范围:市内";
         $this->assign("chl",$chl);
+        $this->assign("dr",$dr);
 		$this->assign('unirule',$Model->getByRuleCode($reservation['RULE_CODE']));
         $this->assign('cartype',$cartype);
 
@@ -260,7 +267,7 @@ class AgreementAction extends CommonAction {
 		$this->assign('reservation',$reservation);
 		$this->assign('brand',$brand);
 		$this->assign('company',$company);
-		$this->assign ( 'rate', $rate );
+        $this->assign ('rate', $rate );
 		$this->assign("vo",$vo);
 		$this->display();
 	}
