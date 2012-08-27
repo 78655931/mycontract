@@ -49,57 +49,58 @@
 				<ul class="tabsMoreList">
 					<li><a href="javascript:void(0)">我的主页</a></li>
 				</ul>
-				<div class="navTab-panel tabsPageContent">
-					<div>
-<table layoutH="150" class="table" width="1100">
-	<thead>
-		<tr>
-			<th width="12%">预订单编号</th>
-			<th width="6%">客户姓名</th>
-			<th width="12%">身份证号</th>
-			<th width="8%">客户电话</th>
-			<th width="10%">取车时间</th>
-			<th width="10%">还车时间</th>
-			<th width="25%">车型</th>
-			<th width="5%">状态</th>
-			<th width="8%"></th>
-		</tr>
-	</thead>
+                <div class="navTab-panel tabsPageContent">
+                    <div>
 
-	<tbody>
-		<volist id="vo" name="lists">
-		<tr >
-			<td >{$vo['confirmation']}</td>
-			<td >{$vo['real_name']}</td>
-			<td >{$vo['identity_code']}</td>
-			<td >{$vo['home_phone']}</td>
-			<td >{$vo['pickup_date']}</td>
-			<td >{$vo['return_date']}</td>
-			<td >{$vo['CAR_MODEL_NAME']}</td>
-			{$vo['status']|convert_stat}
+                        <table layoutH="100%" class="table" width="1100">
+                            <thead>
+                                <tr>
+                                    <th width="12%">预订单编号</th>
+                                    <th width="6%">客户姓名</th>
+                                    <th width="13%">身份证号</th>
+                                    <th width="8%">客户电话</th>
+                                    <th width="10%">取车时间</th>
+                                    <th width="10%">还车时间</th>
+                                    <th width="25%">车型</th>
+                                    <th width="4%">状态</th>
+                                    <th width="3%">类型</th>
+                                    <th width="12%"></th>
+                                </tr>
+                            </thead>
 
-			<td > <ul class="toolBar"><li><a width="15%" href="__APP__/Reservation/edit/id/{$vo['reservation_id']}/confirmation/{$vo['confirmation']}/navTabId/__MODULE__" target="dialog" max="true" maxable="false" minable="false" resizable="false"  rel="reser2" fresh="true"><span>预订单生成合同</span></a></li></ul>
+                            <tbody>
+                                <volist id="vo" name="lists">
+                                <tr >
+                                    <td >{$vo['confirmation']}</td>
+                                    <td >{$vo['real_name']}</td>
+                                    <td >{$vo['identity_code']}</td>
+                                    <td >{$vo['home_phone']}</td>
+                                    <td >{$vo['pickup_date']}</td>
+                                    <td >{$vo['return_date']}</td>
+                                    <td >{$vo['CAR_MODEL_NAME']}</td>
+                                    {$vo['status']|convert_stat}
+                                    <td><if condition="($vo['rate_code'] eq 'DSB') or ($vo['rate_code'] eq 'DSR') or ($vo['rate_code'] eq 'DSJ') ">代驾<else/>自驾</if></td>
+                                    <td > <ul class="toolBar"><li><a width="15%" href="__URL__/edit/id/{$vo['reservation_id']}/confirmation/{$vo['confirmation']}/rate_code/{$vo['rate_code']}/navTabId/__MODULE__" target="dialog" max="true" maxable="false" minable="false" resizable="false"  rel="reser2" fresh="true"><span>预订单生成合同</span></a></li></ul>
 
-			</td>
-		</tr>
-		</volist>
+                                    </td>
+                                </tr>
+                                </volist>
 
-		</tbody>
-</table>
-								
+                            </tbody>
+                        </table>
 
-<div class="panelBar">
-		<div class="pages">
-			<span>共{$totalCount}条</span>
-		</div>
-		<div class="pagination" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
-	</div>
+                    </div>
 
-
-					</div>
-				</div>
-			</div>
-		</div>
+                    <div class="panelBar">
+                        <div class="pages">
+                            <span>共{$totalCount}条</span>
+                        </div>
+                        <div class="pagination" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 	</div>
 	
