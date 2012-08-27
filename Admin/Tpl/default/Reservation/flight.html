@@ -152,15 +152,16 @@
         for(var j=1;j<=i;j++){
 
         nowdate = DateAdd("d ",j, new Date($('#PICKUP_DATE').val().replace("-","/").replace("-","/")));
-            var month=nowdate.getMonth()+1;
-            var monthString = month<9?'0'+month:month;
+        var month=nowdate.getMonth()+1;
+        var monthString = month<9?'0'+month:month;
+        var dateString = nowdate.getDate()<9?'0'+nowdate.getDate():nowdate.getDate();
             if(j==i){
                // times = DateAdd("h ",j, new Date($('#PICKUP_DATE').val().replace("-","/").replace("-","/")));
                 
-                l += '<li>'+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+str+'</li><input type="hidden" name="RETURN_DATE" id="RETURN_DATE" value="'+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+'"><li><textarea id="" name="PLAN['+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+']" rows="3" cols="55" ></textarea></li>';
+                l += '<li>'+nowdate.getFullYear()+"-"+monthString+"-"+dateString+str+'</li><input type="hidden" name="RETURN_DATE" id="RETURN_DATE" value="'+nowdate.getFullYear()+"-"+monthString+"-"+dateString+'"><li><textarea id="" name="PLAN['+nowdate.getFullYear()+"-"+monthString+"-"+dateString+']" rows="3" cols="55" ></textarea></li>';
             }else{
 
-                l += '<li>'+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+'<input class="ISOVERNIGHT" name="ISOVERNIGHT['+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+']" type="checkbox" onclick="driver_fee(0);" />过夜</li><li><textarea id="" name="PLAN['+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+']" rows="3" cols="55" ></textarea></li>';
+                l += '<li>'+nowdate.getFullYear()+"-"+monthString+"-"+dateString+'<input class="ISOVERNIGHT" name="ISOVERNIGHT['+nowdate.getFullYear()+"-"+monthString+"-"+dateString+']" type="checkbox" onclick="driver_fee(0);" />过夜</li><li><textarea id="" name="PLAN['+nowdate.getFullYear()+"-"+monthString+"-"+dateString+']" rows="3" cols="55" ></textarea></li>';
         }
             
     }
