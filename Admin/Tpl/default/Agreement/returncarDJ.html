@@ -7,50 +7,31 @@
                 <td class="jstd"><input type="text" value="" name="PICKUP_KM"></td>
                 <td class="jstd">收车里程</td>
                 <td class="jstd"><input type="text" value="" name="RETURN_KM"></td>
-                <td class="jstd">行驶里程</td>
-                <td class="jstd"><input type="text" value="" name="DRIVER_KM"></td>
-                <td class="jstd">加油升数</td>
-                <td class="jstd"><input type="text" value="" name="ADD_OIL"></td>
+                <td class="jstd">司机加班费</td>
+                <td class="jstd"><input type="text" value="" name=""></td>
+                <td class="jstd">油费</td>
+                <td class="jstd"><input type="text" value="" name=""></td>
+
             </tr>
-            <tr>
-                <td class="jstd">上车里程</td>
-                <td class="jstd"><input type="text" value="" name="GETON_KM"></td>
-                <td class="jstd">下车里程</td>
-                <td class="jstd"><input type="text" value="" name="DOWN_KM"></td>
-                <td class="jstd">营运里程</td>
-                <td class="jstd"><input type="text" value="" name="OPERATE_KM"></td>
-                <td class="jstd">超天费</td>
-                <td class="jstd"><input type="text" value="" name="XDAY"></td>
-            </tr>
+            
             <tr>
                 <td class="jstd">出车时间</td>
                 <td class="jstd"><input type="text" value="" name="REAL_PICKUP_DATE"></td>
                 <td class="jstd">收车时间</td>
                 <td class="jstd"><input type="text" value="" name="REAL_RETURN_DATE"></td>
-                <td class="jstd">行驶小时</td>
-                <td class="jstd"><input type="text" value="" name="RUNNING_HOUR"></td>
-                <td class="jstd">超小时费</td>
-                <td class="jstd"><input type="text" value="" name="XHOUR"></td>
-            </tr>
-            <tr>
-                <td class="jstd">上车时间</td>
-                <td class="jstd"><input type="text" value="" name="GETON_TIME"></td>
-                <td class="jstd">下车时间</td>
-                <td class="jstd"><input type="text" value="" name="DOWN_TIME"></td>
-                <td class="jstd">营运小时</td>
-                <td class="jstd"><input type="text" value="" name="OPERATE_HOUR"></td>
-                <td class="jstd">超公里费</td>
-                <td class="jstd"><input type="text" value="" name="XDIS_RATE"></td>
-            </tr>
-            <tr>
+                <td class="jstd">路桥费</td>
+                <td class="jstd"><input type="text" value="" name="BOARD_AND_LODGING"></td>
                 <td class="jstd">其它费用</td>
                 <td class="jstd"><input type="text" value="" name="OTHER_FEE"></td>
-                <td class="jstd">司机过夜食宿费</td>
-                <td class="jstd"><input type="text" value="" name="BOARD_AND_LODGING"></td>
-                <td class="jstd">收车签字</td>
-                <td class="jstd"><input type="text" value="" name="RECEIVE_CAR_SIGN"></td>
+
+            </tr>
+            
+            <tr>
+                <td class="jstd">司机代垫费</td>
+                <td class="jstd"><input type="text" value="" name=""></td>
+
                 <td class="jstd">总费用</td>
-                <td class="jstd"><input type="text" value="" name="OTHER_FEE"></td>
+                <td class="jstd"><input type="text" value="" name="RETURN_FEE"></td>
             </tr>
         </table>
             
@@ -98,7 +79,7 @@
 
 
         $("<input type='hidden' name='agreement_id'>").val('{$Think.get.agreement_id}').appendTo('.pageForm');
-        $( "#return_date" ).datetimepicker({
+        $( "input[name='REAL_PICKUP_DATE'],input[name='REAL_RETURN_DATE']" ).datetimepicker({
             defaultdate: "+1w",
             timeFormat: 'hh:mm',
             showmonthafteryear: true,
