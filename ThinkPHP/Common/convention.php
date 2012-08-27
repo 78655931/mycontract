@@ -65,7 +65,7 @@ return  array(
 	'DB_PREFIX'             => 'think_',    // 数据库表前缀
 	'DB_SUFFIX'             => '',          // 数据库表后缀
     'DB_FIELDTYPE_CHECK'    => false,       // 是否进行字段类型检查
-    'DB_FIELDS_CACHE'       => true,        // 启用字段缓存
+    'DB_FIELDS_CACHE'       => false,        // 启用字段缓存
     'DB_CHARSET'            => 'utf8',      // 数据库编码默认采用utf8
     'DB_DEPLOY_TYPE'        => 0, // 数据库部署方式:0 集中式(单一服务器),1 分布式(主从服务器)
     'DB_RW_SEPARATE'        => false,       // 数据库读写是否分离 主从式有效
@@ -131,7 +131,7 @@ return  array(
     'TMPL_R_DELIM'          => '}',			// 模板引擎普通标签结束标记
     'TMPL_VAR_IDENTIFY'     => 'array',     // 模板变量识别。留空自动判断,参数为'obj'则表示对象
     'TMPL_STRIP_SPACE'      => false,       // 是否去除模板文件里面的html空格与换行
-    'TMPL_CACHE_ON'			=> true,        // 是否开启模板编译缓存,设为false则每次都会重新编译
+    'TMPL_CACHE_ON'			=> false,        // 是否开启模板编译缓存,设为false则每次都会重新编译
     'TMPL_CACHE_TIME'		=>	-1,         // 模板缓存有效期 -1 为永久，(以数字为值，单位:秒)
     'TMPL_ACTION_ERROR'     => 'Public:success', // 默认错误跳转对应的模板文件
     'TMPL_ACTION_SUCCESS'   => 'Public:success', // 默认成功跳转对应的模板文件

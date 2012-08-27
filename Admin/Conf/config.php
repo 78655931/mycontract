@@ -28,7 +28,8 @@ $config	= array(
 		'database' => 'ry_crsengine11_db',
     ),
     'TMPL_ACTION_SUCCESS' =>'Public:success' ,
-	'HTML_CACHE_ON'	=> false,
+    'HTML_CACHE_ON'	=> false,
+    'DB_FIELD_CACHE'=>false,
 	'TOKEN_ON'=>false,
 	'USER_AUTH_ON'=>true,
 	'USER_AUTH_TYPE'=>2,		// 默认认证类型 1 登录认证 2 实时认证

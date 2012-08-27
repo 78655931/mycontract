@@ -106,13 +106,14 @@
             var month=nowdate.getMonth()+1;
             var monthString = month<9?'0'+month:month;
 
+            var dateString = nowdate.getDate()<=9?'0'+nowdate.getDate():nowdate.getDate();
 
                 //$('#ratecode').val("DSB1");
                 //$('input:select[name="ratecode"]:checked').val("DSB2");
                 //alert($('#ratecode').val());
                 //$('#ratecode').append('<option value="DSB" >半日租</opion>');
                 //$("#ratecode").val("DSB");
-                l += '<li>'+str+'</li><input type="hidden" name="RETURN_DATE" id="RETURN_DATE" value="'+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+'"><li><textarea id="" name="PLAN['+nowdate.getFullYear()+"-"+monthString+"-"+nowdate.getDate()+']" rows="3" cols="55" ></textarea></li>';
+                l += '<li>'+str+'</li><input type="hidden" name="RETURN_DATE" id="RETURN_DATE" value="'+nowdate.getFullYear()+"-"+monthString+"-"+dateString+'"><li><textarea id="" name="PLAN['+nowdate.getFullYear()+"-"+monthString+"-"+dateString+']" rows="3" cols="55" ></textarea></li>';
 
                 $("<ul></ul>").html(l).appendTo("#trip");
         }
@@ -155,6 +156,7 @@
         var month=nowdate.getMonth()+1;
         var monthString = month<=9?'0'+month:month;
         var dateString = nowdate.getDate()<=9?'0'+nowdate.getDate():nowdate.getDate();
+
             if(j==i){
                // times = DateAdd("h ",j, new Date($('#PICKUP_DATE').val().replace("-","/").replace("-","/")));
                 
@@ -335,11 +337,21 @@ if($(':radio[name="ratecode"]:checked').val()=='DSB'||$(':radio[name="ratecode"]
         RETURN_DATE = DateAdd("d ",1, new Date($('#PICKUP_DATE').val().replace("-","/").replace("-","/")));
         var month=RETURN_DATE.getMonth()+1;
         var monthString = month<9?'0'+month:month;
-        var hours = RETURN_DATE.getHours();
-        var hoursString = hours<=9?'0'+hours:hours;
-        var minutes = RETURN_DATE.getMinutes();
-        var minutesString =minutes<=9?'0'+minutes:minutes; 
-        RETURN_DATE = RETURN_DATE.getFullYear()+"-"+monthString+"-"+RETURN_DATE.getDate()+hoursString+minutesString;
+
+        var dateString = RETURN_DATE.getDate()<=9?'0'+RETURN_DATE.getDate():RETURN_DATE.getDate();
+       // console.log($('#_hour').val());
+       if($('#_hour').val()==''){
+            var hours = RETURN_DATE.getHours();
+            var hoursString = hours<=9?'0'+hours:hours;
+            var minutes = RETURN_DATE.getMinutes();
+            var minutesString =minutes<=9?'0'+minutes:minutes; 
+          }else{
+            hoursString = $('#_hour').val();
+            minutesString = $('#_minute').val();
+            }
+       
+        
+        RETURN_DATE = RETURN_DATE.getFullYear()+"-"+monthString+"-"+dateString+hoursString+minutesString;
     }
 	RETURN_DATE = RETURN_DATE.replaceAll("-","");
 	RETURN_DATE = RETURN_DATE.replace(" ","");
