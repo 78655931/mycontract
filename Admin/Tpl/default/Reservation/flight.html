@@ -45,7 +45,7 @@
     $(':radio[name="ratecode"]').change(function(){
         var o = $(':radio[name="ratecode"]:checked').val();
         $('#REAL_NAME').val('');
-        $('#PICKUP_DATE').val('');
+   //     $('#PICKUP_DATE').val('');
         $('input[name="LINKMAN"]').val('');
         $('input[name="LINKMAN_PHONE"]').val('');
         $('input[name="DRIVER_REQUEST"]').val('');
@@ -53,7 +53,8 @@
         $("#carsinfo").html('');
         // $("form").resetForm();
         if(o=='DSR'){
-
+           $('#RETURN_DATE_ZJ').val('');
+     
             $("#BASE_RATE_QTY").show();
             $(".dj").show();
             $(".zj").hide();
@@ -68,6 +69,7 @@
             $(".dsj").show();
             $(".dsb").hide();
             $(".dsbr").hide();
+           $('#RETURN_DATE_ZJ').val('');
         }else if(o=='WEB'){
 
             $(".dsbr").hide();
@@ -84,6 +86,8 @@
             $(".dsj").hide();
             $(".dsb").show();
             $("#BASE_RATE_QTY").hide();
+           $('#RETURN_DATE_ZJ').val('');
+
             var l ='' ;
             var str="";
             $("#trip").html('');
@@ -113,7 +117,7 @@
                 //alert($('#ratecode').val());
                 //$('#ratecode').append('<option value="DSB" >半日租</opion>');
                 //$("#ratecode").val("DSB");
-                l += '<li>'+str+'</li><input type="hidden" name="RETURN_DATE" id="RETURN_DATE" value="'+nowdate.getFullYear()+"-"+monthString+"-"+dateString+'"><li><textarea id="" name="PLAN['+nowdate.getFullYear()+"-"+monthString+"-"+dateString+']" rows="3" cols="55" ></textarea></li>';
+                l += '<li>'+str+'</li><input type="hidden" name="RETURN_DATE" id="RETURN_DATE" value="'+nowdate.getFullYear()+"-"+monthString+"-"+dateString+'"><li><textarea id="" name="PLAN['+nowdate.getFullYear()+"-"+monthString+"-"+dateString+']" rows="3" cols="45" ></textarea></li>';
 
                 $("<ul></ul>").html(l).appendTo("#trip");
         }
@@ -160,10 +164,10 @@
             if(j==i){
                // times = DateAdd("h ",j, new Date($('#PICKUP_DATE').val().replace("-","/").replace("-","/")));
                 
-                l += '<li>'+nowdate.getFullYear()+"-"+monthString+"-"+dateString+str+'</li><input type="hidden" name="RETURN_DATE" id="RETURN_DATE" value="'+nowdate.getFullYear()+"-"+monthString+"-"+dateString+'"><li><textarea id="" name="PLAN['+nowdate.getFullYear()+"-"+monthString+"-"+dateString+']" rows="3" cols="55" ></textarea></li>';
+                l += '<li>'+nowdate.getFullYear()+"-"+monthString+"-"+dateString+str+'</li><input type="hidden" name="RETURN_DATE" id="RETURN_DATE" value="'+nowdate.getFullYear()+"-"+monthString+"-"+dateString+'"><li><textarea id="" name="PLAN['+nowdate.getFullYear()+"-"+monthString+"-"+dateString+']" rows="3" cols="45" ></textarea></li>';
             }else{
 
-                l += '<li>'+nowdate.getFullYear()+"-"+monthString+"-"+dateString+'<input class="ISOVERNIGHT" name="ISOVERNIGHT['+nowdate.getFullYear()+"-"+monthString+"-"+dateString+']" type="checkbox" onclick="driver_fee(0);" />过夜</li><li><textarea id="" name="PLAN['+nowdate.getFullYear()+"-"+monthString+"-"+dateString+']" rows="3" cols="55" ></textarea></li>';
+                l += '<li>'+nowdate.getFullYear()+"-"+monthString+"-"+dateString+'<input class="ISOVERNIGHT" name="ISOVERNIGHT['+nowdate.getFullYear()+"-"+monthString+"-"+dateString+']" type="checkbox" onclick="driver_fee(0);" />过夜</li><li><textarea id="" name="PLAN['+nowdate.getFullYear()+"-"+monthString+"-"+dateString+']" rows="3" cols="45" ></textarea></li>';
         }
             
     }
@@ -306,7 +310,7 @@ function showResponse(responseText, statusText, xhr, $form) {
 
 }
     
-		$( "#PICKUP_DATE,#RETURN_DATE_ZJ" ).datetimepicker({
+$( "#PICKUP_DATE,#RETURN_DATE_ZJ" ).datetimepicker({
 			defaultdate: "+1w",
 			timeFormat: 'hh:mm',
 			showmonthafteryear: true,
@@ -324,7 +328,8 @@ function showResponse(responseText, statusText, xhr, $form) {
 			stepSecond: 10,
 			hourGrid: 4,
 			minuteGrid: 10	
-		});
+    });
+    
 
 });
 function findCars(){
@@ -608,10 +613,10 @@ function driver_fee(driverstat){
     <div layoutH="80">
 <table  class="list"  width="98%">
     <tr>
-        <td width="45%" style=" vertical-align: top;" >
+        <td width="53%" style=" vertical-align: top;" >
            <include file="Reservation:_DSB"/>
         </td>
-        <td rowspan="2" width="55%" class="bdl" style=" vertical-align: top;" >
+        <td rowspan="2"  class="bdl" style=" vertical-align: top;" >
                 <div id="carsinfo" >
                     
                 </div>

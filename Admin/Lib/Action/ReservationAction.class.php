@@ -12,7 +12,7 @@ class ReservationAction extends CommonAction {
 		if(!empty($_POST['RETURN_DATE']))
 			$map['RETURN_DATE'] = array('like',"%".$_POST['RETURN_DATE']."%");
 		if(!empty($_POST['WORK_PHONE']))
-			$map['WORK_PHONE'] = array('eq',"".$_POST['WORK_PHONE']."");
+			$map['HOME_PHONE'] = array('eq',"".$_POST['WORK_PHONE']."");
 		if(!empty($_POST['STATUS']))
 		$map['STATUS'] = array('eq',"".$_POST['STATUS']."");
 	}
@@ -45,14 +45,21 @@ class ReservationAction extends CommonAction {
 		$map = $this->_search();
 		if (method_exists($this, '_filter')) {
 			$this->_filter($map);
-		}
-		$map['CONFIRMATION'] = array('like',"%".$_SESSION['location_code']."%");
+        }
+        if(count($maps['CONFIRMATION'][1])==0){
+        
+            $map['CONFIRMATION'] = array('like',$_SESSION['location_code']."%");
+        }else{
+            $map['CONFIRMATION'] = array('like',"%".$_POST['CONFIRMATION']."%");
+        }
 		if(empty($_POST['STATUS']))
-		$map['STATUS'] = array(array('neq','CONTRACT'),array('neq','CANCEL'),array('neq','RETURN'));
+            $map['STATUS'] = array(array('neq','CONTRACT'),array('neq','CANCEL'),array('neq','RETURN'));
+        $map['CONFIRMED_BY'] = array('exp','is null');
 		//dump($map);exit;
 		// 取得满足条件的记录数
-		$count = $Model->where ( $map )->count ( $Model->getPk () );
-	//	echo $Model->getLastSql();
+        $count = $Model->where ( $map )->count ( $Model->getPk () );
+
+		//echo $Model->getLastSql();
 		if ($count > 0) {
 			import ( "@.ORG.Page" );
 			// 创建分页对象
@@ -142,7 +149,9 @@ class ReservationAction extends CommonAction {
 		$Model->switchConnect ( 1, "agreement" );
 		$agreeList = $Model->getByAgreementId ( 'HT' . substr ( $vo ['CONFIRMATION'], - 15 ) );
 		//echo $Model->getLastSql();exit;
-		$confirmation = explode ( '-', $vo ['PICKUP_LOCATION_CODE'] );
+        $confirmation = explode ( '-', $vo ['PICKUP_LOCATION_CODE'] );
+        $cc = explode('-',$vo['CAR_MODEL_NAME']);
+        $vo['CAR_MODEL'] = $cc[0];
 		$vo ['newcfm'] = $confirmation [0] . '-' . $confirmation [1] . '-' . $confirmation [2];
 		if ($agreeList) {
 			$vo ['status'] = $agreeList ['status'];
@@ -232,21 +241,29 @@ class ReservationAction extends CommonAction {
 		$_POST ['agreement_id'] = 'DJ' . $_REQUEST ['confirmation'];
 		$_POST ['createdate'] = date('Y-m-d h:m:s');
         $_POST ['status'] = "CONTRACT";
+        
         foreach($_POST as $k=>$v){
             $k = str_ireplace('master_dwz_devLookup_','',$k);
             $data[$k] = $v;
 
         Log::write('调试癿SQL：'.$k."--".$v, Log::DEBUG); 
         }
-	
+	    $data['location_code'] = $_SESSION['location_code'];
 		$validate = array (array ('CAR_TAG', 'require', '车牌必须!' ),array('work_phone','/^(1(([35][0-9])|(47)|[8][01236789]))\d{8}$/','租车人手机格式不正确!'),
 					array('contactperson','require','紧急联系人必须!'),array('contactphone','/^(1(([35][0-9])|(47)|[8][01236789]))\d{8}$/','手机格式不正确!'),array('MEMBER_TYPE_NAME','require','会员类型必须'),array('REAL_NAME','require','客户名称必须'),array('sex','require','性别必须'),array('age','require','出生日期必须'),array('IDENTITY_CODE','require','身份证号码必须'),array('address','require','身份证地址必须'),array('driver_code','require','驾驶证号码必须')
 		);
 		$model->setProperty ( "_validate", $validate );
-		if (false === $model->create ( $data )) {
+        if (false === $model->create ( $data )) {
+
 			echo $model->getError ();
 			exit ();
-		}
+        }
+        $aglist = $model->where('agreement_id="'.$_POST['agreement_id'].'"')->find();
+        if(count($aglist)>0){
+        
+            echo '合同编号'.$_POST['agreement_id'].'已被生成,请重新选择预订!';
+            exit;
+        }
 				// 保存当前数据对象
         $list = $model->add ( $data );
         $model->switchConnect ( 1, "driver_info" );
@@ -320,7 +337,13 @@ class ReservationAction extends CommonAction {
 		if (false === $model->create ( $_POST )) {
 			echo $model->getError ();
 			exit ();
-		}
+        }
+        $aglist = $model->where('agreement_id="'.$_POST['agreement_id'].'"')->find();
+        if(count($aglist)>0){
+        
+            echo '合同编号'.$_POST['agreement_id'].'已被生成,请重新选择预订!';
+            exit;
+        }
 				// 保存当前数据对象
 		$list = $model->add ( $_POST );
 		if ($list !== false) { // 保存成功
@@ -448,7 +471,10 @@ class ReservationAction extends CommonAction {
 				$carinfo = $model->getByCarTag($cartag);
 				if($carinfo['STATUS']==2){
 					$cares = $model->execute("update car set status=1 where CAR_TAG='".$cartag."' and CAR_MODEL_CODE='".$carmodelcode."'");
-				}
+                }else{
+                   echo '您选择的'.$cartag.'已被使用,请重新选择!';
+                    exit;
+                }
 				$model->switchConnect(1,'uni_inventory');
 				//$model->where("LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$carmodelcode."' and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($_POST['RETURN_DATE'],0,10)."'")->setDec('REAL_INT',1);
 				$model->execute("UPDATE `uni_inventory` SET `REAL_INT`=REAL_INT-1 where LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$carmodelcode."' and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($_POST['RETURN_DATE'],0,10)."'");
@@ -713,11 +739,13 @@ class ReservationAction extends CommonAction {
         $option = $model->findAll();
         
         $model->switchConnect(1,'airport');
+        $this->assign('tomorrow',strtotime('now')+60*60*24);
 
+        $this->assign('return',strtotime('now')+60*60*24*2);
         $airport = $model->findAll();
         $this->assign("airport",$airport);
         $this->assign("option",$option);
-        $this->assign("vo",$list);
+        $this->assign("location",$list);
         $this->display();
     }
     public function findDJCars()
@@ -809,6 +837,7 @@ class ReservationAction extends CommonAction {
         $data['TEXT'] = $carinfo['text'];
         $data['STATUS'] = 'NOPREPAY';
         $data['RETURN_DATE'] = $_POST['RETURN_DATE']." ".$_POST['_hour']."-".$_POST["_minute"];
+        
         if($data['RATE_CODE']=='WEB'){
             $data['REAL_NAME'] = $_POST['REAL_NAME_ZJ'];
             $data['RETURN_DATE'] = $_POST['RETURN_DATE_ZJ'];
@@ -823,27 +852,32 @@ class ReservationAction extends CommonAction {
         Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
         //行程安排
         $model->switchConnect(1,'reservation_plan');
-        foreach($_POST['PLAN'] as $k=>$v){
-            foreach($_POST['ISOVERNIGHT'] as $x=>$y){
-                if($x==$k){
-                    $plan['ISOVERNIGHT'] = 1;
-                }else{
-                    
-                    $plan['ISOVERNIGHT'] = 0;
+        if($data['RATE_CODE']=='DSJ'){
+            $plan['PLAN'] = $data['UP_DOWN_ADDRESS'];
+        }elseif($data['RATE_CODE']=='DSR'){
+            foreach($_POST['PLAN'] as $k=>$v){
+                foreach($_POST['ISOVERNIGHT'] as $x=>$y){
+                    if($x==$k){
+                        $plan['ISOVERNIGHT'] = 1;
+                    }else{
+
+                        $plan['ISOVERNIGHT'] = 0;
+                    }
                 }
+                $plan['PLAN'] = $v;
+                $plan['START_DATE'] = $k;
+                $plan['END_DATE'] = $k;
+                $plan['CONFIRMATION'] = $confirmation;
+                if (false === $model->create ( $plan )) {
+                    echo $model->getError ();
+                    exit ();
+                }
+                $list = $model->add($plan);
+
+                Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
             }
-            $plan['PLAN'] = $v;
-            $plan['START_DATE'] = $k;
-            $plan['END_DATE'] = $k;
-            $plan['CONFIRMATION'] = $confirmation;
-            if (false === $model->create ( $plan )) {
-                echo $model->getError ();
-                exit ();
-            }
-            $list = $model->add($plan);
-   
-        Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
         }
+        
         unset($data);
         $_POST['optionname'][$_POST['OPTION_ID']] = $_POST['rdioption'];
         //print_r($OPTION_ID);exit;

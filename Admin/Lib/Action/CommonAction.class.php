@@ -6,10 +6,10 @@ class CommonAction extends Action {
 		
 		// 用户权限检查
 		//echo $_SESSION['location_code'];exit;
-		if(empty($_SESSION['location_code'])){
+		/**if(empty($_SESSION['location_code'])){
 
 			redirect ( PHP_FILE . C ( 'USER_AUTH_GATEWAY' ) );
-		}
+        }**/
 			//echo  $_SESSION [C ( 'USER_AUTH_KEY' )];exit;
 		if (C ( 'USER_AUTH_ON' ) && !in_array(MODULE_NAME,explode(',',C('NOT_AUTH_MODULE'))) ) {
 			import ( '@.ORG.RBAC' );

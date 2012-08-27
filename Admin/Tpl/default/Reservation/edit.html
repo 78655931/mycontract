@@ -54,7 +54,27 @@ function showResponse(responseText, statusText, xhr, $form) {
     }
 
 }
+$('#OUT_CALL_CAR').click(function(){
+    var c =$('input[name="OUT_CALL_CAR"]').attr('checked');
+    //alert(c);
+    if(c){
+        $(".selectcarTag").hide();
+        $('input[name="master.dwz_devLookup.CAR_TAG"]').attr('readonly',false);
+        $('input[name="master.dwz_devLookup.CAR_MODEL_NAME"]').attr('readonly',false);
+        $('input[name="master.dwz_devLookup.CAR_MODEL"]').attr('readonly',false);
+        $('input[name="master.dwz_devLookup.CURRENT_KM"]').attr('readonly',false);
+        $('input[name="master.dwz_devLookup.CURRENT_OIL"]').attr('readonly',false);
+    }else{
 
+        $(".selectcarTag").show();
+        $('input[name="master.dwz_devLookup.CAR_TAG"]').attr('readonly',true);
+        $('input[name="master.dwz_devLookup.CAR_MODEL_NAME"]').attr('readonly',true);
+        $('input[name="master.dwz_devLookup.CAR_MODEL"]').attr('readonly',true);
+        $('input[name="master.dwz_devLookup.CURRENT_KM"]').attr('readonly',true);
+        $('input[name="master.dwz_devLookup.CURRENT_OIL"]').attr('readonly',true);
+
+    }
+});
 });
 
 function ReadCard_onclick()
@@ -299,17 +319,16 @@ function openDialog(){
 		<thead>
             <tr>
 
-				<th width="80">预订单编号</th>
-				<th width="80">预订人名称</th>
-				<th width="200">取车时间</th>
-				<th width="200">还车时间</th>
-				<th width="200">预订车型</th>
-				<th width="100">均价</th>
-				<th width="100">租期类型</th>
-				<th width="100">超天价格</th>
-				<th width="100">超小时价格</th>
-				<!--<th width="100">超公里价格</th>-->
-				<th width="100">费用总计</th>
+				<th width="5%">预订单编号</th>
+				<th width="8%">预订人名称</th>
+				<th width="12%">取车时间</th>
+				<th width="12%">还车时间</th>
+				<th width="22%">预订车型</th>
+				<th width="5%">均价</th>
+				<th width="8%">租期类型</th>
+				<th width="8%">超天价格</th>
+				<th width="10%">超小时价格</th>
+				<th width="15%">费用总计</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -369,29 +388,40 @@ function openDialog(){
 					<input type="text" name="work_phone" class="required phone textInput" value="{$vo.HOME_PHONE}"/>
 				</td>
 			</tr>	
-			<tr>
-				<td  >
-					<label class="label-left">姓名:</label>
-					<input type="text"   id="REAL_NAME"  class="required textInput" name="REAL_NAME" value="{$vo.REAL_NAME}"/>	</td>
-				<td>
-					<label class="label-right">紧急联系人:</label><input type="text" class="required textInput" name="contactperson" value=""/>
-					紧急联系人手机:<input type="text" name="contactphone" class="required phone textInput" value=""/>
-				</td>
-			</tr>	
-			<tr>
-				<td  >
-					<label class="label-left">性别:</label>
-					<input type="text"  name="sex" id="sex" value="" class="required  textInput"/>
-					出生日期:<input type="text"  name="age"  value="" class="required  textInput"/>
-				</td>
-				<td>
-					<label class="label-right">驾驶证号码:</label>
-					<input type="text" name="driver_code" class="required  textInput" value="{$vo.IDENTITY_CODE}"/>
-				</td>
-			</tr>	
-			<tr>
-				<td  >
-					<label class="label-left">电子邮件:</label>
+            <tr>
+                <td>
+                    <label class="label-left">姓名:</label>
+                    <input type="text"   id="REAL_NAME"  class="required textInput" name="REAL_NAME" value="{$vo.REAL_NAME}"/>	</td>
+                <td>
+                    <ul><li><label class="label-right">紧急联系人:</label><input type="text" class="required textInput" name="contactperson" value=""/></li>
+
+                    </ul>
+                </td>
+            </tr>	
+            <tr>
+                <td >
+                    <LABEL class="label-left"> 出生日期:</LABEL>
+                    <input type="text"  name="age"  value="" class="required  textInput"/></td>
+                <td >
+                    <label class="label-right"> 紧急联系人手机:</label>
+                    <input type="text" name="contactphone" class="required phone textInput" value=""/>
+                </td>
+            </tr>
+
+            <tr>
+                <td  >
+                    <label class="label-left">性别:</label>
+                    <input type="text"  name="sex" id="sex" value="" class="required  textInput"/>
+
+                </td>
+                <td>
+                    <label class="label-right">驾驶证号码:</label>
+                    <input type="text" name="driver_code" class="required  textInput" value="{$vo.IDENTITY_CODE}"/>
+                </td>
+            </tr>	
+            <tr>
+                <td  >
+                    <label class="label-left">电子邮件:</label>
 					<input type="text" name="email" value="{$vo.EMAIL}"  />
 				</td>
 				<td>
@@ -462,7 +492,7 @@ function openDialog(){
 					</td>
 					<td>
 
-						<table class="list" width="100%" style="height:80px">
+						<table class="list" width="100%" style="height:80px" id="selcar">
 							<thead>
 								<tr>
 									<th width="60">车牌号</th>
@@ -474,27 +504,27 @@ function openDialog(){
 							</thead>
 							<tbody>
 								<tr>
-									<td><input class="readonly" name="master.dwz_devLookup.CAR_TAG" value="" readonly="readonly" type="text"/></td>
+									<td><input class="readonly" name="master.dwz_devLookup.CAR_TAG" value="" readonly="readonly" type="text" size="8"/></td>
 									<td>
-										<input class="readonly" name="master.dwz_devLookup.CAR_MODEL" value=""  readonly="readonly" type="text"/>
+                                        <input class="readonly" name="master.dwz_devLookup.CAR_MODEL" value="{$vo.CAR_MODEL}"  readonly="readonly" type="text" size="8"/>
 									</td>
 									<td>
-										<input class="readonly" name="master.dwz_devLookup.CAR_MODEL_NAME" value="" size="40" readonly="readonly" type="text" />
+                                        <input class="readonly" name="master.dwz_devLookup.CAR_MODEL_NAME" value="{$vo.CAR_MODEL_NAME}" size="40" readonly="readonly" type="text" />
 										<input type="hidden" name="master.dwz_devLookup.CAR_MODEL_CODE" value=""  />
 										<input type="hidden" name="master.dwz_devLookup.CAR_TYPE_CODE" value=""  />
 									</td>
 									<td>
-										<input class="text" name="master.dwz_devLookup.CURRENT_KM" value="" readonly="readonly" type="text" />
+										<input class="text" name="master.dwz_devLookup.CURRENT_KM" value="" readonly="readonly" type="text" size="8" />
 									</td>
 									<td>
-										<input class="text" name="master.dwz_devLookup.CURRENT_OIL" value="" readonly="readonly" type="text" />
+										<input class="text" name="master.dwz_devLookup.CURRENT_OIL" value="" readonly="readonly" type="text" size="2" />
 									</td>
 								</tr>
 								<tr>
 									<td colspan="5" style="padding-left: 300px;">
-										<a class="btnLook" target="dialog" ref="reser2" href="__APP__/Reservation/selectCar/modelcode/{$vo['CAR_MODEL_CODE']|urlencode}/cartypecode/{$vo['CAR_TYPE_CODE']}" lookupGroup="master" lookupName="devLookup" width="840" height="380">选 车</a>	
-										<span class="info">选 车</span>
-
+										<span class="selectcarTag"><a class="btnLook" target="dialog" ref="reser2" href="__APP__/Reservation/selectCar/modelcode/{$vo['CAR_MODEL_CODE']|urlencode}/cartypecode/{$vo['CAR_TYPE_CODE']}" lookupGroup="master" lookupName="devLookup" width="840" height="380">选 车</a>	
+										选 车</span>
+                                        <LABEL ><input type="CHECKBOX" name="OUT_CALL_CAR" id="OUT_CALL_CAR" value="0"/>外调车辆</LABEL> 
 									</td>
 								</tr>	
 							</tbody>
@@ -529,7 +559,20 @@ function openDialog(){
 							<li id="tpl-cost-discount"></li>
 							<li align="right" id="cost-total"><label class="label-right">总金额: </label><span id="total-amt">{$vo['BASE_RATE_AMT']+$vo['MANDATORY_CHARGES']+$vo['OPTIONS_CHARGES']}</span> 元</li>
 							<li align="right" id="real-total"><label class="label-right">实际金额: </label><input type="text" name="REALTOTAL" value="{$vo['BASE_RATE_AMT']+$vo['MANDATORY_CHARGES']+$vo['OPTIONS_CHARGES']}"> 元</li>
-							<li>车辆预售权:{$location_code|getDeposit=$vo['CAR_MODEL_CODE']}</li>
+                            <li>车辆预售权:{$location_code|getDeposit=$vo['CAR_MODEL_CODE']}</li>
+                            <li class="cost" align="right"><LABEL class="label-right">付款方式</LABEL>
+                            <span >
+                            <SELECT class="cr" name="PAYMENT" style="right">
+                                <OPTION value="1">月结</OPTION>
+                                <OPTION value="2">现金</OPTION>
+                                <OPTION value="3">对私转帐</OPTION>
+                                <OPTION value="4">对公转帐</OPTION>
+                                <OPTION value="5">在线支付</OPTION>
+                                <OPTION value="6">司机代收</OPTION>
+                            </SELECT>
+                            </span>
+                            </li>
+                                    
 						</ul>
 					</td>
 					<td>	
@@ -539,19 +582,7 @@ function openDialog(){
 
 					</td>
                 </tr>
-                <tr>
-                                <td>付款方式</td>
-                                <td>
-                                    <SELECT class="cr" name="PAYMENT">
-                                        <OPTION value="1">月结</OPTION>
-                                            <OPTION value="2">现金</OPTION>
-                                            <OPTION value="3">对私转帐</OPTION>
-                                            <OPTION value="4">对公转帐</OPTION>
-                                            <OPTION value="5">在线支付</OPTION>
-                                            <OPTION value="6">司机代收</OPTION>
-                                    </SELECT>
-                                </td>
-                             </tr>
+                
 				<tr>
 					<td colspan="2">
 							<input  type="submit" id="subbtn" value="生成合同" />

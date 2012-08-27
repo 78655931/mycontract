@@ -1,9 +1,9 @@
-<table width="100%"  >
+<table width="100%"  border="0" >
                 <tr class="dj">
-                    <td width="20%">客户名称</td>
-                    <td width="30%"><input id="REAL_NAME" name="REAL_NAME" type="text" /></td>
-                    <td width="15%">选择车型</td>
-                    <td width="35%"> 
+                    <td width="12%">客户名称</td>
+                    <td width=""><input id="REAL_NAME" name="REAL_NAME" type="text" /></td>
+                    <td width="12%">选择车型</td>
+                    <td width=""> 
                         <select id="CAR_TYPE_CODE" name="CAR_TYPE_CODE">
                             <volist name="option" id="vo">
                             <option value="{$vo.CAR_TYPE_CODE}">{$vo.CAR_TYPE_NAME}</option>
@@ -24,19 +24,25 @@
                     <td><input type="TEXT" name="EMAIL" value=""><input type="hidden" name="MEMBER_TYPE_ID" value=""/></td>
                  </tr>
                 <tr>
-                    
+
+
                     <td><span class="dsb">带驾日期</span><span class="dsj">接送时间</span><span class="zj">取车日期</span></td>
-                    <td ><input id="PICKUP_DATE" name="PICKUP_DATE" type="text"  value=""/></td>
+                    <td ><input id="PICKUP_DATE" name="PICKUP_DATE" type="text"  value="{$tomorrow|date='Y-m-d 00:00',###}"/></td>
                     <td class="zj">还车日期</td>
-                    <td class="zj"><input id="RETURN_DATE_ZJ" name="RETURN_DATE_ZJ" type="text" value=""/></td>
+                    <td class="zj"><input id="RETURN_DATE_ZJ" name="RETURN_DATE_ZJ" type="text" value="{$return|date='Y-m-d H:00',###}"/></td>
                     <td class="dj"><span class="dsb">带驾范围</span><span class="dsj">接送范围</span></td>
-                    <td class="dj"><select id="" name=""><option value="">市内</option></select></td>
+                    <td class="dj"><select id="" name=""><option value="">市内</option></select>
+                        <span>带油
+                        <input type="RADIO" name="CARRY_OIL_STATUS" value="0" checked/>不含
+                        <input type="RADIO" name="CARRY_OIL_STATUS" value="1" />含
+                        </span>
+                    </td>
                 </tr>
                 <tr class="dsj">
                     <td>城市机场</td>
                     <td ><select id="" name="AIRPORT_NAME">
                             <volist name="airport" id="air">
-                            <option value="{$air.AIRPORT_CODE}" <if condition="$air['CITY_CODE'] eq $vo['CITY_CODE']">selected</if>>{$air.AIRPORT_NAME}</option>
+                            <option value="{$air.AIRPORT_CODE}" <if condition="$air['CITY_CODE'] eq $location['CITY_CODE']">selected</if>>{$air.AIRPORT_NAME}</option>
                             </volist>
                          </select>
                      </td>
@@ -72,9 +78,7 @@
                     <td colspan="2">过桥费
                         <input type="RADIO" name="ROAD_BRIDGE_CHARGE_STATUS" value="0" checked/>不含
                         <input type="RADIO" name="ROAD_BRIDGE_CHARGE_STATUS" value="1"/>含
-                        
-                        停车费
-
+                       <br/> 停车费
                         <input type="RADIO" name="PARKING_CHARGE_STATUS" value="0" checked/>不含
                         <input type="RADIO" name="PARKING_CHARGE_STATUS" value="1"/>含
                     </td>
@@ -99,7 +103,7 @@
                 
                 <tr>
                     <td>备注</td>
-                    <td colspan="3"><textarea id="" name="DRIVER_REQUEST" rows="3" cols="63" ></textarea></td>
+                    <td colspan="3"><textarea id="" name="DRIVER_REQUEST" rows="3" cols="50" ></textarea></td>
                 </tr>
                 <tr>
                     <td colspan="4"><input type="button" onclick="findCars();" id="searchDJ" value="查询" /></td>
