@@ -660,7 +660,7 @@ class AgreementAction extends CommonAction {
 		if($list){
 			//修改预定单状态
 
-			$vo = $Model->where('agreement_id="'.$_POST['agreement_id'].'"')->find();
+			$vo = $Model->where('agreement_id="'.$_REQUEST['agreement_id'].'"')->find();
             unset($map);
 
 			$confirmation = $vo['location_code'].'-'.str_replace('DJ','',$_POST['agreement_id']);

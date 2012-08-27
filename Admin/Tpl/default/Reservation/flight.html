@@ -153,8 +153,8 @@
 
         nowdate = DateAdd("d ",j, new Date($('#PICKUP_DATE').val().replace("-","/").replace("-","/")));
         var month=nowdate.getMonth()+1;
-        var monthString = month<9?'0'+month:month;
-        var dateString = nowdate.getDate()<9?'0'+nowdate.getDate():nowdate.getDate();
+        var monthString = month<=9?'0'+month:month;
+        var dateString = nowdate.getDate()<=9?'0'+nowdate.getDate():nowdate.getDate();
             if(j==i){
                // times = DateAdd("h ",j, new Date($('#PICKUP_DATE').val().replace("-","/").replace("-","/")));
                 
@@ -330,7 +330,7 @@ function findCars(){
     if($(':radio[name="ratecode"]:checked').val()=='WEB'){
         RETURN_DATE =  $("input[name='RETURN_DATE_ZJ']").val();
 }
-if($(':radio[name="ratecode"]:checked').val()=='DSB'||$(':radio[name="ratecode"]:checked').val()=='DSJ'){
+if($(':radio[name="ratecode"]:checked').val()=='DSB'||$(':radio[name="ratecode"]:checked').val()=='DSJ'||$('input[name="RETURN_DATE"]').val()==''){
 
         RETURN_DATE = DateAdd("d ",1, new Date($('#PICKUP_DATE').val().replace("-","/").replace("-","/")));
         var month=RETURN_DATE.getMonth()+1;
