@@ -265,9 +265,18 @@ class ReservationAction extends CommonAction {
             $cares = $model->execute("update car set status=1 where CAR_TAG='".$data['CAR_TAG']."' ");
             Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
         }else{
-                   echo '您选择的'.$cartag.'已被使用,请重新选择!';
-                    exit;
+            echo '您选择的'.$cartag.'已被使用,请重新选择!';
+            exit;
         }
+        $model->switchConnect ( 1, "driver_info" );
+        $drivers = $model->where("DRIVER_NAME='".$data['DRIVER_NAME']."' and PHONE='".trim($data['PHONE'])."'")->find();
+        if($drivers['STATUS']==9){
+            $driver= $model->execute ( "update driver_info set  STATUS=0 where DRIVER_NAME='".$data['DRIVER_NAME']."' and PHONE='".trim($data['PHONE'])."'" );
+        }else{
+            echo '您选择的司机'.$data['DRIVER_NAME'].'已出车，请重新选择!';
+            exit;
+        }
+        Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL);
 		$model->switchConnect ( 1, "agreement" );
         $aglist = $model->where('agreement_id="'.$_POST['agreement_id'].'"')->find();
         if(count($aglist)>0){
@@ -277,10 +286,7 @@ class ReservationAction extends CommonAction {
         }
 				// 保存当前数据对象
         $list = $model->add ( $data );
-        $model->switchConnect ( 1, "driver_info" );
-        
-        $driver= $model->execute ( "update driver_info set  STATUS=0 where DRIVER_NAME='".$data['DRIVER_NAME']."' and PHONE='".trim($data['PHONE'])."'" );
-        Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
+         
         $model->switchConnect ( 1, "reservation" );
         $resup = $model->execute ( "update reservation set  STATUS='CONTRACT' where CONFIRMATION='" . $_SESSION['location_code'].'-'.$_REQUEST['confirmation']. "'" );
 
