@@ -35,7 +35,8 @@ class IndexAction extends CommonAction {
 		//$this->display ();
 	/*}*/
 
-	public function index() {
+    public function index() {
+
 		// 新增新的数据库参数
 		//$Model = D ( "Location" );
         //echo 	$_SESSION['location_code'];
