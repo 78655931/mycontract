@@ -766,7 +766,7 @@ class ReservationAction extends CommonAction {
     {
         //echo $_GET['RETURN_DATE'];exit;
         $selcars = C('SELCAR');
-        $url = $selcars."&psRequest.rateCode=".$_GET['RATE_CODE']."&psRequest.pickupCityCode=".$_GET['CITY_CODE']."&psRequest.pickupDistrictCode=".$_GET['DISTRICT_CODE']."&psRequest.pickupLocationCode=".$_SESSION['location_code']."&psRequest.pickupDate=".$_GET['PICKUP_DATE']."&psRequest.returnCityCode=".$_GET['CITY_CODE']."&psRequest.returnDistrictCode=".$_GET['DISTRICT_CODE']."&psRequest.returnLocationCode=".$_SESSION['location_code']."&psRequest.returnDate=".$_GET['RETURN_DATE']."&psRequest.ipaddress=".$_SERVER["REMOTE_ADDR"]."&psRequest.carTypeCode=".$_GET['CAR_TYPE_CODE']."&psRequest.optionClass=D&psRequest.discountCode=";
+        $url = $selcars."&psRequest.rateCode=".$_GET['RATE_CODE']."&psRequest.pickupCityCode=".$_GET['CITY_CODE']."&psRequest.pickupDistrictCode=".$_GET['DISTRICT_CODE']."&psRequest.pickupLocationCode=".$_SESSION['location_code']."&psRequest.pickupDate=".$_GET['PICKUP_DATE']."&psRequest.returnCityCode=".$_GET['CITY_CODE']."&psRequest.returnDistrictCode=".$_GET['DISTRICT_CODE']."&psRequest.returnLocationCode=".$_SESSION['location_code']."&psRequest.returnDate=".$_GET['RETURN_DATE']."&psRequest.ipaddress=".$_SERVER["REMOTE_ADDR"]."&psRequest.carTypeCode=".$_GET['CAR_TYPE_CODE']."&psRequest.optionClass=".$_GET['OPTION_CLASS']."&psRequest.discountCode=";
         // echo $url;
         
         Log::write('调试findDJCars：'.$url, Log::DEBUG); 
@@ -810,7 +810,9 @@ class ReservationAction extends CommonAction {
         $location = $model->where($map)->find();
         $model->switchConnect(1,'brand');
         $brand = $model->getByCompanyCode($location['COMPANY_CODE']);
-
+        
+        $model->switchConnect(1,'airport');
+        $airport = $model->getField('AIRPORT_CODE,AIRPORT_NAME');
         $model->switchConnect(1,'member_type');
         $member = $model->where('MEMBER_TYPE_ID='.$_POST['MEMBER_TYPE_ID'])->find();
         $model->switchConnect(1,'reservation');
@@ -856,6 +858,10 @@ class ReservationAction extends CommonAction {
             $data['REAL_NAME'] = $_POST['REAL_NAME_ZJ'];
             $data['RETURN_DATE'] = $_POST['RETURN_DATE_ZJ'];
             $data['MEMBER_TYPE_NAME'] = $member['MEMBER_TYPE_NAME'];  
+        }
+        if($data['RATE_CODE']=='DSJ'){
+            $data['AIRPORT_CODE'] = $_POST['AIRPORT_CODE_J'];
+            $data['AIRPORT_NAME'] = $airport[$data['AIRPORT_CODE']];
         }
         if (false === $model->create ( $data )) {
 			echo $model->getError ();
@@ -952,6 +958,20 @@ class ReservationAction extends CommonAction {
         } 
      echo json_encode($result);   exit;
 
+    }
+    function cancelRes(){
+        $model = M ( "Location","AdvModel" );
+        $model->addConnect ( C ( "DB_CRS" ), 1 );
+        $model->switchConnect(1,'reservation');
+        $map['RESERVATION_ID'] = $_GET['reservationid'];
+        $data['STATUS']= 'CANCEL';
+        $result = $model->where($map)->save($data);
+        if($result>0){
+            
+            $this->success ('取消成功！');
+
+        }
+        $this->forward ();
     }
 }
 ?>

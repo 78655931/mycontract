@@ -1,4 +1,5 @@
 <include file="Public:header"/>
+ 
 <body scroll="no">
 	<div id="layout">
 		<div id="header">
@@ -64,10 +65,10 @@
 			<th width="8%">客户电话</th>
 			<th width="10%">取车时间</th>
 			<th width="10%">还车时间</th>
-			<th width="25%">车型</th>
+			<th width="18%">车型</th>
             <th width="4%">状态</th>
-            <th width="3%">类型</th>
-			<th width="12%"></th>
+            <th width="5%">类型</th>
+			<th width="17%"></th>
 		</tr>
 
 	</thead>
@@ -85,8 +86,7 @@
 			<td >{$l['CAR_MODEL_NAME']}</td>
             {$l['status']|convert_stat}
 			<td><if condition="($l['rate_code'] eq 'DSB') or ($l['rate_code'] eq 'DSR') or ($l['rate_code'] eq 'DSJ') ">代驾<else/>自驾</if></td>
-            <td > <ul class="toolBar"><li><a width="15%" href="__APP__/Reservation/edit/id/{$l['reservation_id']}/confirmation/{$l['confirmation']}/rate_code/{$l['rate_code']}/navTabId/__MODULE__" target="dialog" max="true" maxable="false" minable="false" resizable="false"  rel="reser2" fresh="true"><span>预订单生成合同</span></a></li></ul>
-
+            <td ><if condition="$l['status'] neq 'CANCEL'"> <ul class="toolBar"><li><a width="15%" href="__APP__/Reservation/edit/id/{$l['reservation_id']}/confirmation/{$l['confirmation']}/rate_code/{$l['rate_code']}/navTabId/__MODULE__" target="dialog" max="true" maxable="false" minable="false" resizable="false"  rel="reser2" fresh="true"><span>预订单生成合同</span></a>&nbsp;<a href="__APP__/Reservation/cancelRes/reservationid/{$l.reservation_id}/navTabId/__MODULE__"  title="确定取消该笔定单？" class="delete"><span>取消预订</span></a></li></ul></if>
 			</td>
             
 		</tr>

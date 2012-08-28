@@ -70,7 +70,21 @@ $(function(){
 if ($.browser.msie) {
 	window.setInterval("CollectGarbage();", 10000);
 }
-
+function  cancelRes(obj){
+    //alert(obj);
+    if(window.confirm('确定取消该笔定单？')){
+        //alert(obj);
+        $.getJSON('__APP__/Reservation/cancelRes',{'reservationid':obj},function(data){
+            if(data>0){
+                alert('预订单取消成功!');
+               // redirect('__APP__');
+            }
+        });
+        return true;
+    }else{
+        return false;
+    }
+}
 </script>
 </head>
 

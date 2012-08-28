@@ -799,7 +799,7 @@ function convert_stat($stat){
 	case 'PAID':
 		return '<td style="background:#ff0066;">已支付</td>';
 	case 'CANCEL':
-		return '<td style="background:#66ccff;">取消预订</td>';
+		return '<td style="background:#66ccff;">已取消</td>';
 	case "PICKUP":
 		return "<td style='background:#00ffff;'>已取车</td>";
 	case "CONTRACT":

@@ -40,7 +40,7 @@
                 </tr>
                 <tr class="dsj">
                     <td>城市机场</td>
-                    <td ><select id="" name="AIRPORT_NAME">
+                    <td ><select id="" name="AIRPORT_CODE_J">
                             <volist name="airport" id="air">
                             <option value="{$air.AIRPORT_CODE}" <if condition="$air['CITY_CODE'] eq $location['CITY_CODE']">selected</if>>{$air.AIRPORT_NAME}</option>
                             </volist>

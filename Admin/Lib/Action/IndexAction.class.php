@@ -68,7 +68,7 @@ class IndexAction extends CommonAction {
 		}
 		$map['CONFIRMATION'] = array('like',$_SESSION['location_code']."%");
 		if(empty($_POST['STATUS']))
-            $map['STATUS'] = array(array('neq','CONTRACT'),array('neq','CANCEL'),array('neq','RETURN'));
+           // $map['STATUS'] = array(array('neq','CONTRACT'),array('neq','CANCEL'),array('neq','RETURN'));
         $map['CONFIRMED_BY'] = array('exp','is null');
 		//dump($map);exit;
 		// 取得满足条件的记录数
@@ -88,7 +88,8 @@ class IndexAction extends CommonAction {
 			//dump($p);
 			// 分页查询数据
 			//dump($map);exit;
-			$voList = $Model->where ( $map )->field ( 'reservation_id,right(CONFIRMATION,15) as confirmation,real_name,identity_code,home_phone,left(pickup_date,16) as pickup_date,left(return_date,16) as return_date,car_type_name,CAR_MODEL_NAME,status,rate_code' )->order ( "`" . $order . "` " . $sort )->limit ( $p->firstRow . ',' . $p->listRows )->findAll ();
+            $voList = $Model->where ( $map )->field ( 'reservation_id,right(CONFIRMATION,15) as confirmation,real_name,identity_code,home_phone,left(pickup_date,16) as pickup_date,left(return_date,16) as return_date,car_type_name,CAR_MODEL_NAME,status,rate_code' )->order ("STATUS desc," ."`" . $order . "` " . $sort)->limit ( $p->firstRow . ',' . $p->listRows )->findAll ();
+            //echo $Model->getLastSql();
 			// 分页跳转的时候保证查询条件
 			foreach ( $map as $key => $val ) {
 				if ( is_array ( $val )) {

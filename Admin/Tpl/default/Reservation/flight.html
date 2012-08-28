@@ -333,18 +333,22 @@ $( "#PICKUP_DATE,#RETURN_DATE_ZJ" ).datetimepicker({
 
 });
 function findCars(){
-    var RETURN_DATE = $("input[name='RETURN_DATE']").val()+$("#_hour").val()+$("#_minute").val();
+    var RETURN_DATE = $("#RETURN_DATE").val()+$("#_hour").val()+$("#_minute").val();
+    var OPTION_CLASS= 'D';
     if($(':radio[name="ratecode"]:checked').val()=='WEB'){
         RETURN_DATE =  $("input[name='RETURN_DATE_ZJ']").val();
+        OPTION_CLASS = 'Z';
 }
-if($(':radio[name="ratecode"]:checked').val()=='DSB'||$(':radio[name="ratecode"]:checked').val()=='DSJ'||$('input[name="RETURN_DATE"]').val()==''){
-
+if(($(':radio[name="ratecode"]:checked').val()=='DSB'||$(':radio[name="ratecode"]:checked').val()=='DSJ'||$('input[name="RETURN_DATE"]').val()=='')&&($(':radio[name="ratecode"]:checked').val()=='DSJ')){
+        
+        
+        //alert(RETURN_DATE);
         RETURN_DATE = DateAdd("d ",1, new Date($('#PICKUP_DATE').val().replace("-","/").replace("-","/")));
         var month=RETURN_DATE.getMonth()+1;
         var monthString = month<9?'0'+month:month;
 
         var dateString = RETURN_DATE.getDate()<=9?'0'+RETURN_DATE.getDate():RETURN_DATE.getDate();
-       // console.log($('#_hour').val());
+        //alert($('#_hour').val());
        if($('#_hour').val()==''){
             var hours = RETURN_DATE.getHours();
             var hoursString = hours<=9?'0'+hours:hours;
@@ -369,7 +373,7 @@ if($(':radio[name="ratecode"]:checked').val()=='DSB'||$(':radio[name="ratecode"]
 
 
                 $("#carsinfo").html("");
-    $.getJSON('__URL__/findDJCars',{'RETURN_DATE':RETURN_DATE,'DISTRICT_CODE':$("#DISTRICT_CODE").val(),'CITY_CODE':$("#CITY_CODE").val(),'CAR_TYPE_CODE':$("#CAR_TYPE_CODE").val(),'PICKUP_DATE':PICKUP_DATE,'RATE_CODE':$(':radio[name="ratecode"]:checked').val()},function(data){
+    $.getJSON('__URL__/findDJCars',{'RETURN_DATE':RETURN_DATE,'DISTRICT_CODE':$("#DISTRICT_CODE").val(),'CITY_CODE':$("#CITY_CODE").val(),'CAR_TYPE_CODE':$("#CAR_TYPE_CODE").val(),'PICKUP_DATE':PICKUP_DATE,'RATE_CODE':$(':radio[name="ratecode"]:checked').val(),'OPTION_CLASS':OPTION_CLASS},function(data){
         
         if(data.psResponse.cars==null){
             alert(data.psResponse.error.errorText);
