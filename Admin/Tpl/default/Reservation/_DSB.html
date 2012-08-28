@@ -1,7 +1,7 @@
 <table width="100%"  border="0" >
                 <tr class="dj">
                     <td width="12%">客户名称</td>
-                    <td width=""><input id="REAL_NAME" name="REAL_NAME" type="text" /></td>
+                    <td width=""><input id="REAL_NAME" name="REAL_NAME" type="text" class="required  textInput" /></td>
                     <td width="12%">选择车型</td>
                     <td width=""> 
                         <select id="CAR_TYPE_CODE" name="CAR_TYPE_CODE">
@@ -13,13 +13,13 @@
                 </tr>
                 <tr class="zj">
                     <td>租车人手机</td>
-                    <td><input type="TEXT" name="HOME_PHONE" value=""></td>
+                    <td><input type="TEXT" name="HOME_PHONE" class="required  textInput" value=""></td>
                     <td>会员名称</td>
-                    <td><input type="TEXT" name="REAL_NAME_ZJ" value=""></td>
+                    <td><input type="TEXT" name="REAL_NAME_ZJ" class="required  textInput" value=""></td>
                 </tr>   
                 <tr class="zj">
                     <td>身份证号</td>
-                    <td><input type="TEXT" name="IDENTITY_CODE" value=""></td>
+                    <td><input type="TEXT" name="IDENTITY_CODE" value="" class="required  textInput"></td>
                     <td>电子邮件</td>
                     <td><input type="TEXT" name="EMAIL" value=""><input type="hidden" name="MEMBER_TYPE_ID" value=""/></td>
                  </tr>
@@ -27,9 +27,9 @@
 
 
                     <td><span class="dsb">带驾日期</span><span class="dsj">接送时间</span><span class="zj">取车日期</span></td>
-                    <td ><input id="PICKUP_DATE" name="PICKUP_DATE" type="text"  value="{$tomorrow|date='Y-m-d 00:00',###}"/></td>
+                    <td ><input id="PICKUP_DATE" name="PICKUP_DATE" type="text" class="required  textInput"  value="{$tomorrow|date='Y-m-d 00:00',###}"/></td>
                     <td class="zj">还车日期</td>
-                    <td class="zj"><input id="RETURN_DATE_ZJ" name="RETURN_DATE_ZJ" type="text" value="{$return|date='Y-m-d H:00',###}"/></td>
+                    <td class="zj"><input id="RETURN_DATE_ZJ" name="RETURN_DATE_ZJ" class="required  textInput" type="text" value="{$return|date='Y-m-d H:00',###}"/></td>
                     <td class="dj"><span class="dsb">带驾范围</span><span class="dsj">接送范围</span></td>
                     <td class="dj"><select id="" name=""><option value="">市内</option></select>
                         <span>带油
@@ -84,7 +84,7 @@
                         <input type="RADIO" name="PARKING_CHARGE_STATUS" value="1"/>含
                     </td>
                 </tr>
-                
+                <!--上下车地点已不在使用，被行程代替-->
                 <tr class="dsj">
                     <td >上下车地点</td>
                     <td colspan="3"><input id="" name="UP_DOWN_ADDRESS" type="text" size="80"/></td>

@@ -672,6 +672,16 @@ function getCarmodel($car_model_code, $condition = '') {
 	// echo $model->getLastSql();
 	return $cartype [$condition];
 }
+function getlocation($localcode) {
+	$Model = M ( "Location","AdvModel" );
+	$Model->addConnect ( C ( "DB_CRS" ), 1 );
+	$Model->switchConnect ( 1, "location" );
+	// $model = M ( 'car_model' );
+	$localtion = $Model->getByLocationCode ( $localcode );
+	// Log::write ( '调试的SQL：' . $model->getLastSql (), Log::SQL );
+	// echo $model->getLastSql();
+	return $localtion['LOCATION_NAME'];
+}
 /**
  * *跟据车type得到车辆信息
  */

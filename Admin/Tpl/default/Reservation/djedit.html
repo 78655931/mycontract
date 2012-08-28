@@ -43,7 +43,27 @@ function showResponse(responseText, statusText, xhr, $form) {
 
 });
 
+$('#OUT_CALL_CAR').click(function(){
+    var c =$('input[name="OUT_CALL_CAR"]').attr('checked');
+    //alert(c);
+    if(c){
+        $(".selectcarTag").hide();
+        $('input[name="master.dwz_devLookup.CAR_TAG"]').attr('readonly',false);
+        $('input[name="master.dwz_devLookup.CAR_MODEL_NAME"]').attr('readonly',false);
+        $('input[name="master.dwz_devLookup.CAR_MODEL"]').attr('readonly',false);
+        $('input[name="master.dwz_devLookup.CURRENT_KM"]').attr('readonly',false);
+        $('input[name="master.dwz_devLookup.CURRENT_OIL"]').attr('readonly',false);
+    }else{
 
+        $(".selectcarTag").show();
+        $('input[name="master.dwz_devLookup.CAR_TAG"]').attr('readonly',true);
+        $('input[name="master.dwz_devLookup.CAR_MODEL_NAME"]').attr('readonly',true);
+        $('input[name="master.dwz_devLookup.CAR_MODEL"]').attr('readonly',true);
+        $('input[name="master.dwz_devLookup.CURRENT_KM"]').attr('readonly',true);
+        $('input[name="master.dwz_devLookup.CURRENT_OIL"]').attr('readonly',true);
+
+    }
+});
 function optionprice(days){
     var opp =0;
     var perunit;
@@ -280,11 +300,11 @@ function openDialog(){
                             </tr>
                             
                             <tr>
-                                <td>总金额</td>
+                                <td>应付金额</td>
                                 <td  class="cr" ><span id="total-amt">{$vo['BASE_RATE_AMT']+$vo['MANDATORY_CHARGES']+$vo['OPTIONS_CHARGES']}</span> 元</td>
                             </tr>
                             <tr>
-                                <td>实际金额</td>
+                                <td>实付金额</td>
                                 <td class="cr" ><input type="text" name="REALTOTAL" value="{$vo['BASE_RATE_AMT']+$vo['MANDATORY_CHARGES']+$vo['OPTIONS_CHARGES']}"> 元</td>
                             </tr>
                             <tr>
@@ -352,8 +372,10 @@ function openDialog(){
 								</tr>
 								<tr>
 									<td colspan="5" style="padding-left: 300px;">
-										<a class="btnLook" target="dialog" ref="reser2" href="__APP__/Reservation/selectCar/modelcode/{$vo['CAR_MODEL_CODE']|urlencode}/cartypecode/{$vo['CAR_TYPE_CODE']}" lookupGroup="master" lookupName="devLookup" width="840" height="380">选 车</a>	
-										<span class="info">选 车</span>
+                                        <span class="selectcarTag">
+                                            <a class="btnLook" target="dialog" ref="reser2" href="__APP__/Reservation/selectCar/modelcode/{$vo['CAR_MODEL_CODE']|urlencode}/cartypecode/{$vo['CAR_TYPE_CODE']}" lookupGroup="master" lookupName="devLookup" width="840" height="380">选 车</a>	
+                                            选 车</span>
+                                        <LABEL ><input type="CHECKBOX" name="OUT_CALL_CAR" id="OUT_CALL_CAR" value="0"/>外调车辆</LABEL>
 
 									</td>
 								</tr>	

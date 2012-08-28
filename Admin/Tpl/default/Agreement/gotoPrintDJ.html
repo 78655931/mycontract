@@ -217,8 +217,8 @@ function optionprice(days){
   <td>{$vo.CURRENT_KM}</td>
   <td class="t1">取车油量</td>
   <td>{$vo.CURRENT_OIL|getOilpercent}</td>
-  <td class="t1">司机姓名</td>
-  <td>{$vo.DRIVER_NAME}</td>
+  <td class="t1">司机</td>
+  <td>{$vo.DRIVER_NAME}/{$vo.PHONE}</td>
   <td><span class="t1">航班号</span></td>
   <td>{$reservation.AIRLINE}</td>
   </tr>
@@ -313,9 +313,9 @@ function optionprice(days){
   <td class="jstd">收车时间</td>
   <td class="jstd">{$vo.REAL_RETURN_DATE}</td>
 <td class="jstd">司机加班费</td>
-<td class="jstd">&nbsp;</td>
+<td class="jstd">{$vo.EXTRA_WORK_FEE}</td>
 <td class="jstd">油费</td>
-<td class="jstd">&nbsp;</td>
+<td class="jstd">{$vo.EXTER_OIL}</td>
 </tr>
 <tr>
   <td class="jstd">出车里程</td>
@@ -323,16 +323,19 @@ function optionprice(days){
   <td class="jstd">收车里程</td>
   <td class="jstd">{$vo.RETURN_KM}</td>
   <td class="jstd">路桥费</td>
-  <td class="jstd">&nbsp;</td>
+  <td class="jstd">{$vo.ROAD_BRIDGE_CHARGE_FEE}</td>
   <td class="jstd">其它费用</td>
   <td class="jstd">{$vo.OTHER_FEE}</td>
 </tr>
 <tr>
-  <td class="jstd">司机代垫费</td>
-  <td colspan="5" class="jstd">&nbsp;</td>
-  <td class="jstd">总费用</td>
-  <td class="jstd">{$vo.RETURN_FEE}</td>
-  </tr>
+    <td class="jstd">司机代垫费</td>
+    <td  class="jstd">{$vo.INSTEAD_OF_PAY}</td>
+    <td class="jstd">代垫原因</td>
+    <td  class="jstd" colspan="3">{$vo.INSTEAD_OF_PAY_CONTENT}</td>
+
+    <td class="jstd">总费用</td>
+    <td class="jstd">{$vo.RETURN_FEE}</td>
+</tr>
 <tr>
   <td colspan="8">&nbsp;
     </td>

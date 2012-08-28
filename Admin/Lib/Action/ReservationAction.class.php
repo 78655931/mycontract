@@ -196,7 +196,8 @@ class ReservationAction extends CommonAction {
 		$Model->addConnect ( C ( "DB_CRS" ), 1 );
 		$Model->switchConnect ( 1, "Car" );
 		$carmodelcode = $_REQUEST ['modelcode'];
-		$map['CAR_MODEL_CODE'] = $carmodelcode;
+        $map['CAR_MODEL_CODE'] = $carmodelcode;
+        $map['CURRENT_LOCATION_CODE'] = $_SESSION['location_code'];
 		$map['status'] = 2;
 		$list = $this->_lists ( $Model, $map, 'CAR_ID', false, 'CAR_ID' );
 		//dump($list);exit;
@@ -247,11 +248,9 @@ class ReservationAction extends CommonAction {
 
         Log::write('调试癿SQL：'.$k."--".$v, Log::DEBUG); 
         }
-	    $data['location_code'] = $_SESSION['location_code'];
-		$validate = array (array ('CAR_TAG', 'require', '车牌必须!' ),array('work_phone','/^(1(([35][0-9])|(47)|[8][01236789]))\d{8}$/','租车人手机格式不正确!'),
-					array('contactperson','require','紧急联系人必须!'),array('contactphone','/^(1(([35][0-9])|(47)|[8][01236789]))\d{8}$/','手机格式不正确!'),array('MEMBER_TYPE_NAME','require','会员类型必须'),array('REAL_NAME','require','客户名称必须'),array('sex','require','性别必须'),array('age','require','出生日期必须'),array('IDENTITY_CODE','require','身份证号码必须'),array('address','require','身份证地址必须'),array('driver_code','require','驾驶证号码必须')
-		);
-		$model->setProperty ( "_validate", $validate );
+        $data['location_code'] = $_SESSION['location_code'];
+        
+		
         if (false === $model->create ( $data )) {
 
 			echo $model->getError ();
@@ -260,13 +259,16 @@ class ReservationAction extends CommonAction {
         $model->switchConnect(1,'car');
         $carinfo = $model->getByCarTag($data["CAR_TAG"]);
 
-            Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
-        if($carinfo['STATUS']==2){
-            $cares = $model->execute("update car set status=1 where CAR_TAG='".$data['CAR_TAG']."' ");
-            Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
-        }else{
-            echo '您选择的车辆'.$cartag.'不可用,请重新选择!';
-            exit;
+        Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
+
+        if($_POST['OUT_CALL_CAR']!=0){
+            if($carinfo['STATUS']==2){
+                $cares = $model->execute("update car set status=1 where CAR_TAG='".$data['CAR_TAG']."' ");
+                Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
+            }else{
+                echo '您选择的车辆'.$cartag.'不可用,请重新选择!';
+                exit;
+            }
         }
         $model->switchConnect ( 1, "driver_info" );
         $drivers = $model->where("DRIVER_NAME='".$data['DRIVER_NAME']."' and PHONE='".trim($data['PHONE'])."'")->find();
@@ -277,7 +279,8 @@ class ReservationAction extends CommonAction {
             exit;
         }
         Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL);
-		$model->switchConnect ( 1, "agreement" );
+        $model->switchConnect ( 1, "agreement" );
+        
         $aglist = $model->where('agreement_id="'.$_POST['agreement_id'].'"')->find();
         if(count($aglist)>0){
         
@@ -321,12 +324,15 @@ class ReservationAction extends CommonAction {
 				Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
             }
 
-				
+				//不是外调车辆，更新库存
+                if($_POST['OUT_CALL_CAR']!=0){
+
                 $model->switchConnect(1,'uni_inventory');
                 $carmodelcode = $data['CAR_MODEL_CODE'];
 				//$model->where("LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$carmodelcode."' and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($_POST['RETURN_DATE'],0,10)."'")->setDec('REAL_INT',1);
-				$model->execute("UPDATE `uni_inventory` SET `REAL_INT`=REAL_INT-1 where LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$carmodelcode."' and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($_POST['RETURN_DATE'],0,10)."'");
-				Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
+				$model->execute("UPDATE `uni_inventory` SET `REAL_INT`=REAL_INT-1 where LOCATION_CODE='".$_SESSION['location_code']."' and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($_POST['RETURN_DATE'],0,10)."'");
+                Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
+                }
         }
         	header ( "Content-Type:text/html; charset=utf-8" );
 			exit ( json_encode ( 1 ) );
@@ -362,24 +368,36 @@ class ReservationAction extends CommonAction {
 			exit ();
         }
         //选车时生成合同和选车逻辑优先级bug
+        //添加合同事务处理
+        
         $model->switchConnect(1,'car');
+        $model->startTrans() ;
+        
         $carinfo = $model->getByCarTag($cartag);
-        if($carinfo['STATUS']==2){
-            $cares = $model->execute("update car set status=1 where CAR_TAG='".$cartag."' and CAR_MODEL_CODE='".$carmodelcode."'");
-        }else{
-            echo '您选择的'.$cartag.'已被使用,请重新选择!';
-            exit;
+        if($_POST['OUT_CALL_CAR']==''){
+            if($carinfo['STATUS']==2){
+                $cares = $model->execute("update car set status=1 where CAR_TAG='".$cartag."' and CAR_MODEL_CODE='".$carmodelcode."'");
+
+                Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
+            }else{
+                echo '您选择的车辆'.$cartag.'不可用,请重新选择!';
+                exit;
+            }
         }
+        
 
 		$model->switchConnect ( 1, "agreement" );
         $aglist = $model->where('agreement_id="'.$_POST['agreement_id'].'"')->find();
         if(count($aglist)>0){
-        
+            
             echo '合同编号'.$_POST['agreement_id'].'已被生成,请重新选择预订!';
+            $model->rollBack();
             exit;
         }
+
+        $model->commit();
 				// 保存当前数据对象
-		$list = $model->add ( $_POST );
+        $list = $model->add ( $_POST );
 		if ($list !== false) { // 保存成功
 			$model->switchConnect ( 1, "reservation_option" );
 			$map['confirmation']	= $_SESSION['location_code'].'-'.$_REQUEST['confirmation'];
@@ -450,11 +468,14 @@ class ReservationAction extends CommonAction {
 				Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
 				
 				
-				$model->switchConnect(1,'uni_inventory');
-				//$model->where("LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$carmodelcode."' and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($_POST['RETURN_DATE'],0,10)."'")->setDec('REAL_INT',1);
-				$model->execute("UPDATE `uni_inventory` SET `REAL_INT`=REAL_INT-1 where LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$carmodelcode."' and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($_POST['RETURN_DATE'],0,10)."'");
-				Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
-				
+                //$model->switchConnect(1,'car');
+                //不是外调车辆，更新库存
+                if($_POST['OUT_CALL_CAR']!=0){
+                    $model->switchConnect(1,'uni_inventory');
+                    //$model->where("LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$carmodelcode."' and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($_POST['RETURN_DATE'],0,10)."'")->setDec('REAL_INT',1);
+                    $model->execute("UPDATE `uni_inventory` SET `REAL_INT`=REAL_INT-1 where LOCATION_CODE='".$_SESSION['location_code']."'  and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($_POST['RETURN_DATE'],0,10)."'");
+                    Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
+                }
 			header ( "Content-Type:text/html; charset=utf-8" );
 			exit ( json_encode ( 1 ) );
 		
@@ -815,6 +836,9 @@ class ReservationAction extends CommonAction {
         $data['TEXT'] = $carinfo['text'];
         $data['STATUS'] = 'NOPREPAY';
         $data['RETURN_DATE'] = $_POST['RETURN_DATE']." ".$_POST['_hour']."-".$_POST["_minute"];
+        if($data['RETURN_DATE']='0000-00-00 00:00'){
+            $data['RETURN_DATE'] = $_POST['RETURN_DATE_D'];
+        }
         
         if($data['RATE_CODE']=='WEB'){
             $data['REAL_NAME'] = $_POST['REAL_NAME_ZJ'];
@@ -825,7 +849,32 @@ class ReservationAction extends CommonAction {
             $data['AIRPORT_CODE'] = $_POST['AIRPORT_CODE_J'];
             $data['AIRPORT_NAME'] = $airport[$data['AIRPORT_CODE']];
         }
+        if($data['RATE_CODE']=='WEB'){
+            $validate_zj = array (array ('REAL_NAME_ZJ', 'require', '自驾会员名称不能为空' ),array('HOME_PHONE','/^(1(([35][0-9])|(47)|[8][01236789]))\d{8}$/','租车人手机格式不正确!'),
+                array('IDENTITY_CODE','require','身份证号码必须'),
+                array('RETURN_DATE_ZJ','require','还车日期必须'),
+                array('PICKUP_DATE','require','取车日期必须')
+            );
+            $model->setProperty ( "_validate", $validate_zj);
+        }else if($data['RATE_CODE']=='DSB'){
+            $validate_dsb = array (array ('REAL_NAME', 'require', '客户名称不能为空' ),
+                array('PICKUP_DATE','require','带驾日期必须')
+            );
+            $model->setProperty ( "_validate", $validate_dsb);
 
+        }else if($data['RATE_CODE']=='DSJ'){
+            $validate_dsj= array (array ('REAL_NAME', 'require', '客户名称不能为空' ),
+                array('PICKUP_DATE','require','带驾日期必须')
+            );
+            $model->setProperty ( "_validate", $validate_dsj);
+
+        }else if($data['RATE_CODE']=='DSR'){
+            $validate_dsr= array (array ('REAL_NAME', 'require', '客户名称不能为空' ),
+                array('PICKUP_DATE','require','带驾日期必须')
+            );
+            $model->setProperty ( "_validate", $validate_dsr);
+
+        }
         if (false === $model->create ( $data )) {
 			echo $model->getError ();
 			exit ();
@@ -836,7 +885,16 @@ class ReservationAction extends CommonAction {
         $model->switchConnect(1,'uni_inventory');
         $carmodelcode = $data['CAR_MODEL_CODE'];
         //$model->where("LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$carmodelcode."' and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($_POST['RETURN_DATE'],0,10)."'")->setDec('REAL_INT',1);
-        $model->execute("UPDATE `uni_inventory` SET `LOC_BOOKINGS`=LOC_BOOKINGS+1,CAR_TYPE_BOOKINGS=CAR_TYPE_BOOKINGS+1,CAR_MODEL_BOOKINGS=CAR_MODEL_BOOKINGS+1,RATE_CODE_BOOKINGS=RATE_CODE_BOOKINGS+1 where LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$carmodelcode."' and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($_POST['RETURN_DATE'],0,10)."'");
+        $model->execute("UPDATE `uni_inventory` SET RATE_CODE_BOOKINGS=RATE_CODE_BOOKINGS+1 where LOCATION_CODE='".$_SESSION['location_code']."' and CAR_TYPE_CODE='".$data['CAR_TYPE_CODE']."' and CAR_MODEL_CODE='".$carmodelcode."' and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($data['RETURN_DATE'],0,10)."' and RATE_CODE='".$data['RATE_CODE']."' ");
+
+        Log::write('预订BOOKING_SQL：'.$model->getLastSql(), Log::SQL); 
+        $model->execute("UPDATE `uni_inventory` SET CAR_MODEL_BOOKINGS=CAR_MODEL_BOOKINGS+1 where LOCATION_CODE='".$_SESSION['location_code']."' and CAR_TYPE_CODE='".$data['CAR_TYPE_CODE']."' and  CAR_MODEL_CODE='".$carmodelcode."' and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($data['RETURN_DATE'],0,10)."'  ");
+
+        Log::write('预订BOOKING_SQL：'.$model->getLastSql(), Log::SQL); 
+        $model->execute("UPDATE `uni_inventory` SET CAR_TYPE_BOOKINGS=CAR_TYPE_BOOKINGS+1 where LOCATION_CODE='".$_SESSION['location_code']."'  and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($data['RETURN_DATE'],0,10)."' and CAR_TYPE_CODE='".$data['CAR_TYPE_CODE']."' ");
+
+        Log::write('预订BOOKING_SQL：'.$model->getLastSql(), Log::SQL); 
+        $model->execute("UPDATE `uni_inventory` SET LOC_BOOKINGS=LOC_BOOKINGS+1 where LOCATION_CODE='".$_SESSION['location_code']."'  and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($data['RETURN_DATE'],0,10)."'");
         Log::write('预订BOOKING_SQL：'.$model->getLastSql(), Log::SQL); 
 
         //行程安排

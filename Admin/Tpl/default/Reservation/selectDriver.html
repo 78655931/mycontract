@@ -21,15 +21,16 @@
 	<table class="table" layoutH="118" targettype="dialog" width="100%">
 		<thead>
 			<tr>
-                <th orderfield="DRIVER_NAME" width="80">司机名称</th>
+                <th orderfield="DRIVER_NAME" width="10%">司机名称</th>
 
-                <th orderfield="DRIVER_SEX" width="80">性别</th>
-                <th orderfield="PHONE" width="100">联系手机</th>
+                <th orderfield="LOCATION_CODE" width="20%">门店</th>
+                <th orderfield="DRIVER_SEX" width="5%">性别</th>
+                <th orderfield="PHONE" width="20%">联系手机</th>
 
-                <th orderfield="FAMILY_PHONE" width="80">家庭电话</th>
-                <th orderfield="DRIVER_CARD_TYPE" width="100">驾照类型</th>
-				<th orderfield="TECHTITLE" width="100">司机星级</th>
-				<th width="80">查找带回</th>
+                <th orderfield="FAMILY_PHONE" width="15%">家庭电话</th>
+                <th orderfield="DRIVER_CARD_TYPE" width="10%">驾照类型</th>
+				<th orderfield="TECHTITLE" width="10%">司机星级</th>
+				<th >查找带回</th>
 			</tr>
 		</thead>			
 
@@ -37,6 +38,7 @@
 			<volist id="vo" name="list">
 			<tr>
                 <td>{$vo.DRIVER_NAME}</td>
+                <td>{$Think.session.location_code|getlocation}</td>
                 <td>{$vo.DRIVER_SEX}</td>
                 <td>{$vo.PHONE}</td>
                 <td>{$vo.FAMILY_PHONE}</td>

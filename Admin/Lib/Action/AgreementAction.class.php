@@ -566,25 +566,32 @@ class AgreementAction extends CommonAction {
 			exit;
 		}
 		//取合同信息
-		$agreement = $Model->where('agreement_id="'.$_POST['agreement_id'].'"')->find();
-		$map['RETURN_KM'] = $_POST['return_km'];
-		$map['RETURN_OIL'] = $_POST['return_oil'];
-		$map['REAL_RETURN_DATE'] = $_POST['REAL_RETURN_DATE'];
-		$map['status'] = 'RETURN';
+        $agreement = $Model->where('agreement_id="'.$_POST['agreement_id'].'"')->find();
+        $map=$_POST;
+		//$map['RETURN_KM'] = $_POST['return_km'];
+	//	$map['RETURN_OIL'] = $_POST['return_oil'];
+	//	$map['REAL_RETURN_DATE'] = $_POST['REAL_RETURN_DATE'];
+        $map['status'] = 'RETURN';
+        unset($map['id']);
 		if (false === $Model->create ($map)) {
 			$this->error ( $Model->getError () );
 		}
 		// 更新数据
-		$list=$Model->where('agreement_id="'.$_POST['agreement_id'].'"')->save ($map);
+        $list=$Model->where('agreement_id="'.$_POST['agreement_id'].'"')->save ($map);
+        Log::write('SQL：'.$Model->getLastSql(), Log::SQL); 
 		if($list){
 			//修改预定单状态
 
-			$vo = $Model->where('agreement_id="'.$_POST['agreement_id'].'"')->find();
+            $vo = $Model->where('agreement_id="'.$_POST['agreement_id'].'"')->find();
+            
+            Log::write('SQL：'.$Model->getLastSql(), Log::SQL); 
 			unset($map);
 			$confirmation = $vo['location_code'].'-'.str_replace('ZJ','',$_POST['agreement_id']);
 			$map['STATUS'] = 'RETURN';
 			$Model->switchConnect(1,"reservation");
-			$cons = $Model->where('CONFIRMATION="'.$confirmation.'"')->find();
+            $cons = $Model->where('CONFIRMATION="'.$confirmation.'"')->find();
+
+            Log::write('SQL：'.$Model->getLastSql(), Log::SQL); 
 			if (count($cons)) {
 				// code...
 
@@ -604,7 +611,9 @@ class AgreementAction extends CommonAction {
 			
 			Log::write('车癿SQL：'.$Model->getLastSql(), Log::SQL); 
 			$Model->switchConnect(1,"car");
-			$map['STATUS'] = 2;
+            $map['STATUS'] = 2;
+            $map['CURRENT_OIL'] = $_POST['return_oil'];
+            $map['CURRENT_KM'] = $_POST['RETURN_KM'];
 			if (false === $Model->create ($map)) {
 				$this->error ( $Model->getError () );
 			}
@@ -619,7 +628,7 @@ class AgreementAction extends CommonAction {
 			//更新还车库存
 			foreach($returndateList as $key=>$val){
 
-			$Model->execute("UPDATE `uni_inventory` SET `REAL_INT`=REAL_INT+1  where LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$carmodel['CAR_MODEL_CODE']."' and  left(END_DATE,10) ='".substr($val[END_DATE],0,10)."'  ");
+			$Model->execute("UPDATE `uni_inventory` SET `REAL_INT`=REAL_INT+1  where LOCATION_CODE='".$_SESSION['location_code']."'  and  left(END_DATE,10) ='".substr($val[END_DATE],0,10)."'  ");
 
 			Log::write('还车癿SQL：'.$Model->getLastSql(), Log::SQL); 
 			}
@@ -692,11 +701,15 @@ class AgreementAction extends CommonAction {
 			
 			Log::write('车癿SQL：'.$Model->getLastSql(), Log::SQL); 
 			$Model->switchConnect(1,"car");
-			$map['STATUS'] = 2;
+            $map['STATUS'] = 2;
+            $map['CURRENT_OIL'] = $_POST['return_oil'];
+            $map['CURRENT_KM'] = $_POST['RETURN_KM'];
 			if (false === $Model->create ($map)) {
 				$this->error ( $Model->getError () );
 			}
-			$Model->where('CAR_TAG="'.$vo['CAR_TAG'].'"')->save($map);
+            $Model->where('CAR_TAG="'.$vo['CAR_TAG'].'"')->save($map);
+
+			Log::write('RETUREN_CAR_SQL：'.$Model->getLastSql(), Log::SQL); 
 			$Model->switchConnect(1,'uni_inventory');
 			//查询还车日期区间
 			//$returndateList = $Model->execute("select END_DATE from `uni_inventory` where  left(END_DATE,10)>= '".substr($_POST['REAL_RETURN_DATE'],0,10)."' and left(END_DATE,10)<= '".substr($agreement['RETURN_DATE'],0,10)."' ");
@@ -707,7 +720,7 @@ class AgreementAction extends CommonAction {
 			//更新还车库存
 			foreach($returndateList as $key=>$val){
 
-			$Model->execute("UPDATE `uni_inventory` SET `REAL_INT`=REAL_INT+1  where LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$carmodel['CAR_MODEL_CODE']."' and  left(END_DATE,10) ='".substr($val[END_DATE],0,10)."'  ");
+			$Model->execute("UPDATE `uni_inventory` SET `REAL_INT`=REAL_INT+1  where LOCATION_CODE='".$_SESSION['location_code']."'  and  left(END_DATE,10) ='".substr($val[END_DATE],0,10)."'  ");
 
 			Log::write('还车癿SQL：'.$Model->getLastSql(), Log::SQL); 
 			}
