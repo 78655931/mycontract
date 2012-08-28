@@ -303,6 +303,20 @@ class ReservationAction extends CommonAction {
 
 				Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
             }
+
+				$model->switchConnect(1,'car');
+				$carinfo = $model->getByCarTag($cartag);
+				if($carinfo['STATUS']==2){
+					$cares = $model->execute("update car set status=1 where CAR_TAG='".$data['CAR_TAG']."' ");
+                }else{
+                   echo '您选择的'.$cartag.'已被使用,请重新选择!';
+                    exit;
+                }
+                $model->switchConnect(1,'uni_inventory');
+                $carmodelcode = $data['CAR_MODEL_CODE'];
+				//$model->where("LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$carmodelcode."' and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($_POST['RETURN_DATE'],0,10)."'")->setDec('REAL_INT',1);
+				$model->execute("UPDATE `uni_inventory` SET `REAL_INT`=REAL_INT-1 where LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$carmodelcode."' and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($_POST['RETURN_DATE'],0,10)."'");
+				Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
         }
         	header ( "Content-Type:text/html; charset=utf-8" );
 			exit ( json_encode ( 1 ) );
