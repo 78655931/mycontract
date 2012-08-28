@@ -265,7 +265,7 @@ class ReservationAction extends CommonAction {
             $cares = $model->execute("update car set status=1 where CAR_TAG='".$data['CAR_TAG']."' ");
             Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
         }else{
-            echo '您选择的'.$cartag.'已被使用,请重新选择!';
+            echo '您选择的车辆'.$cartag.'不可用,请重新选择!';
             exit;
         }
         $model->switchConnect ( 1, "driver_info" );
@@ -273,7 +273,7 @@ class ReservationAction extends CommonAction {
         if($drivers['STATUS']==9){
             $driver= $model->execute ( "update driver_info set  STATUS=0 where DRIVER_NAME='".$data['DRIVER_NAME']."' and PHONE='".trim($data['PHONE'])."'" );
         }else{
-            echo '您选择的司机'.$data['DRIVER_NAME'].'已出车，请重新选择!';
+            echo '您选择的司机'.$data['DRIVER_NAME'].'不可用，请重新选择!';
             exit;
         }
         Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL);

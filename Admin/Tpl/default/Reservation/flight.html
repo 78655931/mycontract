@@ -348,12 +348,12 @@ if(($(':radio[name="ratecode"]:checked').val()=='DSB'||$(':radio[name="ratecode"
         var monthString = month<9?'0'+month:month;
 
         var dateString = RETURN_DATE.getDate()<=9?'0'+RETURN_DATE.getDate():RETURN_DATE.getDate();
-        //alert($('#_hour').val());
-       if($('#_hour').val()==''){
-            var hours = RETURN_DATE.getHours();
-            var hoursString = hours<=9?'0'+hours:hours;
-            var minutes = RETURN_DATE.getMinutes();
-            var minutesString =minutes<=9?'0'+minutes:minutes; 
+      //  alert($('#_hour').val());
+       if($('#_hour').val()==''||$(':radio[name="ratecode"]:checked').val()=='DSJ'||$(':radio[name="ratecode"]:checked').val()=='DSB'){
+           var hours = RETURN_DATE.getHours();
+           var hoursString = hours<=9?'0'+hours:hours;
+           var minutes = RETURN_DATE.getMinutes();
+           var minutesString =minutes<=9?'0'+minutes:minutes; 
           }else{
             hoursString = $('#_hour').val();
             minutesString = $('#_minute').val();
