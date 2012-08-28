@@ -825,13 +825,20 @@ class ReservationAction extends CommonAction {
             $data['AIRPORT_CODE'] = $_POST['AIRPORT_CODE_J'];
             $data['AIRPORT_NAME'] = $airport[$data['AIRPORT_CODE']];
         }
+
         if (false === $model->create ( $data )) {
 			echo $model->getError ();
 			exit ();
         }
         $reservation_add = $model->add($data);
-
+        
         Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
+        $model->switchConnect(1,'uni_inventory');
+        $carmodelcode = $data['CAR_MODEL_CODE'];
+        //$model->where("LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$carmodelcode."' and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($_POST['RETURN_DATE'],0,10)."'")->setDec('REAL_INT',1);
+        $model->execute("UPDATE `uni_inventory` SET `LOC_BOOKINGS`=LOC_BOOKINGS+1,CAR_TYPE_BOOKINGS=CAR_TYPE_BOOKINGS+1,CAR_MODEL_BOOKINGS=CAR_MODEL_BOOKINGS+1,RATE_CODE_BOOKINGS=RATE_CODE_BOOKINGS+1 where LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$carmodelcode."' and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($_POST['RETURN_DATE'],0,10)."'");
+        Log::write('预订BOOKING_SQL：'.$model->getLastSql(), Log::SQL); 
+
         //行程安排
         $model->switchConnect(1,'reservation_plan');
         if($data['RATE_CODE']=='DSJ'){
