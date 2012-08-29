@@ -1,0 +1,4 @@
+[ 2012-08-29T10:56:17+08:00 ] ERR: (ThinkException) Access denied for user: 'root@localhost' (Using password: YES)
+[ 2012-08-29T10:56:18+08:00 ] ERR: (ThinkException) Access denied for user: 'root@localhost' (Using password: YES)
+[ 2012-08-29T10:56:19+08:00 ] ERR: (ThinkException) Access denied for user: 'root@localhost' (Using password: YES)
+[ 2012-08-29T11:34:29+08:00 ] ERR: (ThinkException) Can't connect to MySQL server on 'localhost' (10061)
