@@ -9,7 +9,7 @@ $config	= array(
 	'DB_NAME'=>'test',
 	'DB_USER'=>'root',
 	'DB_PWD'=>'123.com',
-	'DB_PORT'=>'3306',
+	'DB_PORT'=>'3307',
 	'DB_PREFIX'=>'',
 
 	'APP_DEBUG'=>false,	//调试模式开�?
@@ -24,7 +24,7 @@ $config	= array(
 		'hostname' => 'localhost',
 
 		//'hostname' => '172.16.100.51',
-		'hostport' => '3306',
+		'hostport' => '3307',
 		'database' => 'ry_crsengine11_db',
     ),
     'TMPL_ACTION_SUCCESS' =>'Public:success' ,
@@ -40,7 +40,7 @@ $config	= array(
 	'USER_AUTH_MODEL'=>'User',	// 默认验证数据表模�?
 	'AUTH_PWD_ENCODER'=>'md5',	// 用户认证密码加密方式
 	'USER_AUTH_GATEWAY'=>'/Public/login',	// 默认认证网关
-	'NOT_AUTH_MODULE'=>'Public,Index',		// 默认无需认证模块
+	'NOT_AUTH_MODULE'=>'Public',		// 默认无需认证模块
 	'REQUIRE_AUTH_MODULE'=>'',		// 默认需要认证模�?
 	'NOT_AUTH_ACTION'=>'',		// 默认无需认证操作
 	'REQUIRE_AUTH_ACTION'=>'add,edit,index,foreverdelete',		// 默认需要认证操�?
