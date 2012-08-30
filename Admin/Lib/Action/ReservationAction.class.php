@@ -260,11 +260,11 @@ class ReservationAction extends CommonAction {
         $carinfo = $model->getByCarTag($data["CAR_TAG"]);
 
         Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
-
+        Log::write('OUT_CALL_CAR：'.$_POST['OUT_CALL_CAR'], Log::DEBUG); 
         if($_POST['OUT_CALL_CAR']!=0){
             if($carinfo['STATUS']==2){
                 $cares = $model->execute("update car set status=1 where CAR_TAG='".$data['CAR_TAG']."' ");
-                Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
+                Log::write('updateCarSQL：'.$model->getLastSql(), Log::SQL); 
             }else{
                 echo '您选择的车辆'.$cartag.'不可用,请重新选择!';
                 exit;
