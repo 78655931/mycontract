@@ -557,8 +557,8 @@ function openDialog(){
 							</li>
 
 							<li id="tpl-cost-discount"></li>
-							<li align="right" id="cost-total"><label class="label-right">应付金额: </label><span id="total-amt">{$vo['BASE_RATE_AMT']+$vo['MANDATORY_CHARGES']+$vo['OPTIONS_CHARGES']}</span> 元</li>
-							<li align="right" id="real-total"><label class="label-right">实付金额: </label><input type="text" name="REALTOTAL" value="{$vo['BASE_RATE_AMT']+$vo['MANDATORY_CHARGES']+$vo['OPTIONS_CHARGES']}"> 元</li>
+							<li align="right" id="cost-total"><label class="label-right">应收金额: </label><span id="total-amt">{$vo['BASE_RATE_AMT']+$vo['MANDATORY_CHARGES']+$vo['OPTIONS_CHARGES']}</span> 元</li>
+							<li align="right" id="real-total"><label class="label-right">实收金额: </label><input type="text" name="REALTOTAL" value="{$vo['BASE_RATE_AMT']+$vo['MANDATORY_CHARGES']+$vo['OPTIONS_CHARGES']}"> 元</li>
                             <li>车辆预售权:{$location_code|getDeposit=$vo['CAR_MODEL_CODE']}</li>
                             <li class="cost" align="right"><LABEL class="label-right">付款方式</LABEL>
                             <span >

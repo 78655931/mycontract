@@ -30,7 +30,7 @@
 			<td >{$vo['CAR_MODEL_NAME']}</td>
             {$vo['status']|convert_stat}
             <td><if condition="($vo['rate_code'] eq 'DSB') or ($vo['rate_code'] eq 'DSR') or ($vo['rate_code'] eq 'DSJ') ">带驾<else/>自驾</if></td>
-            <td > <ul class="toolBar"><li><a width="15%" href="__URL__/edit/id/{$vo['reservation_id']}/confirmation/{$vo['confirmation']}/rate_code/{$vo['rate_code']}/navTabId/__MODULE__" target="dialog" max="true" maxable="false" minable="false" resizable="false"  rel="reser2" fresh="true"><span>预订单生成合同</span></a>&nbsp;<a href="__APP__/Reservation/cancelRes/reservationid/{$l.reservation_id}/navTabId/__MODULE__"  title="确定取消该笔定单？" class="delete"><span>取消预订</span></a></li></li></ul>
+            <td > <ul class="toolBar"><li><a width="15%" href="__URL__/edit/id/{$vo['reservation_id']}/confirmation/{$vo['confirmation']}/rate_code/{$vo['rate_code']}/navTabId/__MODULE__" target="dialog" max="true" maxable="false" minable="false" resizable="false"  rel="reser2" fresh="true"><span>预订单生成合同</span></a>&nbsp;<a href="__APP__/Reservation/cancelRes/reservationid/{$vo.reservation_id}/navTabId/__MODULE__"  title="确定取消该笔定单？" class="delete"><span>取消预订</span></a></li></li></ul>
 
 			</td>
 		</tr>

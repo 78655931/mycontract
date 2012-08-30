@@ -261,7 +261,9 @@ class ReservationAction extends CommonAction {
 
         Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
         Log::write('OUT_CALL_CAR：'.$_POST['OUT_CALL_CAR'], Log::DEBUG); 
-        if($_POST['OUT_CALL_CAR']!=0){
+        Log::write('CARINFOSTATUS：'.$carinfo['STATUS'], Log::DEBUG); 
+        if($_POST['OUT_CALL_CAR']!=0||$_POST['OUT_CALL_CAR']==''){
+        Log::write('CARINFOSTATUS：'.$carinfo['STATUS'], Log::DEBUG); 
             if($carinfo['STATUS']==2){
                 $cares = $model->execute("update car set status=1 where CAR_TAG='".$data['CAR_TAG']."' ");
                 Log::write('updateCarSQL：'.$model->getLastSql(), Log::SQL); 
