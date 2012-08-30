@@ -29,7 +29,8 @@
                     <td><span class="dsb">带驾日期</span><span class="dsj">接送时间</span><span class="zj">取车日期</span></td>
                     <td ><input id="PICKUP_DATE" name="PICKUP_DATE" type="text" class="required  textInput"  value="{$tomorrow|date='Y-m-d 00:00',###}"/></td>
                     <td class="zj">还车日期</td>
-                    <td class="zj"><input id="RETURN_DATE_ZJ" name="RETURN_DATE_ZJ" class="required  textInput" type="text" value="{$return|date='Y-m-d H:00',###}"/></td>
+                    <td class="zj"><input id="RETURN_DATE_ZJ" name="RETURN_DATE_ZJ" class="required  textInput" type="text" value="{$return|date='Y-m-d H:00',###}"/>
+</td>
                     <td class="dj"><span class="dsb">带驾范围</span><span class="dsj">接送范围</span></td>
                     <td class="dj"><select id="" name=""><option value="">市内</option></select>
                         <span>带油
@@ -39,8 +40,10 @@
                     </td>
                 </tr>
                 <tr class="dsj">
-                    <td>城市机场</td>
-                    <td ><select id="" name="AIRPORT_CODE_J">
+                    <td>结束时间</td>
+                    <td >
+                        <input type="text" name="RETURN_DATE_D" id="RETURN_DATE_D" value="{$tomorrow|date='Y-m-d H:00',###}"/><br/>
+                        <select id="" name="AIRPORT_CODE_J">
                             
                                                         <volist name="airport" id="air">
                             <option value="{$air.AIRPORT_CODE}" <if condition="$air['CITY_CODE'] eq $cityCode">selected</if>>{$air.AIRPORT_NAME}</option>

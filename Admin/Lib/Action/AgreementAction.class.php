@@ -249,13 +249,13 @@ class AgreementAction extends CommonAction {
         }else{
             $rateway = "自驾";
         }
-        $chl = "合同编号:".$vo['agreement_id']."%0A客户名称:".$vo['REAL_NAME']."%0A联系电话:".$vo['work_phone']."%0A车辆品牌:".str_replace('-','/',$vo['CAR_MODEL_NAME'])."%0A车牌号:".$vo['CAR_TAG']."%0A带驾日期:".$vo['PICKUP_DATE']."%0A还车日期:".$vo['RETURN_DATE']."%0A车辆颜色:".$cars['COLOR']."%0A租期:".$reservation['BASE_RATE_QTY']."天%0A司机信息:".$vo['DRIVER_NAME']."/".$vo['PHONE']."%0A航班号:".$reservation['AIRPORT_CODE']."%0A带驾方式:".$rateway."%0A带驾范围:市内";
+        $chl = "合同编号:".$vo['agreement_id']."%0A客户名称:".$vo['REAL_NAME']."%0A车辆品牌:".str_replace('-','/',$vo['CAR_MODEL_NAME'])."%0A车牌号:".$vo['CAR_TAG']."%0A带驾日期:".$vo['PICKUP_DATE']."%0A还车日期:".$vo['RETURN_DATE']."%0A车辆颜色:".$cars['COLOR']."%0A租期:".$reservation['BASE_RATE_QTY']."天%0A司机信息:".$vo['DRIVER_NAME']."/".$vo['PHONE']."%0A航班号:".$reservation['AIRPORT_CODE']."%0A带驾方式:".$rateway."%0A带驾范围:市内%0A联系人:".$vo['LINKMAN']."%0A联系电话:".$vo['LINKMAN_PHONE'];
         $p = '';
         foreach($plan as $k=>$v){
             $p.= $v['START_DATE']."/".$v['PLAN']."%0A";      
         }
 
-        $dr = "合同编号:".$vo['agreement_id']."%0A客户名称:".$vo['REAL_NAME']."%0A联系电话:".$vo['work_phone']."%0A车辆品牌:".str_replace('-','/',$vo['CAR_MODEL_NAME'])."%0A车牌号:".$vo['CAR_TAG']."%0A带驾日期:".$vo['PICKUP_DATE']."%0A还车日期:".$vo['RETURN_DATE']."%0A车辆颜色:".$cars['COLOR']."%0A租期:".$reservation['BASE_RATE_QTY']."天%0A行程安排:".$p."%0A航班号:".$vo['AIRPORT_CODE']."%0A带驾方式:".$rateway."%0A带驾范围:市内%0A司机信息:".$vo['DRIVER_NAME']."/".$vo['PHONE'];
+        $dr = "合同编号:".$vo['agreement_id']."%0A客户名称:".$vo['REAL_NAME']."%0A取系人:".$vo['LINKMAN']."/联系电话:".$vo['LINKMAN_PHONE']."%0A车辆品牌:".str_replace('-','/',$vo['CAR_MODEL_NAME'])."%0A车牌号:".$vo['CAR_TAG']."%0A带驾日期:".$vo['PICKUP_DATE']."%0A还车日期:".$vo['RETURN_DATE']."%0A车辆颜色:".$cars['COLOR']."%0A租期:".$reservation['BASE_RATE_QTY']."天%0A行程安排:".$p."%0A航班号:".$vo['AIRPORT_CODE']."%0A带驾方式:".$rateway."%0A带驾范围:市内%0A司机信息:".$vo['DRIVER_NAME']."/".$vo['PHONE'];
         $this->assign("chl",$chl);
         $this->assign("dr",$dr);
 		$this->assign('unirule',$Model->getByRuleCode($reservation['RULE_CODE']));

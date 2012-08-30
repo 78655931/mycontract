@@ -167,6 +167,10 @@ function openDialog(){
                                 <label for="">停车费</label>
                                 <span class="cr" ><if condition="$vo.PARKING_CHARGE_STATUS eq 0">不含<else/>含</if></span>
                                 </li>
+                                <li class="cost">
+                                <label for="">是否带油</label>
+                                <span class="cr" ><if condition="$vo.CARRY_OIL_STATUS eq 0">不含<else/>含</if></span>
+                                </li>
                                 <notempty name="plan">
                                 行程安排:
                                 <div class="cr">
@@ -222,11 +226,11 @@ function openDialog(){
                             
                             <tr>
                                 <td>应付金额</td>
-                                <td  class="cr" ><span id="total-amt">{$vo['BASE_RATE_AMT']+$vo['MANDATORY_CHARGES']+$vo['OPTIONS_CHARGES']}</span> 元</td>
+                                <td  class="cr" ><span id="total-amt">{$vo['TOTAL_PRICE']}</span> 元</td>
                             </tr>
                             <tr>
                                 <td>实付金额</td>
-                                <td class="cr" ><input type="text" readonly name="REALTOTAL" value="{$vo['BASE_RATE_AMT']+$vo['MANDATORY_CHARGES']+$vo['OPTIONS_CHARGES']}"> 元</td>
+                                <td class="cr" ><input type="text" readonly name="REALTOTAL" value="{$vo['REALTOTAL']}"> 元</td>
                             </tr>
                             <tr>
                                 <td>付款方式</td>

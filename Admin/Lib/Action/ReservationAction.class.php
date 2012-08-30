@@ -846,6 +846,8 @@ class ReservationAction extends CommonAction {
             $data['MEMBER_TYPE_NAME'] = $member['MEMBER_TYPE_NAME'];  
         }
         if($data['RATE_CODE']=='DSJ'){
+
+            $data['RETURN_DATE'] = $_POST['RETURN_DATE_D'];
             $data['AIRPORT_CODE'] = $_POST['AIRPORT_CODE_J'];
             $data['AIRPORT_NAME'] = $airport[$data['AIRPORT_CODE']];
         }
@@ -861,6 +863,7 @@ class ReservationAction extends CommonAction {
                 array('PICKUP_DATE','require','带驾日期必须')
             );
             $model->setProperty ( "_validate", $validate_dsb);
+            $data['RETURN_DATE'] = substr($_POST['PICKUP_DATE'],0,10)." ".$_POST['_hour'].":".$_POST['_minute'];
 
         }else if($data['RATE_CODE']=='DSJ'){
             $validate_dsj= array (array ('REAL_NAME', 'require', '客户名称不能为空' ),
@@ -875,6 +878,8 @@ class ReservationAction extends CommonAction {
             $model->setProperty ( "_validate", $validate_dsr);
 
         }
+
+        Log::write('RETURN_DATE：'.$_POST['RETURN_DATE_D'], Log::DEBUG); 
         if (false === $model->create ( $data )) {
 			echo $model->getError ();
 			exit ();

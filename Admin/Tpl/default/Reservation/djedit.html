@@ -224,6 +224,11 @@ function openDialog(){
 		<input type="hidden" name="DRIVER_REQUEST" value="{$vo.DRIVER_REQUEST}"/>
 		<input type="hidden" name="PICKUP_DATE" value="{$vo.PICKUP_DATE}"/>
         <input type="hidden" name="RETURN_DATE" value="{$vo.RETURN_DATE}"/>
+
+		<input type="hidden" name="LINKMAN" value="{$vo.LINKMAN}"/>
+        <input type="hidden" name="LINKMAN_PHONE" value="{$vo.LINKMAN_PHONE}"/>
+
+        <input type="hidden" name="CARRY_OIL_STATUS" value="{$vo.CARRY_OIL_STATUS}"/>
 		<input type="hidden" name="CFM" value="{$vo.CONFIRMATION}"/>
 		<table class="list" width="98%"  style=" margin-top: 10px;" >
 			<tbody>
@@ -239,11 +244,16 @@ function openDialog(){
                             <li class="cost">
                                 <label for=""> 路桥费</label>
                                 <span class="cr" ><if condition="$vo.ROAD_BRIDGE_CHARGE_STATUS eq 0">不含<else/>含</if></span>
-                            </li>
+                                </li>
+
                             <li class="cost">
                                 <label for="">停车费</label>
                                 <span class="cr" ><if condition="$vo.PARKING_CHARGE_STATUS eq 0">不含<else/>含</if></span>
                                 </li>
+                                <li class="cost">
+                                <label for=""> 是否带油</label>
+                                <span class="cr" ><if condition="$vo.CARRY_OIL_STATUS eq 0">不含<else/>含</if></span>
+                            </li>
                                 <notempty name="plan">
                                 行程安排:
                                 <div class="cr">

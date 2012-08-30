@@ -311,7 +311,7 @@ function showResponse(responseText, statusText, xhr, $form) {
 
 }
     
-$( "#PICKUP_DATE,#RETURN_DATE_ZJ" ).datetimepicker({
+$( "#PICKUP_DATE,#RETURN_DATE_ZJ,#RETURN_DATE_D" ).datetimepicker({
 			defaultdate: "+1w",
 			timeFormat: 'hh:mm',
 			showmonthafteryear: true,
@@ -349,21 +349,31 @@ if(($(':radio[name="ratecode"]:checked').val()=='DSB'||$(':radio[name="ratecode"
         var monthString = month<=9?'0'+month:month;
 
         var dateString = RETURN_DATE.getDate()<=9?'0'+RETURN_DATE.getDate():RETURN_DATE.getDate();
-      //  alert($('#_hour').val());
-       if($('#_hour').val()==''||$(':radio[name="ratecode"]:checked').val()=='DSJ'||$(':radio[name="ratecode"]:checked').val()=='DSB'){
-           var hours = RETURN_DATE.getHours();
-           var hoursString = hours<=9?'0'+hours:hours;
-           var minutes = RETURN_DATE.getMinutes();
-           var minutesString =minutes<=9?'0'+minutes:minutes; 
-       }else{
-          var  hoursString = $('#_hour').val();
-         var   minutesString = $('#_minute').val();
+        if($('#_hour').val()==''||$(':radio[name="ratecode"]:checked').val()=='DSJ'||$(':radio[name="ratecode"]:checked').val()=='DSB'){
+            var hours = RETURN_DATE.getHours();
+            var hoursString = hours<=9?'0'+hours:hours;
+            var minutes = RETURN_DATE.getMinutes();
+            var minutesString =minutes<=9?'0'+minutes:minutes; 
+        }else{
+            var  hoursString = $('#_hour').val();
+            var   minutesString = $('#_minute').val();
+        }
+
+        if($(':radio[name="ratecode"]:checked').val()=='DSJ'){
+            var returndate_d = $('#RETURN_DATE_D').val();
+            var pickupdate = $('#PICKUP_DATE').val();
+            if(returndate_d.substring(0,10)==pickupdate.substring(0,10)){
+
+                RETURN_DATE = RETURN_DATE.getFullYear()+"-"+monthString+"-"+dateString+" "+hoursString+":"+minutesString;
+                }else{
+                RETURN_DATE = returndate_d;
+                }
+                }else{
+
+           RETURN_DATE = RETURN_DATE.getFullYear()+"-"+monthString+"-"+dateString+" "+hoursString+":"+minutesString;
        }
-       
-        
-            RETURN_DATE = RETURN_DATE.getFullYear()+"-"+monthString+"-"+dateString+" "+hoursString+":"+minutesString;
             //$("#RETURN_DATE").val(RETURN_DATE);
-            $('#RETURN_DATE_D').val(RETURN_DATE);
+       //     $('#RETURN_DATE_D').val(RETURN_DATE);
     }
 	RETURN_DATE = RETURN_DATE.replaceAll("-","");
 	RETURN_DATE = RETURN_DATE.replace(" ","");
@@ -615,7 +625,6 @@ function driver_fee(driverstat){
 <input name="CITY_CODE" type="hidden"  id="CITY_CODE" value="{$vo.CITY_CODE}" />
 <input type="hidden" name="OPTION_ID" id="OPTION_ID" value=""/>
 <div class="rulecode"></div>
-<input type="hidden" name="RETURN_DATE_D" id="RETURN_DATE_D" value=""/>
 <div class="layoutBox" >
     <div layoutH="80">
 <table  class="list"  width="98%">

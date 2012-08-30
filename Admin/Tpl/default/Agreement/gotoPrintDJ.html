@@ -179,7 +179,7 @@ function optionprice(days){
   <td>打印日期</td>
   <td>{$date}</td>
   <td><span class="t1">联系电话</span></td>
-  <td>{$vo.work_phone}</td>
+  <td>{$vo.LINKMAN_PHONE}</td>
   </tr>
 <tr>
 <td>合同编号</td>
@@ -239,10 +239,10 @@ function optionprice(days){
   <td colspan="8" class="t">费用信息</td>
 </tr>
 <tr>
-  <td class="t1">路桥费</td>
-  <td><if condition="$vo.ROAD_BRIDGE_CHARGE_STATUS eq 0">含<else/>不含</if></td>
-  <td class="t1">停车费</td>
-  <td><if condition="$vo.PARKING_CHARGE_STATUS eq 0">含<else/>不含</if></td>
+    <td class="t1" colspan="3">路桥费&nbsp;&nbsp;&nbsp;&nbsp;<if condition="$vo.ROAD_BRIDGE_CHARGE_STATUS eq 1">含<else/>不含</if>&nbsp;&nbsp;&nbsp;&nbsp;停车费&nbsp;&nbsp;&nbsp;&nbsp;<if condition="$vo.PARKING_CHARGE_STATUS eq 1">含<else/>不含</if>&nbsp;&nbsp;&nbsp;&nbsp;
+    是否带油&nbsp;&nbsp;&nbsp;&nbsp;<if condition="$vo.CARRY_OIL_STATUS eq 1">含<else/>不含</if>&nbsp;&nbsp;
+    </td>
+
   <td  class="t1">超多少小时算一天</td>
   <td>{$reservation.XHOUR_NEXT_DAY}小时</td>
   <td>付款方式</td>
