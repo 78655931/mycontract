@@ -9,7 +9,7 @@ $config	= array(
 	'DB_NAME'=>'test',
 	'DB_USER'=>'root',
 	'DB_PWD'=>'123.com',
-	'DB_PORT'=>'3307',
+	'DB_PORT'=>'3306',
 	'DB_PREFIX'=>'',
 
 	'APP_DEBUG'=>false,	//调试模式开�?
@@ -24,7 +24,7 @@ $config	= array(
 		'hostname' => 'localhost',
 
 		//'hostname' => '172.16.100.51',
-		'hostport' => '3307',
+		'hostport' => '3306',
 		'database' => 'ry_crsengine11_db',
     ),
     'TMPL_ACTION_SUCCESS' =>'Public:success' ,
