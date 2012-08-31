@@ -163,7 +163,9 @@ class ReservationAction extends CommonAction {
 		$average = round($vo['BASE_RATE_AMT'] /$vo['BASE_RATE_QTY']);
 		$vo ['agreementid'] = 'ZJ' . substr ( $vo ['CONFIRMATION'], - 15 );
 		$Model->switchConnect ( 1, "uni_rate" );
-		$unirate = $Model->getByLocationCode(substr ( $vo ['CONFIRMATION'], 0,15 ));
+        $unirate = $Model->getByLocationCode(substr ( $vo ['CONFIRMATION'], 0,15 ));
+
+        
 		$this->assign('unirate',$unirate);
 		
 		$this->assign('average',$average);
@@ -271,6 +273,11 @@ class ReservationAction extends CommonAction {
                 echo '您选择的车辆'.$cartag.'不可用,请重新选择!';
                 exit;
             }
+        }else{
+            $owner= explode("|",$_POST['MOTORCAR_OWNER_PHONE']);
+            $data['MOTORCAR_OWNER'] = $owner[0];
+            $data['MOTORCAR_OWNER_PHONE'] = $owner[1];
+            $data['PAY_MOTORCAR_OWNER'] = $_POST['PAY_MOTORCAR_OWNER'];
         }
         $model->switchConnect ( 1, "driver_info" );
         $drivers = $model->where("DRIVER_NAME='".$data['DRIVER_NAME']."' and PHONE='".trim($data['PHONE'])."'")->find();
@@ -1006,6 +1013,14 @@ class ReservationAction extends CommonAction {
 
         }
         $this->forward ();
+    }
+    function getMotoCAR(){
+        $model = M ( "Location","AdvModel" );
+        $model->addConnect ( C ( "DB_CRS" ), 1 );
+        $model->switchConnect ( 1, "motorcar_owner" );
+        $list = $model->where("STATUS='Y'")->select();
+        header ( "Content-Type:text/html; charset=utf-8" );
+        exit ( json_encode ( $list ) );
     }
 }
 ?>
