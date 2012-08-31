@@ -112,6 +112,186 @@ class IndexAction extends CommonAction {
 	}
 	public function dwzOrgLookup(){
 		$this->display();
-	}
+    }
+    public function Car(){
+
+		$Model = M ( "Location","AdvModel" );
+		$Model->addConnect ( C ( "DB_CRS" ), 1 );
+		$Model->switchConnect ( 1, "agreement" );
+		$where = " left(booking_date,10)='" . $nowdate . "'";
+		if (! empty ( $_REQUEST ['_order'] )) {
+			$order = $_REQUEST ['_order'];
+        } else {
+            $order = 'status';
+		}
+		if (isset ( $_REQUEST ['_sort'] )) {
+			$sort = $_REQUEST ['_sort'] == 'asc' ? 'asc' : 'desc'; // zhanghuihua@msn.com
+		} else {
+			$sort = $asc ? 'asc' : '="CONTRACT" desc';
+		}
+		$map = $this->_search();
+		if (method_exists($this, '_filter')) {
+			$this->_filter($map);
+		}
+		$map['STATUS'] =array('eq','CONTRACT') ;
+		$count = $Model->where ( $map )->count ( $Model->getPk () );
+		if ($count > 0) {
+			import ( "@.ORG.Page" );
+			if (! empty ( $_REQUEST ['listRows'] )) {
+				$listRows = $_REQUEST ['listRows'];
+			} else {
+				$listRows = '12';
+			}
+			$p = new Page ( $count, $listRows );
+            $voList = $Model->field('agreement_id,REAL_NAME,substr(agreement_id,1,2) as flag,IDENTITY_CODE,status,CAR_MODEL_NAME,HOME_PHONE,PICKUP_DATE,RETURN_DATE,CAR_TAG,DRIVER_NAME')->where ( $map )->order ( "`" . $order . "` " . $sort.",id desc" )->limit ( $p->firstRow . ',' . $p->listRows )->findAll ();
+			foreach ( $map as $key => $val ) {
+				if ( is_array ( $val )) {
+					$p->parameter .= "&$key=" . urlencode ( str_replace('%','',$val[1] )) . "&";
+				}
+            }
+            $hours =23;
+            foreach($voList as $k=>$v){
+                $start = explode(':',substr($v['PICKUP_DATE'],-8));
+                $end = explode(':',substr($v['RETURN_DATE'],-8));
+                //echo $start[1];
+                $start=(int)$start[0];
+                $end=(int)$end[0];
+                $start_d = strtotime(substr($v['PICKUP_DATE'],0,10));
+                $end_d = strtotime(substr($v['RETURN_DATE'],0,10));
+                $day = round(($end_d-$start_d)/3600/24); 
+                $ds = strtotime(substr($v['PICKUP_DATE'],0,10));
+                $weekarray=array("日","一","二","三","四","五","六"); 
+                $tr.= '<tr>'.
+                        '<td>'.
+                        '</td>';
+                for($j=0;$j<=$day;$j++){
+                           $tr.= '<td colspan="24" style="text-align:center">'.date('Y-m-d',$ds).'/星期'.$weekarray[date('w',$ds)].'</td>';  
+                            
+                            $ds += 24*3600;
+                        }
+
+                        $tr.='</tr><tr>';
+                        $tr.='<td><a href="__APP__/agreement/showcontract/id/'.$v['agreement_id'].'" target="dialog" max=true >'.$v['agreement_id'].'</a><br/>'.
+                            $v['CAR_TAG'].'<br/>'.$v['DRIVER_NAME'].'</td>';
+                        for($j=0;$j<=$day;$j++){
+                            for($i=0;$i<=23;$i++){
+                                //第一天
+                                if($j==0){
+                                    if($start<=$i){
+
+                                        $tr.='<td class="agree">'.$i.'</td>';
+                                    }else{
+
+                                        $tr.='<td>'.$i.'</td>';
+                                    }
+                                }elseif($j==$day){
+                                    //最后一天
+                                    if($end>=$i){
+
+                                        $tr.='<td class="agree">'.$i.'</td>';
+                                    }else{
+
+                                        $tr.='<td>'.$i.'</td>';
+                                    }
+                                }else{
+                                    //中间天
+                                    $tr.='<td class="agree">'.$i.'</td>';
+                                }
+                                
+                            }
+
+                        }
+
+                        $tr.='</tr>';
+            }
+            $this->assign('tr',$tr);
+            unset($voList,$tr,$map);
+            $day=0;
+            /**
+             *预订单动态
+             */
+            $Model->switchConnect ( 1, "reservation" );
+
+            $map['STATUS'] = array(array('neq','CONTRACT'),array('neq','CANCEL'),array('neq','RETURN'));
+            $voList = $Model->where ( $map )->field ( 'reservation_id,rate_code,CONFIRMATION,right(CONFIRMATION,15) as confirmation,PICKUP_DATE,RETURN_DATE,CAR_MODEL_NAME,status' )->findAll ();
+            foreach($voList as $k=>$v){
+                $start = explode(':',substr($v['PICKUP_DATE'],-8));
+                $end = explode(':',substr($v['RETURN_DATE'],-8));
+                //echo $start[1];
+                $start=(int)$start[0];
+                $end=(int)$end[0];
+                $start_d = strtotime(substr($v['PICKUP_DATE'],0,10));
+                $end_d = strtotime(substr($v['RETURN_DATE'],0,10));
+                $day = round(($end_d-$start_d)/3600/24); 
+                //echo $day;
+                $ds = strtotime(substr($v['PICKUP_DATE'],0,10));
+                $weekarray=array("日","一","二","三","四","五","六"); 
+                $resV.= '<tr>'.
+                    '<td>'.
+                    '</td>';
+                for($j=0;$j<=$day;$j++){
+                    $resV.= '<td colspan="24" style="text-align:center">'.date('Y-m-d',$ds).'/星期'.$weekarray[date('w',$ds)].'</td>';  
+
+                    $ds += 24*3600;
+                }
+
+                $resV.='</tr><tr>';
+                $resV.='<td><a href="__APP__/reservation/edit/id/'.$v['reservation_id'].'/confirmation/'.$v['confirmation'].'/rate_code/'.$v['rate_code'].'" target="dialog" max=true >'.$v['confirmation'].'</a><br/>'.
+                    $v['CAR_MODEL_NAME'].'</td>';
+                for($j=0;$j<=$day;$j++){
+                    for($i=0;$i<=23;$i++){
+                        //第一天
+                        if($j==0){
+                            if($start<=$i){
+
+                                $resV.='<td class="agree">'.$i.'</td>';
+                            }else{
+
+                                $resV.='<td>'.$i.'</td>';
+                            }
+                        }elseif($j==$day){
+                            //最后一天
+                            if($end>=$i){
+
+                                $resV.='<td class="agree">'.$i.'</td>';
+                            }else{
+
+                                $resV.='<td>'.$i.'</td>';
+                            }
+                        }else{
+                            //中间天
+                            $resV.='<td class="agree">'.$i.'</td>';
+                        }
+
+                    }
+
+                }
+
+                $resV.='</tr>';
+
+            }
+
+                $this->assign('reservation',$resV);
+			$page = $p->show ();
+			$sortImg = $sort; // 排序图标
+			$sortAlt = $sort == 'desc' ? '升序排列' : '倒序排列'; // 排序提示
+			$sort = $sort == 'desc' ? 1 : 0; // 排序方式
+			$this->assign('realname',$_REQUEST['real_name']);
+			$this->assign('pickup_date',$_REQUEST['pickup_date']);
+			$this->assign('identitycode',$_REQUEST['identity_code']);
+			$this->assign ( 'list', $voList );
+			$this->assign ( 'sort', $sort );
+			$this->assign ( 'order', $order );
+			$this->assign ( 'sortImg', $sortImg );
+			$this->assign ( 'sortType', $sortAlt );
+			$this->assign ( "page", $page );
+		}
+		$this->assign ( 'totalCount', $count );
+		$this->assign ( 'numPerPage', C ( 'PAGE_LISTROWS' ) );
+		$this->assign ( 'currentPage', ! empty ( $_REQUEST [C ( 'VAR_PAGE' )] ) ? $_REQUEST [C ( 'VAR_PAGE' )] : 1 );
+		Cookie::set ( '_currentUrl_', __SELF__ );
+		$this->assign ( 'menu', $menu );
+        $this->display();
+    }
 }
 ?>
