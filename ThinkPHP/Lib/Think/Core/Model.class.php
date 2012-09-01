@@ -323,7 +323,7 @@ class Model extends Think
      * @return mixed
      +----------------------------------------------------------
      */
-    public function add($data='',$options=array(),$replace=false) {
+        public function add($data='',$options=array(),$replace=false) {
         if(empty($data)) {
             // 没有传递数据，获取当前数据对象的值
             if(!empty($this->data)) {

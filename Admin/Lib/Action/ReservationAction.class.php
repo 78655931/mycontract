@@ -1007,11 +1007,30 @@ class ReservationAction extends CommonAction {
         $map['RESERVATION_ID'] = $_GET['reservationid'];
         $data['STATUS']= 'CANCEL';
         $result = $model->where($map)->save($data);
+        //修改预订库存
+        unset($data);
+        $data = $model->getByReservationId($_GET['reservationid']);
+
+        $model->switchConnect(1,'uni_inventory');
+        $carmodelcode = $data['CAR_MODEL_CODE'];
+        //$model->where("LOCATION_CODE='".$_SESSION['location_code']."' and CAR_MODEL_CODE='".$carmodelcode."' and left(START_DATE,10)>='".substr($_POST['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($_POST['RETURN_DATE'],0,10)."'")->setDec('REAL_INT',1);
+        $model->execute("UPDATE `uni_inventory` SET RATE_CODE_BOOKINGS=RATE_CODE_BOOKINGS-1 where LOCATION_CODE='".$_SESSION['location_code']."' and CAR_TYPE_CODE='".$data['CAR_TYPE_CODE']."' and CAR_MODEL_CODE='".$carmodelcode."' and left(START_DATE,10)>='".substr($data['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($data['RETURN_DATE'],0,10)."' and RATE_CODE='".$data['RATE_CODE']."' ");
+
+        Log::write('预订BOOKING_SQL：'.$model->getLastSql(), Log::SQL); 
+        $model->execute("UPDATE `uni_inventory` SET CAR_MODEL_BOOKINGS=CAR_MODEL_BOOKINGS-1 where LOCATION_CODE='".$_SESSION['location_code']."' and CAR_TYPE_CODE='".$data['CAR_TYPE_CODE']."' and  CAR_MODEL_CODE='".$carmodelcode."' and left(START_DATE,10)>='".substr($data['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($data['RETURN_DATE'],0,10)."'  ");
+
+        Log::write('预订BOOKING_SQL：'.$model->getLastSql(), Log::SQL); 
+        $model->execute("UPDATE `uni_inventory` SET CAR_TYPE_BOOKINGS=CAR_TYPE_BOOKINGS-1 where LOCATION_CODE='".$_SESSION['location_code']."'  and left(START_DATE,10)>='".substr($data['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($data['RETURN_DATE'],0,10)."' and CAR_TYPE_CODE='".$data['CAR_TYPE_CODE']."' ");
+
+        Log::write('预订BOOKING_SQL：'.$model->getLastSql(), Log::SQL); 
+        $model->execute("UPDATE `uni_inventory` SET LOC_BOOKINGS=LOC_BOOKINGS-1 where LOCATION_CODE='".$_SESSION['location_code']."'  and left(START_DATE,10)>='".substr($data['PICKUP_DATE'],0,10)."' and left(END_DATE,10)<='".substr($data['RETURN_DATE'],0,10)."'");
+        Log::write('预订BOOKING_SQL：'.$model->getLastSql(), Log::SQL);
         if($result>0){
             
             $this->success ('取消成功！');
 
         }
+         
         $this->forward ();
     }
     function getMotoCAR(){

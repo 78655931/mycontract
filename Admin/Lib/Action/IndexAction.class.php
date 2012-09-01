@@ -135,7 +135,6 @@ class IndexAction extends CommonAction {
 		}
 		$map['STATUS'] =array('eq','CONTRACT') ;
 		$count = $Model->where ( $map )->count ( $Model->getPk () );
-		if ($count > 0) {
 			import ( "@.ORG.Page" );
 			if (! empty ( $_REQUEST ['listRows'] )) {
 				$listRows = $_REQUEST ['listRows'];
@@ -214,6 +213,8 @@ class IndexAction extends CommonAction {
 
             $map['STATUS'] = array(array('neq','CONTRACT'),array('neq','CANCEL'),array('neq','RETURN'));
             $voList = $Model->where ( $map )->field ( 'reservation_id,rate_code,CONFIRMATION,right(CONFIRMATION,15) as confirmation,PICKUP_DATE,RETURN_DATE,CAR_MODEL_NAME,status' )->findAll ();
+            
+        Log::write('YUNGWEI::SQL：'.$Model->getLastSql(), Log::SQL); 
             foreach($voList as $k=>$v){
                 $start = explode(':',substr($v['PICKUP_DATE'],-8));
                 $end = explode(':',substr($v['RETURN_DATE'],-8));
@@ -285,7 +286,6 @@ class IndexAction extends CommonAction {
 			$this->assign ( 'sortImg', $sortImg );
 			$this->assign ( 'sortType', $sortAlt );
 			$this->assign ( "page", $page );
-		}
 		$this->assign ( 'totalCount', $count );
 		$this->assign ( 'numPerPage', C ( 'PAGE_LISTROWS' ) );
 		$this->assign ( 'currentPage', ! empty ( $_REQUEST [C ( 'VAR_PAGE' )] ) ? $_REQUEST [C ( 'VAR_PAGE' )] : 1 );

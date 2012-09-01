@@ -40,7 +40,27 @@
 <script type="text/javascript">
 	$(function(){
 		$.ajaxSettings.global=false;
-		optionprice('{$vo.BASE_RATE_QTY}');
+        optionprice('{$vo.BASE_RATE_QTY}');
+
+        $( "#RECEIVABLE_DATE" ).datetimepicker({
+            defaultdate: "+1w",
+            timeFormat: 'hh:mm',
+            showmonthafteryear: true,
+            numberofmonths: 2,  
+            mindate: 0 ,
+            dateFormat:'yy-mm-dd',
+            closetext:'关闭',
+            duration: 'fast',
+            showanim:'fadein',
+            showon:'button', 
+            buttontext:'选择日期',
+            showbuttonpanel: false,
+            stepHour: 1,//设置步长
+            stepMinute: 15,
+            stepSecond: 10,
+            hourGrid: 4,
+            minuteGrid: 10	
+        });
 	});
 	
 	function optionprice(days){
@@ -335,7 +355,80 @@
 					<td colspan="2">						<a target="_blank" mask=true max=true maxable=true minable=true resizable=true drawable=true ref="contract"  href="__URL__/gotoPrint/agreementid/{$Think.get.id|base64_encode}">打印合同</a>					</td></tr>	
 			</tbody>
 		</table>
-	</form>
+    </form>
+    <!--flags 是0，表示还有未付款的金额-->
+             <if condition="($vo['status'] eq 'RETURN') and ($flags eq '0')">
+              <form action="__URL__/insertAccount/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)" method="post">
+                <input name="AGREEMENT_ID" value="{$vo.agreement_id}" type="hidden" />
+                <input name="LOCATION_CODE" type="hidden" value="{$Think.session.location_code}"/>
+                <input name="AGREEMENT_ID" value="{$vo.agreement_id}" type="hidden" />
+                <input type="hidden" name="LAST_UNRECEIVED_MONRY" value="{$LAST_UNRECEIVED_MONRY['UNRECEIVED_MONRY']}" />
+                <input name="RETURN_FEE" type="hidden" value="{$vo.RETURN_FEE}"/>
+                <table class="list" width="100%">
+                    <tr>
+                        <th>收款时间</th>
+                        <th>收款金额</th>
+                        <th>支付方式</th>
+                        <th>车牌号码</th>
+                        <th>车辆品牌</th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <td><input id="RECEIVABLE_DATE" name="RECEIVABLE_DATE" value="{$vo.RETURN_DATE}" type="text" /></td>
+                        <td><input id="" name="RECEIVABLE_MONEY" type="text" /></td>
+                        <td>
+                            <SELECT  name="PAYMENT">
+                                <OPTION value="1">月结</OPTION>
+                                <OPTION value="2">现金</OPTION>
+                                <OPTION value="3">对私转帐</OPTION>
+                                <OPTION value="4">对公转帐</OPTION>
+                                <OPTION value="5">在线支付</OPTION>
+                                <OPTION value="6">司机代收</OPTION>
+                            </SELECT>
+                        </td>
+                        <td><input id="" name="CAR_TAG" type="text" value="{$vo.CAR_TAG}" /></td>
+                        <td><input id="" name="CAR_MODEL" type="text" value="{$vo.CAR_MODEL}"/></td>
+                        <td><input type="submit" value="增加" /></td>
+                    </tr>
+                </table>
+            </form>
+            </if>
+            <if condition="($vo['status'] eq 'RETURN') or ($vo['status'] eq 'CLOSE')">
+            <table class="list" width="100%">
+                <tr>
+                    <th>收款时间</th>
+                    <th>收款金额</th>
+                    <th>支付方式</th>
+                    <th>未收款金额</th>
+                    <th>车主</th>
+                    <th>车牌号码</th>
+                    <th>车辆品牌</th>
+                    <th></th>
+                </tr>
+                <volist name="accounts" id="account">
+                <tr>
+                    <td>{$account.RECEIVABLE_DATE}</td>
+
+                    <td>{$account.RECEIVABLE_MONEY}</td>
+                    <td>{$account.PAYMENT}</td>
+                    <td>{$account.UNRECEIVED_MONRY}
+                    </td>
+                    <td>{$account.MOTORCAR_OWNER}</td>
+                    <td>{$account.CAR_TAG}</td>
+                    <td>{$account.CAR_MODEL}</td>
+                </tr>
+                </volist>
+            </table>
+            </if>
+            <if condition="($vo['status'] eq 'RETURN') and $flags neq '0'">
+
+            <form action="__URL__/closeContract/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)" method="post">
+
+                <input name="id" value="{$vo.id}" type="hidden" />
+                <input name="status" value="CLOSE" type="hidden" />
+                  <input type="submit" value="关闭合同" />
+                  </form>
+            </if>
 </div>
 
 

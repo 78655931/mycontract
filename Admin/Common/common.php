@@ -815,7 +815,9 @@ function convert_stat($stat){
 	case "CONTRACT":
 		return "<td id='statusCar' style='background:#66ccff;'>已生成</td>";
 	case "RETURN":
-		return "<td style='background:#009900;'>已还车</td>";
+        return "<td style='background:#009900;'>已还车</td>";
+    case "CLOSE":
+        return "<td style='background:#00ff00;'>已关闭</td>";
 	}
 }
 function getOptions($confirmation) {
