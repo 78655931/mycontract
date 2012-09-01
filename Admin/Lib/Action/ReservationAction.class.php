@@ -54,7 +54,7 @@ class ReservationAction extends CommonAction {
         }
 		if(empty($_POST['STATUS']))
             $map['STATUS'] = array(array('neq','CONTRACT'),array('neq','CANCEL'),array('neq','RETURN'));
-        $map['CONFIRMED_BY'] = array('exp','is null');
+        //$map['CONFIRMED_BY'] = array('exp','is null');
 		//dump($map);exit;
 		// 取得满足条件的记录数
         $count = $Model->where ( $map )->count ( $Model->getPk () );

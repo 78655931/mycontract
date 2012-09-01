@@ -392,7 +392,7 @@ if(($(':radio[name="ratecode"]:checked').val()=='DSB'||$(':radio[name="ratecode"
             alert(data.psResponse.error.errorText);
         }else{
             $.each(data.psResponse.cars.car,function(i,item){
-                var uc = {rulecode:item.ruleCode,hourate:item.extraHourRate,img:item.vehicle.carTypeImgUrl,carModelName:item.vehicle.carModelName,rate:item.baseRateAmt/item.baseRateQty,carModelCode:item.vehicle.carModelCode,bigPackage:item.vehicle.bigPackage,smallPackage:item.vehicle.smallPackage,rateitem:$.stringifyJSON(item)};
+                var uc = {rulecode:item.ruleCode,hourate:item.extraHourRate,img:item.vehicle.carModelImgUrl,carModelName:item.vehicle.carModelName,rate:item.baseRateAmt/item.baseRateQty,carModelCode:item.vehicle.carModelCode,bigPackage:item.vehicle.bigPackage,smallPackage:item.vehicle.smallPackage,rateitem:$.stringifyJSON(item)};
                 var tpl = '<tr>'+
                     '<td width="20%" rowspan="3">'+
                         '<img src="{{img}}" />'+
