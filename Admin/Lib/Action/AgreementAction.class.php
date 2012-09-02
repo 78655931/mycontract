@@ -609,7 +609,7 @@ class AgreementAction extends CommonAction {
             Log::write('SQL：'.$Model->getLastSql(), Log::SQL); 
 			unset($map);
 			$confirmation = $vo['location_code'].'-'.str_replace('ZJ','',$_POST['agreement_id']);
-			$map['STATUS'] = 'RETURN';
+			//$map['STATUS'] = 'RETURN';
 			$Model->switchConnect(1,"reservation");
             $cons = $Model->where('CONFIRMATION="'.$confirmation.'"')->find();
 
@@ -695,7 +695,7 @@ class AgreementAction extends CommonAction {
             unset($map);
 
 			$confirmation = $vo['location_code'].'-'.str_replace('DJ','',$_POST['agreement_id']);
-            $map['STATUS'] = 'RETURN';
+            //$map['STATUS'] = 'RETURN';
 
             $Model->switchConnect(1,"driver_info");
             
