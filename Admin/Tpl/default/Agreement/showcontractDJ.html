@@ -269,11 +269,11 @@ $( "#RECEIVABLE_DATE" ).datetimepicker({
                             </tr>
                             <tr>
                                 <td>外调车租</td>
-                                <td class="cr">{$vo.PAY_MOTORCAR_OWNER}</td>
+                                <td class="cr">{$vo.PAY_MOTORCAR_OWNER}元</td>
                             </tr>
                             <tr>
                                 <td>结算总金额</td>
-                                <td class="cr">{$vo.RETURN_FEE}</td>
+                                <td class="cr">{$vo.RETURN_FEE}元</td>
                             </tr>
                         </table>
 						
@@ -284,7 +284,7 @@ $( "#RECEIVABLE_DATE" ).datetimepicker({
 							<thead>
 								<tr>
 									<th width="15%">车牌号</th>
-									<th width="15%">车辆类型</th>
+									<th width="15%">车辆品牌</th>
 									<th width="40%">品牌型号</th>
 									<th width="15%">当前里程</th>
 									<th width="15%">当前油量</th>
@@ -410,7 +410,9 @@ $( "#RECEIVABLE_DATE" ).datetimepicker({
                     <td>{$account.RECEIVABLE_DATE}</td>
 
                     <td>{$account.RECEIVABLE_MONEY}</td>
-                    <td>{$account.PAYMENT}</td>
+                    <td>
+                        <if condition="$account['PAYMENT'] eq 1">月结<elseif condition="$account['PAYMENT'] eq 2"/>现金<elseif condition="$account['PAYMENT'] eq 3"/>对私转帐<elseif condition="$vo['PAYMENT'] eq 4"/>对公转帐<elseif condition="$vo['PAYMENT'] eq 5"/>在线支付<else/>司机代收</if>
+                        </td>
                     <td>{$account.UNRECEIVED_MONRY}
                     </td>
                     <td>{$account.MOTORCAR_OWNER}</td>

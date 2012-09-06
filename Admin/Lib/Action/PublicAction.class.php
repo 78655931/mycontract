@@ -12,23 +12,28 @@
 class PublicAction extends Action {
 	// 检查用户是否登录
 
-	protected function checkUser() {
+    protected function checkUser() {
+        //print_r($_SESSION);exit;
 		if(!isset($_SESSION[C('USER_AUTH_KEY')])) {
 			$this->assign('jumpUrl','Public/login');
 			$this->error('没有登录');
 		}
 	}
 
-	// 菜单页面
+    // 菜单页面
+    /**
 	public function menu() {
         $this->checkUser();
+           // echo "test";exit;
         if(isset($_SESSION[C('USER_AUTH_KEY')])) {
             //显示菜单项
             $menu  = array();
             
         	//读取数据库模块列表生成菜单项
 			$node    =   M("Node");
-			$id	=	$node->getField("id");
+            $id	=	$node->getField("id");
+           // echo $node->getLastSql();exit;
+          //  dump($id);
 			$where['level']=2;
 			$where['status']=1;
 			$where['pid']=$id;
@@ -45,6 +50,45 @@ class PublicAction extends Action {
             if(!empty($_GET['tag'])){
                 $this->assign('menuTag',$_GET['tag']);
             }
+		//	dump($menu);
+            $this->assign('menu',$menu);
+		}
+		C('SHOW_RUN_TIME',false);			// 运行时间显示
+		C('SHOW_PAGE_TRACE',false);
+		$this->display();
+	}
+    **/
+    public function menu() {
+        $this->checkUser();
+        if(isset($_SESSION[C('USER_AUTH_KEY')])) {
+            //显示菜单项
+            $menu  = array();
+            if(isset($_SESSION['menu'.$_SESSION[C('USER_AUTH_KEY')]])) {
+
+                //如果已经缓存，直接读取缓存
+                $menu   =   $_SESSION['menu'.$_SESSION[C('USER_AUTH_KEY')]];
+            }else {
+                //读取数据库模块列表生成菜单项
+                $node    =   M("Node");
+				$id	=	$node->getField("id");
+				$where['level']=2;
+				$where['status']=1;
+				$where['pid']=$id;
+                $list	=	$node->where($where)->field('id,name,group_id,title')->order('sort asc')->select();
+                $accessList = $_SESSION['_ACCESS_LIST'];
+                foreach($list as $key=>$module) {
+                     if(isset($accessList[strtoupper(APP_NAME)][strtoupper($module['name'])]) || $_SESSION['administrator']) {
+                        //设置模块访问权限
+                        $module['access'] =   1;
+                        $menu[$key]  = $module;
+                    }
+                }
+                //缓存菜单访问
+                $_SESSION['menu'.$_SESSION[C('USER_AUTH_KEY')]]	=	$menu;
+            }
+            if(!empty($_GET['tag'])){
+                $this->assign('menuTag',$_GET['tag']);
+            }
 			//dump($menu);
             $this->assign('menu',$menu);
 		}
@@ -52,46 +96,6 @@ class PublicAction extends Action {
 		C('SHOW_PAGE_TRACE',false);
 		$this->display();
 	}
-	
-//	public function menu() {
-//        $this->checkUser();
-//        if(isset($_SESSION[C('USER_AUTH_KEY')])) {
-//            //显示菜单项
-//            $menu  = array();
-//            if(isset($_SESSION['menu'.$_SESSION[C('USER_AUTH_KEY')]])) {
-//
-//                //如果已经缓存，直接读取缓存
-//                $menu   =   $_SESSION['menu'.$_SESSION[C('USER_AUTH_KEY')]];
-//            }else {
-//                //读取数据库模块列表生成菜单项
-//                $node    =   M("Node");
-//				$id	=	$node->getField("id");
-//				$where['level']=2;
-//				$where['status']=1;
-//				$where['pid']=$id;
-//                $list	=	$node->where($where)->field('id,name,group_id,title')->order('sort asc')->select();
-//                $accessList = $_SESSION['_ACCESS_LIST'];
-//                foreach($list as $key=>$module) {
-//                     if(isset($accessList[strtoupper(APP_NAME)][strtoupper($module['name'])]) || $_SESSION['administrator']) {
-//                        //设置模块访问权限
-//                        $module['access'] =   1;
-//                        $menu[$key]  = $module;
-//                    }
-//                }
-//                //缓存菜单访问
-//                $_SESSION['menu'.$_SESSION[C('USER_AUTH_KEY')]]	=	$menu;
-//            }
-//            if(!empty($_GET['tag'])){
-//                $this->assign('menuTag',$_GET['tag']);
-//            }
-//			//dump($menu);
-//            $this->assign('menu',$menu);
-//		}
-//		C('SHOW_RUN_TIME',false);			// 运行时间显示
-//		C('SHOW_PAGE_TRACE',false);
-//		$this->display();
-//	}
-
     // 后台首页 查看系统信息
     public function main() {
         $info = array(
