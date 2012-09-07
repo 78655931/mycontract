@@ -255,12 +255,14 @@ $(function(){
 		width: 260,
         selectFirst: false
         
+        
 });
     
     $("input[name='HOME_PHONE']").autocomplete("__URL__/memberInfo",{
         multiple: true,
         dataType: "json",
         parse: function(data) {
+            //console.log(data);
             return $.map(data, function(row) {
                 return {
                     data: row,
@@ -270,6 +272,7 @@ $(function(){
             });
         },
         formatItem: function(item) {
+            //console.log(item);
             return format(item);
         }
     }).result(function(e, item) {

@@ -259,6 +259,7 @@ class ReservationAction extends CommonAction {
 			exit ();
         }
         $model->switchConnect(1,'car');
+        $model->startTrans() ;
         $carinfo = $model->getByCarTag($data["CAR_TAG"]);
 
         Log::write('调试癿SQL：'.$model->getLastSql(), Log::SQL); 
@@ -294,6 +295,7 @@ class ReservationAction extends CommonAction {
         if(count($aglist)>0){
         
             echo '合同编号'.$_POST['agreement_id'].'已被生成,请重新选择预订!';
+            $model->rollBack();
             exit;
         }
 				// 保存当前数据对象
