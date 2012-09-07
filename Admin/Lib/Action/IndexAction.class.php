@@ -237,7 +237,7 @@ class IndexAction extends CommonAction {
                 }
 
                 $resV.='</tr><tr>';
-                $resV.='<td><a href="__APP__/Reservation/edit/id/'.$v['reservation_id'].'/confirmation/'.$v['confirmation'].'/rate_code/'.$v['rate_code'].'" target="dialog" max=true >'.$v['confirmation'].'</a><br/>'.
+                $resV.='<td><a href="__APP__/Reservation/edit/id/'.$v['reservation_id'].'/confirmation/'.$v['confirmation'].'/rate_code/'.$v['rate_code'].'" target="dialog" max=true rel="reser2">'.$v['confirmation'].'</a><br/>'.
                     $v['CAR_MODEL_NAME'].'</td>';
                 for($j=0;$j<=$day;$j++){
                     for($i=0;$i<=23;$i++){
