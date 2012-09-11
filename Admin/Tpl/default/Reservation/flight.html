@@ -276,6 +276,7 @@ $(function(){
             return format(item);
         }
     }).result(function(e, item) {
+        //alert(item);
         $("input[name='EMAIL']").val(item.email);
         $("input[name='HOME_PHONE']").val(item.home_phone);
         $('input[name="REAL_NAME_ZJ"]').val(item.name);
