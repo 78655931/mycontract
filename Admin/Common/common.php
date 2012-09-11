@@ -668,8 +668,8 @@ function getCarmodel($car_model_code, $condition = '') {
 	$Model->switchConnect ( 1, "car_model" );
 	// $model = M ( 'car_model' );
 	$cartype = $Model->getByCarModelCode ( $car_model_code );
-	// Log::write ( '调试的SQL：' . $model->getLastSql (), Log::SQL );
-	// echo $model->getLastSql();
+    Log::write ( '调试的SQL：' . $Model->getLastSql (), Log::SQL );
+	//Log::write ( 'CARMODENAME：' . $condition, Log::LOG );
 	return $cartype [$condition];
 }
 function getlocation($localcode) {
@@ -805,17 +805,19 @@ function convert_stat($stat){
 
 	switch($stat){
 	case 'NOPREPAY':
-		return '<td style="background:#ffff00;">未支付</td>';	
+		return '<td style="background:#99FF99;">未支付</td>';	
 	case 'PAID':
-		return '<td style="background:#ff0066;">已支付</td>';
+		return '<td style="background:#FFCC33;">已支付</td>';
 	case 'CANCEL':
-		return '<td style="background:#ff6600;">已取消</td>';
+		return '<td style="background:#FF6C6C;">已取消</td>';
 	case "PICKUP":
 		return "<td style='background:#00ffff;'>已取车</td>";
 	case "CONTRACT":
-		return "<td id='statusCar' style='background:#66ccff;'>已生成</td>";
+		return "<td id='statusCar' style='background:#00CCFF;'>已生成</td>";
 	case "RETURN":
-		return "<td style='background:#009900;'>已还车</td>";
+        return "<td style='background:#99FF99;'>已还车</td>";
+    case "CLOSE":
+        return "<td style='background:#FF6C6C;'>已关闭</td>";
 	}
 }
 function getOptions($confirmation) {

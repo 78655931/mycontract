@@ -114,7 +114,18 @@ class AgreementAction extends CommonAction {
 		$this->assign("confirmation",$confirmation);
 		foreach($mandy as $k=>$v){
 				$rate += $v['RATE']*$BASE_RATE_QTY;
-		}
+        }
+
+        $Model->switchConnect ( 1, "agreement_receivable_account" );
+        $accounts = $Model->where('AGREEMENT_ID="'.$id.'"')->select();
+        $flags = $Model->where('AGREEMENT_ID="'.$id.'" and UNRECEIVED_MONRY<=0')->count();
+        
+        $LAST_UNRECEIVED_MONRY = $Model->field('UNRECEIVED_MONRY')->where('AGREEMENT_ID="'.$id.'"')->order('AGREEMENT_RECEIVABLE_ACCOUNT_ID desc')->limit(1)->find();
+        //dump($LAST_UNRECEIVED_MONRY);
+        $this->assign('LAST_UNRECEIVED_MONRY',$LAST_UNRECEIVED_MONRY);
+        $this->assign('flags',$flags);
+        //dump($accounts);
+        $this->assign('accounts',$accounts);
 		$this->assign ( 'rate', $rate );
 		$this->assign ( 'location_code', $vo ['PICKUP_LOCATION_CODE'] );
 		$this->assign ( 'vo', $vo );
@@ -138,6 +149,17 @@ class AgreementAction extends CommonAction {
         foreach($mandy as $k=>$v){
             $rate += $v['RATE']*$BASE_RATE_QTY;
         }
+
+        $Model->switchConnect ( 1, "agreement_receivable_account" );
+        $accounts = $Model->where('AGREEMENT_ID="'.$id.'"')->select();
+        $flags = $Model->where('AGREEMENT_ID="'.$id.'" and UNRECEIVED_MONRY<=0')->count();
+        
+        $LAST_UNRECEIVED_MONRY = $Model->field('UNRECEIVED_MONRY')->where('AGREEMENT_ID="'.$id.'"')->order('AGREEMENT_RECEIVABLE_ACCOUNT_ID desc')->limit(1)->find();
+        //dump($LAST_UNRECEIVED_MONRY);
+        $this->assign('LAST_UNRECEIVED_MONRY',$LAST_UNRECEIVED_MONRY);
+        $this->assign('flags',$flags);
+        //dump($accounts);
+        $this->assign('accounts',$accounts);
         $this->assign ( 'rate', $rate );
         $this->assign ( 'location_code', $vo ['PICKUP_LOCATION_CODE'] );
         $this->assign ( 'vo', $vo );
@@ -587,7 +609,7 @@ class AgreementAction extends CommonAction {
             Log::write('SQL：'.$Model->getLastSql(), Log::SQL); 
 			unset($map);
 			$confirmation = $vo['location_code'].'-'.str_replace('ZJ','',$_POST['agreement_id']);
-			$map['STATUS'] = 'RETURN';
+			//$map['STATUS'] = 'RETURN';
 			$Model->switchConnect(1,"reservation");
             $cons = $Model->where('CONFIRMATION="'.$confirmation.'"')->find();
 
@@ -673,7 +695,7 @@ class AgreementAction extends CommonAction {
             unset($map);
 
 			$confirmation = $vo['location_code'].'-'.str_replace('DJ','',$_POST['agreement_id']);
-            $map['STATUS'] = 'RETURN';
+            //$map['STATUS'] = 'RETURN';
 
             $Model->switchConnect(1,"driver_info");
             
@@ -730,6 +752,55 @@ class AgreementAction extends CommonAction {
 		}
 
     }
-    
+    public function insertAccount(){
+            $Model = M ( "agreement_receivable_account","AdvModel" );
+            $Model->addConnect ( C ( "DB_CRS" ), 1 );
+            $Model->switchConnect ( 1, "agreement_receivable_account" );
+            $data = $_POST;
+            //第一笔已付款记录
+            if($_POST['LAST_UNRECEIVED_MONRY']==0){
+
+                $data['UNRECEIVED_MONRY'] = (int)$_POST['RETURN_FEE'] - (int)$_POST['RECEIVABLE_MONEY'];
+            }else{
+
+                $data['UNRECEIVED_MONRY'] = (int)$_POST['LAST_UNRECEIVED_MONRY'] - (int)$_POST['RECEIVABLE_MONEY'];
+            }
+            if (false === $Model->create ( $data)) {
+                echo $Model->getError ();
+                exit ();
+            }
+            //dump($_POST);exit;
+            // 保存当前数据对象
+            $list = $Model->add( $data );
+           // dump($Model->getLastSql());
+            //echo $Model->getLastSql();exit;
+            if($list>0){
+                //$accounts = $Model->where('AGREEMENT_ID="'.$data['AGREEMENT_ID'].'"')->select();
+                //$this->assign('accounts',$accounts);
+
+                    $this->success('收款信息生成成功!');
+                }else{
+                $this->error('收款信息生成失败!');
+            }
+    } 
+    public function closeContract(){
+        $Model = M ( "agreement","AdvModel" );
+        $Model->addConnect ( C ( "DB_CRS" ), 1 );
+        $Model->switchConnect ( 1, "agreement" );
+        $data = $_POST;
+        if (false === $Model->create ($data)) {
+			$this->error ( $Model->getError ($data) );
+		}
+		// 更新数据
+        $list=$Model->save ($data);
+       // echo $Model->getLastSql();
+		if (false !== $list) {
+			//成功提示
+			$this->success ('合同关闭成功!');
+		} else {
+			//错误提示
+			$this->error ('合同关闭失败!');
+		}
+    }  
 }
 ?>

@@ -37,7 +37,7 @@ class IndexAction extends CommonAction {
             $map['CONFIRMATION'] = array('like',$_SESSION['location_code']."%");
             if(empty($_POST['STATUS']))
                 // $map['STATUS'] = array(array('neq','CONTRACT'),array('neq','CANCEL'),array('neq','RETURN'));
-                // 分配不同业务员取单@20120901
+
              //   $map['CONFIRMED_BY'] = array('exp','is null');
             //dump($map);exit;
             // 取得满足条件的记录数
@@ -214,6 +214,8 @@ class IndexAction extends CommonAction {
 
             $map['STATUS'] = array(array('neq','CONTRACT'),array('neq','CANCEL'),array('neq','RETURN'));
             $voList = $Model->where ( $map )->field ( 'reservation_id,rate_code,CONFIRMATION,right(CONFIRMATION,15) as confirmation,PICKUP_DATE,RETURN_DATE,CAR_MODEL_NAME,status' )->findAll ();
+            
+        Log::write('YUNGWEI::SQL：'.$Model->getLastSql(), Log::SQL); 
             foreach($voList as $k=>$v){
                 $start = explode(':',substr($v['PICKUP_DATE'],-8));
                 $end = explode(':',substr($v['RETURN_DATE'],-8));
@@ -236,7 +238,8 @@ class IndexAction extends CommonAction {
                 }
 
                 $resV.='</tr><tr>';
-                $resV.='<td><a href="__APP__/Reservation/edit/id/'.$v['reservation_id'].'/confirmation/'.$v['confirmation'].'/rate_code/'.$v['rate_code'].'" target="dialog" max=true >'.$v['confirmation'].'</a><br/>'.
+
+                $resV.='<td><a href="__APP__/Reservation/edit/id/'.$v['reservation_id'].'/confirmation/'.$v['confirmation'].'/rate_code/'.$v['rate_code'].'" target="dialog" max=true rel="reser2">'.$v['confirmation'].'</a><br/>'.
                     $v['CAR_MODEL_NAME'].'</td>';
                 for($j=0;$j<=$day;$j++){
                     for($i=0;$i<=23;$i++){
@@ -284,13 +287,29 @@ class IndexAction extends CommonAction {
 			$this->assign ( 'order', $order );
 			$this->assign ( 'sortImg', $sortImg );
 			$this->assign ( 'sortType', $sortAlt );
-			$this->assign ( "page", $page );
-		$this->assign ( 'totalCount', $count );
-		$this->assign ( 'numPerPage', C ( 'PAGE_LISTROWS' ) );
-		$this->assign ( 'currentPage', ! empty ( $_REQUEST [C ( 'VAR_PAGE' )] ) ? $_REQUEST [C ( 'VAR_PAGE' )] : 1 );
-		Cookie::set ( '_currentUrl_', __SELF__ );
-		$this->assign ( 'menu', $menu );
-        $this->display();
+
+            $this->assign ( "page", $page );
+            unset($map);
+            $Model->switchConnect ( 1, "driver_info" );
+            $map['status'] = 9;
+            $drivers = $Model->where($map)->select();
+            $this->assign("drivers",$drivers);
+            $Model->switchConnect ( 1, "Car" );
+            //$carmodelcode = $_REQUEST ['modelcode'];
+            //$map['CAR_MODEL_CODE'] = $carmodelcode;
+            unset($map);
+            $map['CURRENT_LOCATION_CODE'] = $_SESSION['location_code'];
+            $map['status'] = 2;
+            $cars = $Model->where($map)->select();
+            //echo $Model->getLastSql();
+            //dump($cars);
+            $this->assign("cars",$cars);
+            $this->assign ( 'totalCount', $count );
+            $this->assign ( 'numPerPage', C ( 'PAGE_LISTROWS' ) );
+            $this->assign ( 'currentPage', ! empty ( $_REQUEST [C ( 'VAR_PAGE' )] ) ? $_REQUEST [C ( 'VAR_PAGE' )] : 1 );
+            Cookie::set ( '_currentUrl_', __SELF__ );
+            $this->assign ( 'menu', $menu );
+            $this->display();
     }
 }
 ?>

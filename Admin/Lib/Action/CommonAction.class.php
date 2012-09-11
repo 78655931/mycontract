@@ -10,7 +10,8 @@ class CommonAction extends Action {
 
 			redirect ( PHP_FILE . C ( 'USER_AUTH_GATEWAY' ) );
         }**/
-			//echo  $_SESSION [C ( 'USER_AUTH_KEY' )];exit;
+        //echo  $_SESSION [C ( 'USER_AUTH_KEY' )];exit;
+        //print_r($_SESSION);
 		if (C ( 'USER_AUTH_ON' ) && !in_array(MODULE_NAME,explode(',',C('NOT_AUTH_MODULE'))) ) {
 			import ( '@.ORG.RBAC' );
 			if (! RBAC::AccessDecision ()) {
