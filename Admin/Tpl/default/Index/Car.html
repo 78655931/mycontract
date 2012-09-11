@@ -23,4 +23,35 @@
 <table class="list"  border=1>
     {$reservation}
 </table>
+<table class="list" border=1 width=100%>
+    <tr>
+        <td width="50%">
+            <div class="yd">空闲司机</div>
+                <table border=1 class="list">
+                    <tr>
+                       
+                            <volist name="drivers" id="driver">
+                             <td>{$driver.DRIVER_NAME} </td>
+                            </volist>
+                       
+                    </tr>
+                </table>
+            
+        </td>
+        <td>
+            <div class="yd">空闲车辆</div>
+            <table border=1 class="list">
+                <tr>
+                    <volist name="cars" id="car">
+                    <td>{$car.CAR_TAG}<br/>
+                        {$car.CAR_MODEL_CODE|getCarmodel="CAR_MODEL_NAME"}
+                    </td>
+                    </volist>
+                    
+                </tr>
+            </table>
+            
+        </td>
+    </tr>
+</table>
 </div>

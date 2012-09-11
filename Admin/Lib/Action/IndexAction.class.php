@@ -285,13 +285,28 @@ class IndexAction extends CommonAction {
 			$this->assign ( 'order', $order );
 			$this->assign ( 'sortImg', $sortImg );
 			$this->assign ( 'sortType', $sortAlt );
-			$this->assign ( "page", $page );
-		$this->assign ( 'totalCount', $count );
-		$this->assign ( 'numPerPage', C ( 'PAGE_LISTROWS' ) );
-		$this->assign ( 'currentPage', ! empty ( $_REQUEST [C ( 'VAR_PAGE' )] ) ? $_REQUEST [C ( 'VAR_PAGE' )] : 1 );
-		Cookie::set ( '_currentUrl_', __SELF__ );
-		$this->assign ( 'menu', $menu );
-        $this->display();
+            $this->assign ( "page", $page );
+            unset($map);
+            $Model->switchConnect ( 1, "driver_info" );
+            $map['status'] = 9;
+            $drivers = $Model->where($map)->select();
+            $this->assign("drivers",$drivers);
+            $Model->switchConnect ( 1, "Car" );
+            //$carmodelcode = $_REQUEST ['modelcode'];
+            //$map['CAR_MODEL_CODE'] = $carmodelcode;
+            unset($map);
+            $map['CURRENT_LOCATION_CODE'] = $_SESSION['location_code'];
+            $map['status'] = 2;
+            $cars = $Model->where($map)->select();
+            //echo $Model->getLastSql();
+            //dump($cars);
+            $this->assign("cars",$cars);
+            $this->assign ( 'totalCount', $count );
+            $this->assign ( 'numPerPage', C ( 'PAGE_LISTROWS' ) );
+            $this->assign ( 'currentPage', ! empty ( $_REQUEST [C ( 'VAR_PAGE' )] ) ? $_REQUEST [C ( 'VAR_PAGE' )] : 1 );
+            Cookie::set ( '_currentUrl_', __SELF__ );
+            $this->assign ( 'menu', $menu );
+            $this->display();
     }
 }
 ?>

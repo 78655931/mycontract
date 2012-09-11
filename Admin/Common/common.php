@@ -668,8 +668,8 @@ function getCarmodel($car_model_code, $condition = '') {
 	$Model->switchConnect ( 1, "car_model" );
 	// $model = M ( 'car_model' );
 	$cartype = $Model->getByCarModelCode ( $car_model_code );
-	// Log::write ( '调试的SQL：' . $model->getLastSql (), Log::SQL );
-	// echo $model->getLastSql();
+    Log::write ( '调试的SQL：' . $Model->getLastSql (), Log::SQL );
+	//Log::write ( 'CARMODENAME：' . $condition, Log::LOG );
 	return $cartype [$condition];
 }
 function getlocation($localcode) {
