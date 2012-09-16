@@ -820,6 +820,22 @@ function convert_stat($stat){
         return "<td style='background:#FF6C6C;'>已关闭</td>";
 	}
 }
+function convert_broken($stat){
+    switch($stat){
+        case 1:
+            return '划痕';
+        case 2:
+            return '裂痕';
+        case 3:
+            return '凹陷';
+        case 4:
+            return '脱落';
+        case 5:
+            return '丢失';
+        case 6:
+            return '其它';
+    }
+}
 function getOptions($confirmation) {
 	$Model = M ( "Location","AdvModel" );
 	$Model->addConnect ( C ( "DB_CRS" ), 1 );

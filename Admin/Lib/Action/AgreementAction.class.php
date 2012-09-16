@@ -801,6 +801,69 @@ class AgreementAction extends CommonAction {
 			//错误提示
 			$this->error ('合同关闭失败!');
 		}
+    }
+    public function CarBrokenInfo(){
+        $Model = M ( "agreement","AdvModel" );
+        $Model->addConnect ( C ( "DB_CRS" ), 1 );
+        $Model->switchConnect ( 1, "car_broken_info" );
+        $data = $_POST;
+        $data['BROKEN_STATUS'] = implode(',',$data['BROKEN_STATUS']);
+        $data['CREATE_DATE']=date('Y-m-d h:i:s',time());
+        $data['LAST_MODIFY_DATE']= date('Y-m-d h:i:s',time());
+        $data['USER_CODE']= $_SESSION['loginUserName'];
+        if (false === $Model->create ($data)) {
+            $this->error ( $Model->getError ($data) );
+        }
+        // 更新数据
+        $list=$Model->add ($data);
+        echo $list;exit;
+        /**
+        if($list>0){
+            $result = $Model->select();
+            header ( "Content-Type:text/html; charset=utf-8" );
+
+            exit ( json_encode ($result) ) );
+        }**/
+        //echo $Model->getLastSql();
+    }
+    public function vehicle(){
+        $Model = M ( "agreement","AdvModel" );
+        $Model->addConnect ( C ( "DB_CRS" ), 1 );
+        $Model->switchConnect ( 1, "car_broken_info" );
+        $result = $Model->findAll();
+        $this->assign('list',$result);
+        $this->display();
+    }
+    public function getBrokenCar(){
+        $Model = M ( "agreement","AdvModel" );
+        $Model->addConnect ( C ( "DB_CRS" ), 1 );
+        $Model->switchConnect ( 1, "car_broken_info" );
+          $result = $Model->getByCarBrokenInfo($_GET['id']);
+        echo json_encode($result);
+        exit;
+       // exit ( json_encode ($result) ) );
     }  
+public function foreverdel_broken() {
+		//删除指定记录
+        $model = M ( "agreement","AdvModel" );
+        $model->addConnect ( C ( "DB_CRS" ), 1 );
+        $model->switchConnect ( 1, "car_broken_info" );
+   
+		if (! empty ( $model )) {
+			$pk = $model->getPk ();
+			$id = $_REQUEST ['id'];
+			if (isset ( $id )) {
+				$condition = array ($pk => array ('in', explode ( ',', $id ) ) );
+				if (false !== $model->where ( $condition )->delete ()) {
+					$this->success ('删除成功！');
+				} else {
+					$this->error ('删除失败！');
+				}
+			} else {
+				$this->error ( '非法操作' );
+			}
+		}
+		$this->forward ();
+	}
 }
 ?>
