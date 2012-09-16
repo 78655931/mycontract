@@ -278,7 +278,8 @@ class CommonAction extends Action {
 			if (isset ( $id )) {
 				$condition = array ($pk => array ('in', explode ( ',', $id ) ) );
 				if (false !== $model->where ( $condition )->delete ()) {
-					//echo $model->getlastsql();
+                    echo $model->getlastsql();
+                    exit;
 					$this->success ('删除成功！');
 				} else {
 					$this->error ('删除失败！');

@@ -1,0 +1,143 @@
+<script type="text/javascript">
+    $(function(){
+        var options = {
+            beforeSubmit : showRequest, // pre-submit callback
+            success : showResponse // post-submit callback
+        };
+        $('#myform').submit(function() {
+            // 提交表单
+            $(this).ajaxSubmit(options);
+            // 为了防止普通浏览器进行表单提交和产生页面导航（防止页面刷新？）返回false
+            return false;
+        });
+
+        function showRequest(formData, jqForm, options) {
+            var queryString = $.param(formData);
+            //alert(queryString);
+            return true;
+        }
+        // post-submit callback
+        function showResponse(responseText, statusText, xhr, $form) {
+            if(responseText>0){
+                //alert('success');
+                $.getJSON('__URL__/getBrokenCar',{id:responseText},function(data){
+                    
+                    $("<tr></tr>").html('<td>'+data.POINT_NUM+'</td><td>'+data.BROKEN_STATUS+'</td><td>'+data.BROKEN_DESC+'</td><td><a class="delete" href="__URL__/foreverdel_broken/id/'+responseText+'/navTabId/__MODULE__"  title="你确定要删除吗？" ><span>删除</span></a></td>').appendTo('#info');   
+                });                            
+            }
+            //$.each(responseText,function(i,item){
+               // alert(item.BROKEN_STATUS);
+            //});
+
+        }
+
+    });
+</script>
+
+<div layoutH="20">
+<img src="__PUBLIC__/Images/car4view.jpg" alt="" />
+<form id="myform"  name="myform" method="post" action="__APP__/Agreement/CarBrokenInfo">
+<table>
+    <tr>
+        <td>
+            内饰部位:&nbsp;<select id="" name="POINT_NUM">
+             <option value="1">1</option>
+             <option value="2">2</option>
+             <option value="3">3</option>
+             <option value="4">4</option>
+             <option value="5">5</option>
+             <option value="6">6</option>
+             <option value="7">7</option>
+             <option value="8">8</option>
+             <option value="9">9</option>
+             <option value="10">10</option>
+             <option value="11">11</option>
+             <option value="12">12</option>
+             <option value="13">13</option>
+             <option value="14">14</option>
+             <option value="15">15</option>
+             <option value="16">16</option>
+             <option value="17">17</option>
+             <option value="18">18</option>
+             <option value="19">19</option>
+             <option value="20">20</option>
+             <option value="21">21</option>
+             <option value="22">22</option>
+             <option value="23">23</option>
+             <option value="24">24</option>
+             <option value="25">25</option>
+             <option value="26">26</option>
+             <option value="27">27</option>
+             <option value="28">28</option>
+             <option value="29">29</option>
+             <option value="30">30</option>
+             <option value="31">31</option>
+             <option value="32">32</option>
+             <option value="33">33</option>
+             <option value="34">34</option>
+             <option value="35">35</option>
+             <option value="36">36</option>
+             <option value="37">37</option>
+             <option value="38">38</option>
+             <option value="39">39</option>
+             <option value="40">40</option>
+             <option value="41">41</option>
+             <option value="42">42</option>
+             <option value="43">43</option>
+             <option value="44">44</option>
+             <option value="45">45</option>
+             <option value="46">46</option>
+             <option value="47">47</option>
+             <option value="48">48</option>
+             <option value="49">49</option>
+             <option value="50">50</option>
+             <option value="51">51</option>
+             <option value="52">52</option>
+             <option value="53">53</option>
+            </select>
+        </td>
+        <td>
+            <input id="" name="BROKEN_STATUS[]" type="checkbox" value="划痕" />划痕
+            <input id="" name="BROKEN_STATUS[]" type="checkbox" value="裂痕" />裂痕
+            <input id="" name="BROKEN_STATUS[]" type="checkbox" value="凹陷" />凹陷
+            <input id="" name="BROKEN_STATUS[]" type="checkbox" value="脱落" />脱落
+            <input id="" name="BROKEN_STATUS[]" type="checkbox" value="丢失" />丢失
+            <input id="" name="BROKEN_STATUS[]" type="checkbox" value="其他" />其他
+        <tr>
+            <td colspan="2">备注
+                <input id="" name="BROKEN_DESC" type="text" size="40" />
+            </td>
+            <td>
+            <input type="submit" value="保存" />
+            </td>
+        </tr>
+        <tr>
+            
+        </tr>
+    </tr>
+</table>
+</form>
+<table class="list" width="50%" id="info">
+    <th>部位编号</th>
+    <th>状况</th>
+    <th>备注</th>
+<th></th>
+        <volist name="list" id="vo">
+    <tr>
+        <td>
+            {$vo.POINT_NUM}
+
+        </td>
+        <td>
+            {$vo.BROKEN_STATUS}
+        </td>
+        <td>
+            {$vo.BROKEN_DESC}
+        </td>
+        <td>
+            <a class="delete" href="__URL__/foreverdel_broken/id/{$vo.CAR_BROKEN_INFO}/navTabId/__MODULE__"  title="你确定要删除吗？" ><span>删除</span></a>
+        </td>
+    </tr>
+        </volist>
+    </table>
+</div>
