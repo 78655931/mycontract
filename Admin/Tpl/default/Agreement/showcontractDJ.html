@@ -347,9 +347,15 @@ $( "#RECEIVABLE_DATE" ).datetimepicker({
 					</td>
 				</tr>
 				<tr>
-                    <td colspan="2">
+                    <td >
 <input  type="button" onclick="openDialog();" value="打印合同"/>
-							</td>
+                            </td>
+                            <td>
+                    <if condition="($vo['status'] eq 'RETURN') or ($vo['status'] eq 'CLOSE')">
+                    <a class="button" href="__APP__/Agreement/vehicle/agreementid/{$vo.agreement_id}" target="dialog" mask="true"   width="800" height="900" rel="验车单"><span>验车单</span></a>
+                    </if>        
+                            </td>
+                    
                         </tr>
                 
 					</tbody>

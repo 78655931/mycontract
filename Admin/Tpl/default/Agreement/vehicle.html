@@ -35,7 +35,21 @@
 </script>
 
 <div layoutH="20">
-<img src="__PUBLIC__/Images/car4view.jpg" alt="" />
+    <table class="list" width="50%">
+        <th>合同编号</th>
+        <th>车牌</th>
+        <th>车辆品牌</th>
+        <th>还车日期</th>
+        <tr>
+            <td>{$agreement.agreement_id}</td>
+            <td>{$agreement.CAR_TAG}</td>
+            <td>{$agreement.CAR_MODEL}</td>
+            <td>{$agreement.RETURN_DATE}</td>
+        </tr>
+    </table>
+    <img src="__PUBLIC__/Images/car4view.jpg" alt="" />
+
+             <if condition="($agreement['status'] eq 'RETURN') ">
 <form id="myform"  name="myform" method="post" action="__APP__/Agreement/CarBrokenInfo">
 <table>
     <tr>
@@ -117,11 +131,12 @@
     </tr>
 </table>
 </form>
+</if>
 <table class="list" width="50%" id="info">
     <th>部位编号</th>
     <th>状况</th>
     <th>备注</th>
-<th></th>
+    <th>操作</th>
         <volist name="list" id="vo">
     <tr>
         <td>

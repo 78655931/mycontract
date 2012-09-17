@@ -1044,5 +1044,14 @@ class ReservationAction extends CommonAction {
         header ( "Content-Type:text/html; charset=utf-8" );
         exit ( json_encode ( $list ) );
     }
+    public function countRes(){
+        $model = M ( "Location","AdvModel" );
+        $model->addConnect ( C ( "DB_CRS" ), 1 );
+        $model->switchConnect(1,'reservation');
+        $map['status'] = "CONTRACT";
+        $result = $model->where($map)->count();
+        echo  $result;exit;
+
+    }
 }
 ?>

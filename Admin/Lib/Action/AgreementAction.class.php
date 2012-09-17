@@ -829,6 +829,10 @@ class AgreementAction extends CommonAction {
     public function vehicle(){
         $Model = M ( "agreement","AdvModel" );
         $Model->addConnect ( C ( "DB_CRS" ), 1 );
+
+        $Model->switchConnect ( 1, "agreement" );
+        $agreement = $Model->getByAgreementId($_GET['agreementid']);
+        $this->assign('agreement',$agreement);
         $Model->switchConnect ( 1, "car_broken_info" );
         $result = $Model->findAll();
         $this->assign('list',$result);

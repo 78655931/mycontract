@@ -36,6 +36,8 @@
 <script src="__PUBLIC__/js/jquery.ui.js" type="text/javascript"></script>    
 <script src="__PUBLIC__/js/jquery.ui.i18n.js" type="text/javascript"></script>   
 <script src="__PUBLIC__/js/jquery.datepicker.addon.js" type="text/javascript"></script>  
+
+<script type="text/javascript" src="__PUBLIC__/js/jquery.messager.js"></script>
 <script type="text/javascript">
 function fleshVerify(){
 	//重载验证码
@@ -54,7 +56,7 @@ function navTabAjaxMenu(json){
 	}
 }
 $(function(){
-	DWZ.init("__PUBLIC__/dwz/dwz.frag.xml", {
+        DWZ.init("__PUBLIC__/dwz/dwz.frag.xml", {
 		loginUrl:"__APP__/Public/login_dialog", loginTitle:"登录",	// 弹出登录对话框
 //		loginUrl:"__APP__/Public/login",	//跳到登录页面
 		statusCode:{ok:1,error:0},
@@ -64,12 +66,33 @@ $(function(){
 			initEnv();
 			$("#themeList").theme({themeBase:"__PUBLIC__/dwz/themes"});
 		}
-	});
 });
+GetOrderCount();
+window.setInterval("GetOrderCount()",60000);//1分钟刷新1次
+
+});
+
 //清理浏览器内存,只对IE起效，FF不需要
 if ($.browser.msie) {
 	window.setInterval("CollectGarbage();", 10000);
 }
+function GetOrderCount(){
+$.ajax({
+        type: "get",
+        dataType: "html",
+        url: '__APP__/Reservation/countRes',
+        data: "",
+        success: function(data){
+            if (data>0)
+            {
+                //$.messager.anim('fade', 2000);
+                //$.messager.show('<font color="red">新订单提醒</font>','目前有<font color=red>'+data+'</font>个预订单未处理，请相关尽快处理！<a href=__APP__/Reservation/Index target="dialog" max="true">处理页面</a>',10000);
+                alertMsg.info('目前有<font color=red>'+data+'</font>个预订单未处理，请相关尽快处理！<a href="__APP__" target="_self" max="true">处理页面</a>');
+            }
+        }
+    }); 
+}
+
 function  cancelRes(obj){
     //alert(obj);
     if(window.confirm('确定取消该笔定单？')){

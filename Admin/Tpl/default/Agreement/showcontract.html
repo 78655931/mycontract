@@ -356,7 +356,12 @@
 					
 				</tr>
 				<tr>
-					<td colspan="2">						<a target="_blank" mask=true max=true maxable=true minable=true resizable=true drawable=true ref="contract"  href="__URL__/gotoPrint/agreementid/{$Think.get.id|base64_encode}">打印合同</a>					</td></tr>	
+                    <td >						<a target="_blank" mask=true max=true maxable=true minable=true resizable=true drawable=true ref="contract"  href="__URL__/gotoPrint/agreementid/{$Think.get.id|base64_encode}">打印合同</a>					</td>
+                
+                    <if condition="($vo['status'] eq 'RETURN') or ($vo['status'] eq 'CLOSE')">
+                    <a href="__APP__/Agreement/vehicle" target="dialog"   width="800" height="900" rel="验车单">验车单</a>
+                    </if>
+                </tr>	
 			</tbody>
 		</table>
     </form>

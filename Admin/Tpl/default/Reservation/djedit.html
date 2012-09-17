@@ -192,10 +192,9 @@ function openDialog(){
 				<th width="8%">客户名称</th>
 				<th width="12%">取车时间</th>
 				<th width="12%">还车时间</th>
-				<th width="22%">联系人</th>
+				<th width="22%">带驾方式</th>
 				<th width="5%">联系电话</th>
-				<th width="8%">租期类型</th>
-				<th width="8%">司机要求</th>
+				<th width="8%">备注</th>
 			</tr>  
 		</thead>   
 		<tbody>
@@ -205,7 +204,6 @@ function openDialog(){
 				<td>{$vo.PICKUP_DATE|substr=0,16}</td>
 				<td>{$vo.RETURN_DATE|substr=0,16}</td>
 				<td>代驾</td>
-				<td>{$vo.linkman}</td>
 				<td>{$vo.LINKMAN_PHONE}</td>
 				<td>{$vo.DRIVER_REQUEST}</td>
 			</tr>
