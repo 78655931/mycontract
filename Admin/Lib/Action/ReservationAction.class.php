@@ -853,6 +853,10 @@ class ReservationAction extends CommonAction {
         }
         
         if($data['RATE_CODE']=='WEB'){
+            if($data['MEMBER_TYPE_ID']==''){
+                $data['MEMBER_TYPE_ID'] = 16;
+                $data['MEMBER_TYPE_NAME'] = '普通会员';
+            }
             $data['REAL_NAME'] = $_POST['REAL_NAME_ZJ'];
             $data['RETURN_DATE'] = $_POST['RETURN_DATE_ZJ'];
             $data['MEMBER_TYPE_NAME'] = $member['MEMBER_TYPE_NAME'];  
