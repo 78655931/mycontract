@@ -832,6 +832,11 @@ class AgreementAction extends CommonAction {
 
         $Model->switchConnect ( 1, "agreement" );
         $agreement = $Model->getByAgreementId($_GET['agreementid']);
+
+        $Model->switchConnect ( 1, "car" );
+
+        $car = $Model->getByCarTag($agreement['CAR_TAG']);
+        $agreement['car_id'] = $car['CAR_ID'];
         $this->assign('agreement',$agreement);
         $Model->switchConnect ( 1, "car_broken_info" );
         $result = $Model->findAll();
